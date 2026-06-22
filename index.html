@@ -265,7 +265,6 @@
             padding: 10px;
         }
 
-        /* تنسيقات منيو الترقية الذكي الملون بنيون متوهج وطبقات تفاعلية فخمة */
         .select-upgrade { font-weight: 900 !important; letter-spacing: 0.5px; transition: all 0.3s ease; }
         .upgrade-stable { color: #00e5ff !important; text-shadow: 0 0 10px rgba(0, 229, 255, 0.6); border-color: rgba(0, 229, 255, 0.3) !important; }
         .upgrade-qualified { color: #00ff87 !important; text-shadow: 0 0 15px rgba(0, 255, 135, 0.8); border-color: rgba(0, 255, 135, 0.4) !important; box-shadow: 0 0 10px rgba(0,255,135,0.15) !important; }
@@ -486,7 +485,6 @@
             setTimeout(() => { toast.remove(); }, 2000);
         }
 
-        // كتل توليد أرقام الأكواد تلقائياً بناء على طلبك الدقيق لكل رتبة ومستوى
         function generateCodeRange(start, end) {
             let list = [];
             for(let i = start; i <= end; i++) {
@@ -508,11 +506,11 @@
             if(rankName === "مستوى 7") return generateCodeRange(90, 99);
             if(rankName === "مستوى 8") return generateCodeRange(80, 89);
             if(rankName === "مستوى 9") return generateCodeRange(70, 79);
-            return generateCodeRange(300, 350); // احتياطي للرتب المضافة يدوياً
+            return generateCodeRange(300, 350);
         }
 
         const defaultData = {
-            adminPin: "torento911", 
+            adminPin: "toronto911", 
             siteTitle: "جدول الهلال الأحمر",
             siteSubtitle: "TORONTO RP - EMS HIGH COMMAND",
             watermark: "خاص بسيرفر تورنتو",
@@ -618,14 +616,12 @@
                 let rankOptions = '';
                 appData.ranks.forEach(r => { rankOptions += `<option value="${r.name}" ${emp.rank === r.name ? 'selected' : ''}>${r.name}</option>`; });
 
-                // توليد أكواد ذكية وتلقائية معتمدة حصرياً على رتبة الموظف الحالية
                 let availableCodes = getCodesForRank(emp.rank);
                 let codeOptions = '';
                 availableCodes.forEach(c => {
                     codeOptions += `<option value="${c}" ${emp.code === c ? 'selected' : ''}>${c}</option>`;
                 });
                 
-                // إذا كان الكود المحفوظ قديماً خارج النطاق الجديد نقوم بإضافته لكي لا يختفي
                 if(!availableCodes.includes(emp.code)) {
                     codeOptions = `<option value="${emp.code}" selected>${emp.code}</option>` + codeOptions;
                 }
@@ -636,7 +632,6 @@
                 const badgeObj = appData.badges.find(b => b.name === emp.badge);
                 const badgeColor = badgeObj ? badgeObj.color : '#4a5568';
 
-                // تحديد كلاس التلوين والتوهج الخاص بقائمة الترقية الذكية المحدثة
                 let upgradeClass = 'upgrade-stable';
                 if(emp.upgrade === 'مؤهل للترقية') upgradeClass = 'upgrade-qualified';
                 if(emp.upgrade === 'غير مؤهل للترقية') upgradeClass = 'upgrade-unqualified';
@@ -723,7 +718,6 @@
             populateSettingsLists();
         }
 
-        // عند تعديل الرتبة نقوم بتحديث الكود الافتراضي فورياً ليتناسب مع نطاق الرتبة الجديد تلقائياً
         function handleRankChange(idx, newRank) {
             if (!isAdmin || !appData.employees[idx]) return;
             appData.employees[idx].rank = newRank;
@@ -874,12 +868,24 @@
             }
         }
 
+        /* دالة تصفير الأسبوع المحمية والمحدثة لمنع الاقتراب من رتبة القيادة نهائياً */
         function clearAttendance() {
             if (!isAdmin) return;
-            if (confirm("تأكيد تصفير أسبوع العمل كاملاً؟")) {
-                appData.employees.forEach(emp => { emp.attendance = [0,0,0,0,0,0,0]; emp.repPresence = 0; emp.repOps = 0; });
+            if (confirm("تأكيد تصفير أسبوع العمل للكادر؟ (سيتم استثناء رتب القيادة تلقائياً وحمايتها)")) {
+                appData.employees.forEach(emp => {
+                    // التحقق ما إذا كانت الرتبة تحتوي على كلمة "قيادة" لتفعيل الحماية
+                    if (emp.rank && emp.rank.includes("قيادة")) {
+                        return; // تخطي الشخص فورياً دون تصفير بياناته
+                    }
+                    
+                    // تصفير الحضور والتقارير لباقي الرتب غير القيادية فقط
+                    emp.attendance = [0, 0, 0, 0, 0, 0, 0]; 
+                    emp.repPresence = 0; 
+                    emp.repOps = 0; 
+                });
+                
                 saveToStorageDirect(false);
-                showToast("تم تصفير الحضور والتقارير.");
+                showToast("تم تصفير أسبوع العمل مع الحفاظ على كامل بيانات القيادة بنجاح! 🔒");
                 renderApp();
             }
         }
