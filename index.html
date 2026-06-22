@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>سجل أطباء ومسعفي الهلال الأحمر - TORONTO RP</title>
+    <title>جدول الهلال الأحمر - TORONTO RP</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap');
+
         :root {
             --bg-color: #060609;
             --panel-bg: rgba(13, 13, 18, 0.75);
@@ -19,7 +21,7 @@
         body {
             background-color: var(--bg-color);
             color: var(--text-color);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 25px;
             min-height: 100vh;
@@ -91,22 +93,51 @@
             cursor: not-allowed;
         }
 
-        /* تكبير العنوان وإبرازه بألوان داكنة فخمة متوهجة */
+        /* ضبط العنوان بخط فخم وعريض وتأثير لمعة وكيفريم متحرك وقفزة مرنة */
         .header-wrapper h1 {
-            font-size: 52px; font-weight: 900; margin: 0; 
-            color: #1a1a24;
+            font-size: 54px; 
+            font-weight: 900; 
+            margin: 0; 
+            color: #ff2a2a;
             letter-spacing: 1px;
-            text-shadow: 0 0 2px rgba(255,255,255,0.1), 
-                         -1px -1px 0px #3a3a4a, 
-                         1px 1px 0px #000,
-                         0 0 30px rgba(255, 42, 42, 0.65),
-                         0 0 60px rgba(255, 42, 42, 0.3);
-            cursor: not-allowed;
+            display: inline-block;
             position: relative;
+            cursor: not-allowed;
+            padding: 5px 15px;
+            
+            /* دمج اللمعة البيضاء البطيئة فوق النص */
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            background-size: 200% 100%;
+            background-position: 120% 0;
+            -webkit-background-clip: text;
+            
+            /* توهج أحمر نيوني متكامل عالي الدقة */
+            text-shadow: 0 0 10px rgba(255, 42, 42, 0.65),
+                         0 0 20px rgba(255, 42, 42, 0.45),
+                         0 0 45px rgba(255, 42, 42, 0.3);
+                         
+            /* حركة تفاعلية مرنة كالقفزة عند اقتراب أو مرور الماوس */
+            transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275), text-shadow 0.3s ease;
+            animation: textShine 6s infinite linear;
+        }
+
+        /* تفاعل العنوان الممنوع التعديل عليه مع قفزة مجسمة رائعة */
+        .header-wrapper h1:hover {
+            transform: translateY(-6px) scale(1.02);
+            text-shadow: 0 0 15px rgba(255, 42, 42, 0.95),
+                         0 0 30px rgba(255, 42, 42, 0.75),
+                         0 0 65px rgba(255, 42, 42, 0.5);
+        }
+
+        /* أنيميشن حركة اللمعة البيضاء يميناً ويساراً بشكل بطيئ فخم */
+        @keyframes textShine {
+            0% { background-position: 160% 0; }
+            50% { background-position: -60% 0; }
+            100% { background-position: -60% 0; }
         }
 
         .header-wrapper h1::after {
-            content: "🔒"; position: absolute; top: -10px; left: -35px; font-size: 18px; opacity: 0.6;
+            content: "🔒"; position: absolute; top: -5px; left: -35px; font-size: 18px; opacity: 0.6;
         }
 
         .header-wrapper p {
@@ -210,12 +241,47 @@
         body.is-admin .count-btn { display: flex; }
         .count-num { font-weight: bold; color: #00e5ff; min-width: 22px; font-family: monospace; font-size: 14px; }
 
+        /* تصفية وإلغاء شكل قوائم جوجل البيضاء وبناؤها بستايل فخم بريميوم ومتحرك */
         .table-select {
-            background: transparent; border: none; color: #fff; font-weight: bold; font-family: inherit; font-size: 13px;
-            text-align: center; text-align-last: center; outline: none; appearance: none; -webkit-appearance: none; pointer-events: none;
-            padding: 4px 8px; border-radius: 4px;
+            background: rgba(14, 15, 22, 0.9); 
+            border: 1px solid rgba(255, 255, 255, 0.04); 
+            color: #fff; 
+            font-weight: 800; 
+            font-family: 'Cairo', inherit; 
+            font-size: 13px;
+            text-align: center; 
+            text-align-last: center; 
+            outline: none; 
+            appearance: none; 
+            -webkit-appearance: none; 
+            pointer-events: none;
+            padding: 6px 12px; 
+            border-radius: 6px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
         }
-        body.is-admin .table-select { pointer-events: auto; cursor: pointer; background: rgba(255,255,255,0.02); border: 1px dashed rgba(255,255,255,0.1); }
+        
+        /* تفعيل التصميم المتقدم الفخم حصرياً للأدمن داخل السجل عند تعديل الرتب أو القوائم المنسدلة */
+        body.is-admin .table-select { 
+            pointer-events: auto; 
+            cursor: pointer; 
+            background: linear-gradient(135deg, #150d0f 0%, #090506 100%); 
+            border: 1px solid rgba(255, 42, 42, 0.25); 
+        }
+        
+        body.is-admin .table-select:hover {
+            border-color: rgba(255, 42, 42, 0.7);
+            box-shadow: 0 0 12px rgba(255, 42, 42, 0.25);
+            color: #fff;
+        }
+
+        /* ستايل مخصص لتنسيق خيارات القائمة الداخلية وتغييرها من الشكل الافتراضي للمتصفح */
+        .table-select option {
+            background-color: #0c0d12 !important;
+            color: #e2e8f0;
+            font-weight: 700;
+            padding: 10px;
+        }
 
         /* ستايل مخصص فاخر للأوسمة المتوهجة احترافياً داخل الجدول */
         .badge-pill {
@@ -287,7 +353,7 @@
         
         <div class="header-wrapper" onselectstart="return false" oncontextmenu="return false">
             <div class="logo-glow">❤️‍🔥</div>
-            <h1 id="site-title">سجل أطباء ومسعفي الهلال الأحمر</h1>
+            <h1 id="site-title">جدول الهلال الأحمر</h1>
             <p id="site-subtitle">TORONTO RP - EMS HIGH COMMAND</p>
             <div class="system-status">
                 <span class="status-dot" id="auth-dot"></span> 
@@ -440,7 +506,7 @@
         // كائن البيانات الشامل والمحدث الافتراضي للموقع المطور بسيرفر تورنتو
         const defaultData = {
             adminPin: "torento911", 
-            siteTitle: "سجل أطباء ومسعفي الهلال الأحمر",
+            siteTitle: "جدول الهلال الأحمر",
             siteSubtitle: "TORONTO RP - EMS HIGH COMMAND",
             watermark: "خاص بسيرفر تورنتو",
             accentColor: "#ff2a2a",
@@ -551,7 +617,7 @@
                     <td class="editable-cell" ${isAdmin ? 'contenteditable="true"' : ''} onblur="updateEmpField(${index}, 'code', this.innerText)" style="color: #ffaa00; font-weight: bold; font-family: monospace;">${emp.code}</td>
                     
                     <td>
-                        <select class="table-select" onchange="updateEmpField(${index}, 'rank', this.value)" style="color: ${rankColor}; text-shadow: 0 0 8px ${rankColor}; font-weight:bold;">
+                        <select class="table-select" onchange="updateEmpField(${index}, 'rank', this.value)" style="color: ${rankColor}; text-shadow: 0 0 8px ${rankColor}; font-weight:900;">
                             ${rankOptions}
                         </select>
                     </td>
@@ -560,7 +626,7 @@
                     <td class="editable-cell" ${isAdmin ? 'contenteditable="true"' : ''} onblur="updateEmpField(${index}, 'pos', this.innerText)">${emp.pos}</td>
                     
                     <td>
-                        <select class="table-select" onchange="updateEmpField(${index}, 'status', this.value)" style="color:${emp.status==='active'?'#00ff87':'#ff3b3b'}">
+                        <select class="table-select" onchange="updateEmpField(${index}, 'status', this.value)" style="color:${emp.status==='active'?'#00ff87':'#ff3b3b'}; font-weight:900;">
                             <option value="active" ${emp.status==='active'?'selected':''}>🟢 نشط</option>
                             <option value="retired" ${emp.status==='retired'?'selected':''}>🔴 فصل/استقالة</option>
                         </select>
@@ -591,7 +657,7 @@
                     
                     <td>
                         <div class="badge-pill" style="background: rgba(0,0,0,0.4); border-color: ${badgeColor}; color: ${badgeColor}; text-shadow: 0 0 5px ${badgeColor}">
-                            <select class="table-select" onchange="updateEmpField(${index}, 'badge', this.value)" style="color: inherit; font-weight:bold; padding:0; background:none; border:none;">
+                            <select class="table-select" onchange="updateEmpField(${index}, 'badge', this.value)" style="color: inherit; font-weight:900; padding:0; background:none; border:none; box-shadow:none;">
                                 ${badgeOptions}
                             </select>
                         </div>
@@ -764,7 +830,7 @@
 
         function clearAttendance() {
             if (!isAdmin) return;
-            if (confirm("تأكيد تصفير أسبوع العمل؟ سيتم تصفير الحضور وتقارير التواجد والعمليات لجميع المسعفين.")) {
+            if (confirm("تأكيد تصفير أسبوع العمل? سيتم تصفير الحضور وتقارير التواجد والعمليات لجميع المسعفين.")) {
                 appData.employees.forEach(emp => { emp.attendance = [0,0,0,0,0,0,0]; emp.repPresence = 0; emp.repOps = 0; });
                 saveToStorageDirect(false);
                 showToast("تم تصفير الإحصائيات الأسبوعية بنجاح.");
