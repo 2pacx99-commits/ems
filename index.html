@@ -2,77 +2,121 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EMS COMMAND | TORONTO RP</title>
     <style>
         :root {
-            --primary: #ff1f1f;
-            --secondary: #00e5ff;
-            --dark: #050508;
-            --panel: #0d0d15;
-            --text: #e0e0e0;
-            --glow: 0 0 15px rgba(255, 31, 31, 0.4);
+            --bg-color: #050508;
+            --panel-bg: #0d0d15;
+            --primary-red: #ff1f1f;
+            --primary-blue: #00e5ff;
+            --text-color: #e0e0e0;
+            --glow-red: 0 0 15px rgba(255, 31, 31, 0.6);
+            --glow-blue: 0 0 15px rgba(0, 229, 255, 0.4);
         }
 
-        body {
-            background-color: var(--dark);
-            color: var(--text);
-            font-family: 'Cairo', sans-serif;
-            margin: 0; padding: 20px;
-        }
+        body { background-color: var(--bg-color); color: var(--text-color); font-family: 'Segoe UI', sans-serif; margin: 0; padding: 20px; }
 
-        /* تحسين التوهج التفاعلي */
-        .btn, .stat-card, th { transition: all 0.3s ease; }
-        .btn:active { transform: scale(0.95); box-shadow: 0 0 20px var(--primary); }
-
+        /* تأثير التوهج للضغط */
+        .btn, .stat-card, tr { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .btn:active { transform: scale(0.95); box-shadow: var(--glow-red) !important; }
+        
         .stat-card {
-            background: linear-gradient(145deg, var(--panel), #151520);
+            background: linear-gradient(145deg, #11111a, #0d0d15);
             border: 1px solid #222;
-            border-radius: 15px;
-            padding: 20px;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
+            padding: 20px; border-radius: 12px; text-align: center;
+            border-bottom: 3px solid var(--primary-red);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
         }
-
-        .stat-card::after {
-            content: '';
-            position: absolute; bottom: 0; left: 0; width: 100%; height: 3px;
-            background: var(--primary);
-            box-shadow: var(--glow);
-        }
-
-        .header-wrapper { text-align: center; padding: 40px; }
+        
         .logo-glow {
-            font-size: 50px;
-            text-shadow: 0 0 20px var(--primary);
-            animation: heartBeat 1.5s infinite;
+            font-size: 50px; animation: pulseGlow 2s infinite;
+            text-shadow: 0 0 20px var(--primary-red);
+        }
+        @keyframes pulseGlow {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
         }
 
-        @keyframes heartBeat {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-        }
+        .table-container { border: 1px solid #222; background: var(--panel-bg); border-radius: 10px; overflow: hidden; }
+        table { width: 100%; border-collapse: collapse; }
+        th { background: #161622; padding: 15px; color: var(--primary-blue); border-bottom: 2px solid var(--primary-red); }
+        tr:hover { background: #1a1a25; box-shadow: inset 0 0 10px rgba(255,255,255,0.05); }
 
-        table { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
-        tr { background: var(--panel); border-radius: 10px; }
-        td, th { padding: 15px; }
-
-        /* ألوان جديدة للرتب */
-        .rank-badge { padding: 5px 12px; border-radius: 20px; font-weight: bold; font-size: 12px; }
+        .btn { background: #1a1a25; border: 1px solid #333; color: white; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        .btn-add { background: var(--primary-red); border: none; box-shadow: var(--glow-red); }
+        
+        .modal-box { background: var(--panel-bg); border: 1px solid var(--primary-red); border-radius: 15px; padding: 25px; }
     </style>
 </head>
 <body>
-    <div class="header-wrapper">
+
+    <div class="header-wrapper" style="text-align:center; padding:30px;">
         <div class="logo-glow">🚑</div>
-        <h1>EMS COMMAND CONTROL</h1>
-        <p>مركز عمليات سيرفر تورنتو - إدارة الإسعاف</p>
+        <h1 id="site-title">EMS COMMAND CONTROL</h1>
+        <p style="color:var(--primary-blue);">نظام إدارة الطوارئ - تورنتو RP</p>
     </div>
 
-    <!-- باقي الهيكل الأساسي كما في ملفك الأصلي مع تحديث التنسيقات أعلاه -->
-    <!-- (تم الحفاظ على منطق البرمجة الذي يعمل بـ LocalStorage) -->
+    <div class="stats-grid" style="display:grid; grid-template-columns:repeat(5, 1fr); gap:15px; margin-bottom:30px;">
+        <div class="stat-card"><h3>الكادر النشط</h3><div id="stat-active" style="font-size:24px; font-weight:bold; color:var(--primary-blue);">0</div></div>
+        <div class="stat-card"><h3>إجمالي الحالات</h3><div id="stat-cases" style="font-size:24px; font-weight:bold; color:var(--primary-red);">0</div></div>
+        <div class="stat-card"><h3>المؤهلين</h3><div id="stat-upgrades" style="font-size:24px; font-weight:bold; color:#ecc94b;">0</div></div>
+        <div class="stat-card"><h3>الإنذارات</h3><div id="stat-warns" style="font-size:24px; font-weight:bold; color:#ff3333;">0</div></div>
+        <div class="stat-card"><h3>المجموع</h3><div id="stat-total" style="font-size:24px; font-weight:bold; color:#fff;">0</div></div>
+    </div>
+
+    <div class="toolbar" style="margin-bottom:20px; display:flex; gap:10px;">
+        <button class="btn btn-add" onclick="addNewEmployee()">+ إضافة مسعف</button>
+        <button class="btn" onclick="saveData()">حفظ البيانات</button>
+    </div>
+
+    <div class="table-container">
+        <table id="emsTable">
+            <thead>
+                <tr>
+                    <th>الاسم</th><th>الكود</th><th>الرتبة</th><th>الحالة</th><th>الإجراء</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+        </table>
+    </div>
+
     <script>
-        // هنا يتم دمج المنطق السابق مع تحديثات الواجهة
-        console.log("EMS System Initialized with High Energy Mode.");
+        // دمج المنطق البرمجي الأساسي مع الواجهة الجديدة
+        let appData = JSON.parse(localStorage.getItem('ems_data')) || { employees: [] };
+
+        function render() {
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
+            appData.employees.forEach((emp, i) => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td style="text-align:center;">${emp.name}</td>
+                        <td style="text-align:center; color:var(--primary-blue);">${emp.code}</td>
+                        <td style="text-align:center;">${emp.rank}</td>
+                        <td style="text-align:center;">${emp.status}</td>
+                        <td style="text-align:center;"><button onclick="deleteEmp(${i})">🗑️</button></td>
+                    </tr>
+                `;
+            });
+        }
+
+        function addNewEmployee() {
+            appData.employees.push({ name: "مسعف جديد", code: "E-000", rank: "مستجد", status: "نشط" });
+            render();
+        }
+
+        function deleteEmp(i) {
+            appData.employees.splice(i, 1);
+            render();
+        }
+
+        function saveData() {
+            localStorage.setItem('ems_data', JSON.stringify(appData));
+            alert("تم حفظ البيانات بنجاح في ذاكرة المتصفح!");
+        }
+
+        render();
     </script>
 </body>
 </html>
