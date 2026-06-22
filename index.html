@@ -2,132 +2,94 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة تحكم الهلال الأحمر</title>
+    <title>سجل أطباء ومسعفي الهلال الأحمر - TORONTO RP</title>
     <style>
-        body {
-            background-color: #1a1a2e;
-            color: #ffffff;
-            font-family: sans-serif;
-            margin: 0;
-            padding: 20px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-            background-color: #16213e;
-        }
-        th, td {
-            padding: 15px;
-            border: 1px solid #0f3460;
-            text-align: center;
-        }
-        th {
-            background-color: #0f3460;
-        }
-        h2 {
-            text-align: center;
-        }
+        :root { --bg: #0b0b0f; --panel: #111116; --accent: #ff3333; --green: #48bb78; --blue: #3182ce; }
+        body { background: var(--bg); color: #fff; font-family: sans-serif; padding: 20px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 25px; }
+        .stat-card { background: var(--panel); padding: 20px; border-radius: 12px; border-bottom: 4px solid var(--accent); text-align: center; }
+        .number { font-size: 32px; font-weight: 900; color: #fff; }
+        .toolbar { display: flex; gap: 10px; margin-bottom: 20px; background: #13131a; padding: 12px; border-radius: 8px; }
+        .btn { padding: 10px 18px; border-radius: 6px; border: 1px solid #333; background: #1a1a24; color: #fff; cursor: pointer; font-weight: bold; }
+        .btn-save { background: var(--green); border-color: #2f855a; display: none; }
+        table { width: 100%; border-collapse: collapse; background: var(--panel); border-radius: 10px; }
+        th { padding: 15px; color: var(--accent); border-bottom: 2px solid var(--accent); }
+        td { padding: 12px; border-bottom: 1px solid #222; text-align: center; }
+        .custom-select { background: #1a1a24; padding: 8px; border-radius: 5px; cursor: pointer; border: 1px solid #444; }
     </style>
 </head>
 <body>
 
-    <h2>لوحة تحكم الهلال الأحمر</h2>
+    <div class="stats-grid">
+        <div class="stat-card"><h3>مؤهلين للترقية</h3><div id="stat-upgrades" class="number">0</div></div>
+        <div class="stat-card"><h3>عدد الهلال الأحمر</h3><div id="stat-active" class="number">0</div></div>
+        <div class="stat-card"><h3>إجمالي الكادر</h3><div id="stat-total" class="number">0</div></div>
+    </div>
+
+    <div class="toolbar">
+        <button id="authBtn" class="btn" onclick="toggleAuth()">🔐 دخول الإدارة</button>
+        <button id="btn-save" class="btn btn-save" onclick="saveData()">💾 حفظ التعديلات</button>
+        <button id="btn-add" class="btn" style="display:none" onclick="addEmp()">+ إضافة موظف</button>
+    </div>
 
     <table>
         <thead>
-            <tr>
-                <th>الاسم</th>
-                <th>الكود</th>
-                <th>الرتبة</th>
-                <th>الحالة</th>
-            </tr>
+            <tr><th>الاسم</th><th>الكود</th><th>الرتبة</th><th>إجراء</th></tr>
         </thead>
-        <tbody id="ems-table-body">
-            </tbody>
+        <tbody id="tableBody"></tbody>
     </table>
 
     <script>
-        // هنا يمكنك إضافة منطق جلب البيانات من LocalStorage أو أي مصدر آخر
-        const data = JSON.parse(localStorage.getItem('emsData')) || [];
-        const tableBody = document.getElementById('ems-table-body');
+        let appData = JSON.parse(localStorage.getItem('toronto_ems_data')) || { adminPin: "torento911", employees: [] };
+        let isAdmin = false;
+
+        function render() {
+            const body = document.getElementById('tableBody');
+            body.innerHTML = '';
+            appData.employees.forEach((emp, i) => {
+                body.innerHTML += `<tr>
+                    <td contenteditable="${isAdmin}">${emp.name}</td>
+                    <td contenteditable="${isAdmin}">${emp.code}</td>
+                    <td><select class="custom-select" ${isAdmin?'':'disabled'} onchange="appData.employees[${i}].rank=this.value"><option>${emp.rank}</option><option>قيادة</option><option>طبيب</option></select></td>
+                    <td><button onclick="del(${i})" ${isAdmin?'':'disabled'}>🗑️</button></td>
+                </tr>`;
+            });
+            document.getElementById('stat-total').innerText = appData.employees.length;
+            document.getElementById('stat-active').innerText = appData.employees.length;
+        }
+
+        function toggleAuth() {
+            if (!isAdmin) {
+                let pin = prompt("أدخل الرمز السري (torento911):");
+                if (pin === appData.adminPin) {
+                    isAdmin = true;
+                    document.getElementById('authBtn').innerText = "🔓 خروج الإدارة";
+                    document.getElementById('btn-save').style.display = "block";
+                    document.getElementById('btn-add').style.display = "block";
+                    render();
+                }
+            } else {
+                isAdmin = false;
+                document.getElementById('authBtn').innerText = "🔐 دخول الإدارة";
+                document.getElementById('btn-save').style.display = "none";
+                document.getElementById('btn-add').style.display = "none";
+                render();
+            }
+        }
+
+        function saveData() {
+            localStorage.setItem('toronto_ems_data', JSON.stringify(appData));
+            let btn = document.getElementById('btn-save');
+            btn.innerText = "✅ تم الحفظ";
+            setTimeout(() => { btn.innerText = "💾 حفظ التعديلات"; }, 2000);
+        }
+
+        function del(i) { appData.employees.splice(i, 1); render(); }
+        function addEmp() { appData.employees.push({name: "جديد", code: "E-000", rank: "مسعف"}); render(); }
         
-        data.forEach(item => {
-            const row = `<tr>
-                <td>${item.name}</td>
-                <td>${item.code}</td>
-                <td>${item.rank}</td>
-                <td>${item.status}</td>
-            </tr>`;
-            tableBody.innerHTML += row;
-        });
-    </script>
-</body>
-</html><!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة تحكم الهلال الأحمر</title>
-    <style>
-        body {
-            background-color: #1a1a2e;
-            color: #ffffff;
-            font-family: sans-serif;
-            margin: 0;
-            padding: 20px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-            background-color: #16213e;
-        }
-        th, td {
-            padding: 15px;
-            border: 1px solid #0f3460;
-            text-align: center;
-        }
-        th {
-            background-color: #0f3460;
-        }
-        h2 {
-            text-align: center;
-        }
-    </style>
-</head>
-<body>
-
-    <h2>لوحة تحكم الهلال الأحمر</h2>
-
-    <table>
-        <thead>
-            <tr>
-                <th>الاسم</th>
-                <th>الكود</th>
-                <th>الرتبة</th>
-                <th>الحالة</th>
-            </tr>
-        </thead>
-        <tbody id="ems-table-body">
-            </tbody>
-    </table>
-
-    <script>
-        // هنا يمكنك إضافة منطق جلب البيانات من LocalStorage أو أي مصدر آخر
-        const data = JSON.parse(localStorage.getItem('emsData')) || [];
-        const tableBody = document.getElementById('ems-table-body');
-        
-        data.forEach(item => {
-            const row = `<tr>
-                <td>${item.name}</td>
-                <td>${item.code}</td>
-                <td>${item.rank}</td>
-                <td>${item.status}</td>
-            </tr>`;
-            tableBody.innerHTML += row;
-        });
+        render();
     </script>
 </body>
 </html>
+
+
