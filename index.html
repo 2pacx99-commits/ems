@@ -30,33 +30,49 @@
             overflow-x: hidden;
         }
 
-        /* تأثير النجوم المتلألئة والخلفية النيون الزرقاء المتحركة */
+        /* نظام النجوم المتحركة المطور - تساقط مستمر وانسيابي بدون تقطيع */
         .stars-background {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             background: radial-gradient(circle at 50% 50%, #061533 0%, #020612 100%);
             z-index: -3;
             pointer-events: none;
+            overflow: hidden;
         }
 
-        .stars-background::before {
-            content: "";
+        .stars-layer-1, .stars-layer-2 {
             position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-image: 
-                radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 40px),
-                radial-gradient(white, rgba(255,255,255,.15) 1px, transparent 30px),
-                radial-gradient(white, rgba(255,255,255,.1) 2px, transparent 40px);
-            background-size: 550px 550px, 350px 350px, 250px 250px;
-            background-position: 0 0, 40px 60px, 130px 270px;
-            animation: starTwinkle 10s linear infinite;
-            opacity: 0.4;
+            top: -100%; left: 0; width: 100%; height: 200%;
+            pointer-events: none;
         }
 
-        @keyframes starTwinkle {
-            0% { transform: translateY(0); opacity: 0.3; }
-            50% { opacity: 0.6; }
-            100% { transform: translateY(-20px); opacity: 0.3; }
+        .stars-layer-1 {
+            background-image: 
+                radial-gradient(circle at 10% 10%, #fff 1px, transparent 2px),
+                radial-gradient(circle at 30% 50%, #fff 1.5px, transparent 3px),
+                radial-gradient(circle at 70% 20%, #fff 1px, transparent 2px),
+                radial-gradient(circle at 90% 80%, #fff 2px, transparent 4px),
+                radial-gradient(circle at 50% 40%, #fff 1px, transparent 2px);
+            background-size: 400px 400px;
+            animation: fallStarsLinear 25s linear infinite;
+            opacity: 0.5;
+        }
+
+        .stars-layer-2 {
+            background-image: 
+                radial-gradient(circle at 20% 80%, #fff 1px, transparent 2px),
+                radial-gradient(circle at 40% 10%, #fff 2px, transparent 4px),
+                radial-gradient(circle at 60% 60%, #fff 1px, transparent 2.5px),
+                radial-gradient(circle at 80% 30%, #fff 1.5px, transparent 3px);
+            background-size: 300px 300px;
+            animation: fallStarsLinear 15s linear infinite;
+            opacity: 0.3;
+        }
+
+        /* حركة خطية متصلة تماماً تمنع قفزة الـ Loop */
+        @keyframes fallStarsLinear {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(50%); }
         }
 
         body::before {
@@ -113,22 +129,40 @@
             box-shadow: 0 0 30px rgba(255, 42, 42, 0.25), inset 0 0 15px rgba(255, 42, 42, 0.3);
             display: flex; align-items: center; justify-content: center; font-size: 42px;
             margin-bottom: 20px; animation: pulseGlow 3s infinite ease-in-out;
-            cursor: not-allowed;
         }
 
+        /* عنوان النيون المعدل مع التوهج الفخم واللمعة البيضاء وحركة القفزة الفنية */
         .header-wrapper h1 {
-            font-size: 54px; font-weight: 900; margin: 0; color: #ff2a2a;
-            letter-spacing: 1px; display: inline-block; position: relative; cursor: not-allowed;
-            padding: 5px 15px; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-            background-size: 200% 100%; background-position: 120% 0; -webkit-background-clip: text;
-            text-shadow: 0 0 10px rgba(255, 42, 42, 0.65), 0 0 20px rgba(255, 42, 42, 0.45);
-            transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            animation: textShine 6s infinite linear;
+            font-size: 54px; 
+            font-weight: 900; 
+            margin: 0; 
+            color: #ff2a2a;
+            position: relative; 
+            cursor: pointer;
+            padding: 5px 25px;
+            /* لمعة ليزر بيضاء متحركة داخل النص */
+            background: linear-gradient(110deg, #ff2a2a 40%, #ffffff 50%, #ff2a2a 60%);
+            background-size: 200% 100%;
+            background-position: 150% 0;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 12px rgba(255, 42, 42, 0.8), 0 0 25px rgba(255, 42, 42, 0.5);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.3s;
+            animation: textLaserShine 5s infinite linear;
         }
 
-        @keyframes textShine { 0% { background-position: 160% 0; } 50% { background-position: -60% 0; } 100% { background-position: -60% 0; } }
+        @keyframes textLaserShine {
+            0% { background-position: 150% 0; }
+            30%, 100% { background-position: -50% 0; }
+        }
 
-        .header-wrapper h1::after { content: "🔒"; position: absolute; top: -5px; left: -35px; font-size: 18px; opacity: 0.6; }
+        /* تأثير القفزة التفاعلية المطورة عند مرور الماوس */
+        .header-wrapper h1:hover {
+            transform: translateY(-8px) scale(1.04);
+            filter: drop-shadow(0 0 15px rgba(255, 42, 42, 0.9));
+        }
+
+        .header-wrapper h1::after { content: "🔒"; position: absolute; top: -5px; left: -15px; font-size: 18px; opacity: 0.6; -webkit-text-fill-color: initial; }
 
         .header-wrapper p {
             color: #00e5ff; margin: 10px 0 0 0; font-size: 17px; font-weight: 800; letter-spacing: 1.5px;
@@ -211,7 +245,7 @@
             background: linear-gradient(90deg, #ff2a2a, #00d2ff, #00ff87, #ff2a2a);
             background-size: 300% 100%;
             animation: dividerGlowWave 4s linear infinite;
-            box-shadow: 0 0 15px rgba(0, 210, 255, 0.8), 0 0 30px rgba(0, 210, 255, 0.4);
+            box-shadow: 0 0 18px rgba(0, 210, 255, 0.9), 0 0 35px rgba(0, 210, 255, 0.5);
         }
         
         @keyframes dividerGlowWave {
@@ -325,7 +359,10 @@
 </head>
 <body>
 
-    <div class="stars-background"></div>
+    <div class="stars-background">
+        <div class="stars-layer-1"></div>
+        <div class="stars-layer-2"></div>
+    </div>
     <div class="watermark-bg" id="wm-text">خاص بسيرفر تورنتو</div>
     <div class="toast-container" id="toastContainer"></div>
 
@@ -465,7 +502,6 @@
             setTimeout(() => { toast.remove(); }, 2000);
         }
 
-        // توزيع كود الرتب منعا للتضارب الرقمي
         function getCodesForRank(rankName) {
             if(rankName === "قيادة") return ["E-001", "E-002", "E-003", "E-004"];
             const levels = {
@@ -478,7 +514,6 @@
             return codes;
         }
 
-        // تم إضافة تمييز نيون رائع لكل رتبة من 1 إلى 9 بشكل متدرج وفخم جداً
         const defaultData = {
             adminPin: "toronto911", 
             siteTitle: "جدول الهلال الأحمر",
@@ -508,9 +543,11 @@
                 "من مستوى 2 الى مستوى 3 : 5 تقارير عمليات + 10 ساعات تواجد"
             ],
             employees: [
-                { id: "592165572888433162", name: "عدي", code: "E-001", rank: "قيادة", spec: "إدارة وتدريب", pos: "إسعاف متقدم", status: "active", attendance: [1,1,1,1,1,1,1], repPresence: 0, repOps: 0, warn: "0/3", upgrade: "مستقر", badge: "🏅 وسام الخدمة", date: "2026/01/15" },
+                { id: "582165572888433162", name: "عدي", code: "E-001", rank: "قيادة", spec: "إدارة وتدريب", pos: "إسعاف متقدم", status: "active", attendance: [1,1,1,1,1,1,1], repPresence: 0, repOps: 0, warn: "0/3", upgrade: "مستقر", badge: "🏅 وسام الخدمة", date: "2026/01/15" },
                 { id: "718428168498853131", name: "أكرم نجف", code: "E-002", rank: "قيادة", spec: "إدارة وتدريب", pos: "إسعاف متقدم", status: "active", attendance: [1,1,1,1,1,1,1], repPresence: 5, repOps: 3, warn: "0/3", upgrade: "مؤهل للترقية", badge: "🏅 وسام الخدمة", date: "2026/01/20" },
-                { id: "500000000000000001", name: "اسم الموظف الجديد", code: "E-101", rank: "مستوى 1", spec: "ميداني", pos: "نشط", status: "active", attendance: [0,0,1,1,0,0,0], repPresence: 2, repOps: 1, warn: "0/3", upgrade: "مستقر", badge: "بلا وسام", date: "2026/06/22" }
+                { id: "500000000000000003", name: "اسم الموظف الجديد", code: "E-003", rank: "قيادة", spec: "ميداني", pos: "نشط", status: "active", attendance: [0,0,1,1,0,0,0], repPresence: 2, repOps: 1, warn: "0/3", upgrade: "مستقر", badge: "بلا وسام", date: "2026/06/22" },
+                { id: "500000000000000004", name: "اسم الموظف الجديد", code: "E-010", rank: "قيادة", spec: "ميداني", pos: "نشط", status: "active", attendance: [0,0,1,1,0,0,0], repPresence: 2, repOps: 1, warn: "0/3", upgrade: "مستقر", badge: "بلا وسام", date: "2026/06/22" },
+                { id: "500000000000000005", name: "اسم الموظف الجديد", code: "E-299", rank: "مستوى 3", spec: "ميداني", pos: "نشط", status: "active", attendance: [0,0,1,1,0,0,0], repPresence: 2, repOps: 1, warn: "0/3", upgrade: "مستقر", badge: "بلا وسام", date: "2026/06/22" }
             ]
         };
 
@@ -566,27 +603,21 @@
             const tbody = document.getElementById('tableBody');
             tbody.innerHTML = '';
             
-            // ترتيب الموظفين: القيادة أولاً ثم البقية
+            // فرز الكادر: القيادة تظهر دائماً في القمة أولاً
             let sortedEmployees = [...appData.employees].sort((a, b) => {
                 let aCmd = a.rank === "قيادة" ? 1 : 0;
                 let bCmd = b.rank === "قيادة" ? 1 : 0;
                 return bCmd - aCmd;
             });
 
-            let leadershipCount = 0;
+            // حساب عدد موظفي القيادة الفعليين لتحديد السطر الفاصل بشكل هندسي دقيق
+            let totalLeadership = sortedEmployees.filter(e => e.rank === "قيادة").length;
+            let currentLeadershipRendered = 0;
             let dividerPlaced = false;
 
             sortedEmployees.forEach((emp, index) => {
-                // تتبع عدد صفوف القيادة لوضع الفاصل النيون التلقائي بدقة فخمة
-                if (emp.rank === "قيادة") leadershipCount++;
-
-                // إذا وصلنا لنهاية القيادة (أو الحد الأقصى 4) نقوم بوضع الفاصل قبل عرض الموظف التالي
-                if (!dividerPlaced && (leadershipCount > 0 && emp.rank !== "قيادة" || leadershipCount === 4)) {
-                    const dividerTr = document.createElement('tr');
-                    dividerTr.className = 'glow-divider';
-                    dividerTr.innerHTML = `<td colspan="23"></td>`;
-                    tbody.appendChild(dividerTr);
-                    dividerPlaced = true;
+                if (emp.rank === "قيادة") {
+                    currentLeadershipRendered++;
                 }
 
                 const tr = document.createElement('tr');
@@ -678,9 +709,17 @@
                     </td>
                 `;
                 tbody.appendChild(tr);
+
+                // حل مشكلة الخط الفاصل الصارم: يوضع فقط بعد طباعة القيادة الرابعة مباشرة وقبل الأعضاء
+                if (!dividerPlaced && currentLeadershipRendered === totalLeadership && totalLeadership > 0) {
+                    const dividerTr = document.createElement('tr');
+                    dividerTr.className = 'glow-divider';
+                    dividerTr.innerHTML = `<td colspan="23"></td>`;
+                    tbody.appendChild(dividerTr);
+                    dividerPlaced = true;
+                }
             });
 
-            // تحديث كليشة الشروط السفلى المضيئة
             const container = document.getElementById('rulesContainer');
             container.innerHTML = '';
             appData.rules.forEach((rule) => { 
@@ -731,7 +770,7 @@
         function filterData() {
             const query = document.getElementById('searchBar').value.toLowerCase();
             document.querySelectorAll('#tableBody tr').forEach((row) => {
-                if(row.classList.contains('glow-divider')) return; // عدم إخفاء خط النيون الفاصل
+                if(row.classList.contains('glow-divider')) return; 
                 const nameCell = row.cells[2]?.innerText.toLowerCase() || "";
                 const codeCell = row.cells[4]?.innerText.toLowerCase() || "";
                 const idCell = row.cells[1]?.innerText.toLowerCase() || "";
