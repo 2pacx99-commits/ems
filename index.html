@@ -4,378 +4,452 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>جدول الهلال الأحمر - TORONTO RP</title>
-    <!-- استيراد خطوط Google -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- استيراد مكتبات Firebase المتوافقة (Compat) لتجنب مشاكل الـ Modules -->
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 
     <style>
-        :root {
-            --bg-primary: #0a0b10;
-            --bg-secondary: #121420;
-            --bg-card: #1a1d30;
-            --accent-color: #ff2a5f;
-            --accent-glow: rgba(255, 42, 95, 0.4);
-            --text-main: #ffffff;
-            --text-muted: #8b9bb4;
-            --border-color: #262b4c;
-            --success: #00ff87;
-            --warning: #fffb00;
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap');
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Cairo', sans-serif;
-            user-select: none;
+        :root {
+            --bg-color: #030816;
+            --panel-bg: rgba(6, 14, 38, 0.75);
+            --table-th: #071328;
+            --text-color: #e2e8f0;
+            --accent-color: #ff2a2a;
+            --accent-glow: #ff0000;
+            --neon-blue: #00d2ff;
+            --border-color: rgba(0, 210, 255, 0.08);
+            --card-glow: rgba(0, 210, 255, 0.15);
         }
 
         body {
-            background-color: var(--bg-primary);
-            color: var(--text-main);
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 25px;
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
+            position: relative;
             overflow-x: hidden;
+        }
+
+        /* تأثير النجوم المتلألئة والخلفية النيون الزرقاء المتحركة */
+        .stars-background {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 50% 50%, #061533 0%, #020612 100%);
+            z-index: -3;
+            pointer-events: none;
+        }
+
+        .stars-background::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
             background-image: 
-                radial-gradient(at 10% 20%, rgba(255, 42, 95, 0.05) 0px, transparent 50%),
-                radial-gradient(at 90% 80%, rgba(0, 255, 135, 0.03) 0px, transparent 50%);
+                radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 40px),
+                radial-gradient(white, rgba(255,255,255,.15) 1px, transparent 30px),
+                radial-gradient(white, rgba(255,255,255,.1) 2px, transparent 40px);
+            background-size: 550px 550px, 350px 350px, 250px 250px;
+            background-position: 0 0, 40px 60px, 130px 270px;
+            animation: starTwinkle 10s linear infinite;
+            opacity: 0.4;
         }
 
-        header {
-            background: linear-gradient(180deg, var(--bg-secondary) 0%, rgba(18,20,32,0.8) 100%);
-            border-bottom: 1px solid var(--border-color);
-            padding: 20px 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            backdrop-filter: blur(10px);
-            position: sticky;
-            top: 0;
-            z-index: 100;
+        @keyframes starTwinkle {
+            0% { transform: translateY(0); opacity: 0.3; }
+            50% { opacity: 0.6; }
+            100% { transform: translateY(-20px); opacity: 0.3; }
         }
 
-        .logo-area {
-            display: flex;
-            align-items: center;
-            gap: 15px;
+        body::before {
+            content: "";
+            position: fixed;
+            top: -50%; left: -50%; right: -50%; bottom: -50%;
+            width: 200%; height: 200%;
+            background: radial-gradient(circle at 20% 30%, rgba(0, 210, 255, 0.08) 0%, transparent 40%),
+                        radial-gradient(circle at 80% 70%, rgba(121, 40, 202, 0.06) 0%, transparent 45%);
+            animation: bgMovement 30s linear infinite;
+            z-index: -2;
+            pointer-events: none;
         }
 
-        .logo-icon {
-            width: 50px;
-            height: 50px;
-            background: linear-gradient(135deg, var(--accent-color), #ff6b8b);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 0 15px var(--accent-glow);
+        @keyframes bgMovement {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
-        .logo-icon i {
-            font-size: 24px;
-            color: #white;
+        .click-ripple {
+            position: fixed;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(0,210,255,0.4) 0%, transparent 70%);
+            width: 150px; height: 150px;
+            transform: translate(-50%, -50%) scale(0);
+            animation: rippleEffect 0.6s ease-out;
+            pointer-events: none; z-index: 99999;
         }
 
-        .logo-text h1 {
-            font-size: 20px;
-            font-weight: 900;
-            letter-spacing: 1px;
-            background: linear-gradient(45deg, #fff, var(--text-muted));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        @keyframes rippleEffect { to { transform: translate(-50%, -50%) scale(1.5); opacity: 0; } }
+
+        .watermark-bg {
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%) rotate(-15deg);
+            font-size: 8rem; font-weight: 900;
+            color: rgba(255, 255, 255, 0.005);
+            white-space: nowrap; pointer-events: none; z-index: -1; user-select: none;
         }
 
-        .logo-text span {
-            font-size: 11px;
-            color: var(--accent-color);
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 2px;
+        .container { max-width: 100%; margin: 0 auto; position: relative; z-index: 1; }
+
+        .header-wrapper {
+            display: flex; flex-direction: column; align-items: center; margin-bottom: 35px; position: relative;
+            padding: 20px; border-radius: 16px; background: rgba(6, 14, 38, 0.4);
+            backdrop-filter: blur(5px); border: 1px solid rgba(0,210,255,0.05);
+            user-select: none; -webkit-user-select: none;
+        }
+        
+        .logo-glow {
+            width: 100px; height: 100px;
+            background: radial-gradient(circle, var(--accent-color) 10%, rgba(0,0,0,0.4) 80%);
+            border: 2px solid rgba(255, 42, 42, 0.5); border-radius: 50%;
+            box-shadow: 0 0 30px rgba(255, 42, 42, 0.25), inset 0 0 15px rgba(255, 42, 42, 0.3);
+            display: flex; align-items: center; justify-content: center; font-size: 42px;
+            margin-bottom: 20px; animation: pulseGlow 3s infinite ease-in-out;
+            cursor: not-allowed;
         }
 
-        .nav-controls {
-            display: flex;
-            gap: 15px;
-            align-items: center;
+        .header-wrapper h1 {
+            font-size: 54px; font-weight: 900; margin: 0; color: #ff2a2a;
+            letter-spacing: 1px; display: inline-block; position: relative; cursor: not-allowed;
+            padding: 5px 15px; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            background-size: 200% 100%; background-position: 120% 0; -webkit-background-clip: text;
+            text-shadow: 0 0 10px rgba(255, 42, 42, 0.65), 0 0 20px rgba(255, 42, 42, 0.45);
+            transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            animation: textShine 6s infinite linear;
         }
+
+        @keyframes textShine { 0% { background-position: 160% 0; } 50% { background-position: -60% 0; } 100% { background-position: -60% 0; } }
+
+        .header-wrapper h1::after { content: "🔒"; position: absolute; top: -5px; left: -35px; font-size: 18px; opacity: 0.6; }
+
+        .header-wrapper p {
+            color: #00e5ff; margin: 10px 0 0 0; font-size: 17px; font-weight: 800; letter-spacing: 1.5px;
+            text-shadow: 0 0 10px rgba(0, 229, 255, 0.6), 0 0 20px rgba(0, 229, 255, 0.2);
+            cursor: not-allowed;
+        }
+
+        .system-status {
+            background: rgba(4, 10, 28, 0.8); border: 1px solid rgba(0, 210, 255, 0.1);
+            padding: 6px 18px; border-radius: 20px; font-size: 12px; color: #a0aec0; margin-top: 15px;
+            display: flex; align-items: center; gap: 8px; font-weight: bold; backdrop-filter: blur(10px);
+            cursor: not-allowed;
+        }
+        .status-dot { width: 8px; height: 8px; background-color: #e53e3e; border-radius: 50%; display: inline-block; box-shadow: 0 0 8px #e53e3e; }
+        .status-dot.authenticated { background-color: #00ff87; box-shadow: 0 0 12px #00ff87; }
+
+        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 30px; }
+
+        .stat-card {
+            background: var(--panel-bg); border: 1px solid var(--border-color);
+            padding: 22px 15px; border-radius: 14px; text-align: center; backdrop-filter: blur(15px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4), inset 0 1px 1px rgba(255,255,255,0.02); 
+            border-bottom: 3px solid rgba(0, 210, 255, 0.2); transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .stat-card:hover { transform: translateY(-4px); box-shadow: 0 15px 35px rgba(0, 210, 255, 0.1); }
+        .stat-card.active-card { border-bottom-color: #00ff87; }
+        .stat-card.upgrade-card { border-bottom-color: #bd10e0; }
+        .stat-card.total-card { border-bottom-color: var(--accent-color); }
+        .stat-card.retired-card { border-bottom-color: #718096; }
+        .stat-card h3 { margin: 0 0 10px 0; font-size: 13px; color: #8a8a9a; font-weight: 700; text-transform: uppercase; }
+        .stat-card .number { font-size: 36px; font-weight: 900; font-family: 'Impact', sans-serif; }
+
+        .toolbar {
+            display: flex; gap: 12px; margin-bottom: 25px; flex-wrap: wrap; align-items: center;
+            background: rgba(5, 14, 36, 0.7); padding: 16px; border-radius: 12px; 
+            border: 1px solid var(--border-color); backdrop-filter: blur(10px);
+        }
+
+        .search-box {
+            background-color: rgba(3, 7, 18, 0.9); border: 1px solid rgba(0, 210, 255, 0.15);
+            padding: 12px 18px; border-radius: 8px; color: white; width: 280px; font-size: 13px; outline: none;
+            transition: 0.3s; box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+        }
+        .search-box:focus { border-color: var(--neon-blue); box-shadow: 0 0 15px rgba(0, 210, 255, 0.3); }
 
         .btn {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            color: var(--text-main);
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background-color: rgba(255,255,255,0.01); color: #b4b4c4; border: 1px solid rgba(0, 210, 255, 0.1);
+            padding: 11px 18px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 700;
+            transition: all 0.2s ease; display: flex; align-items: center; gap: 6px;
         }
-
-        .btn:hover {
-            border-color: var(--accent-color);
-            box-shadow: 0 0 10px rgba(255, 42, 95, 0.2);
-            transform: translateY(-2px);
-        }
-
-        .btn-admin {
-            background: linear-gradient(135deg, #1e1b4b 0%, #311042 100%);
-            border-color: #4c1d95;
-        }
-
-        .btn-admin.active {
-            background: linear-gradient(135deg, var(--accent-color) 0%, #b91c1c 100%);
-            border-color: var(--accent-color);
-            box-shadow: 0 0 15px var(--accent-glow);
-        }
-
-        .btn-danger {
-            background: #7f1d1d;
-            border-color: #991b1b;
-        }
-
-        .btn-danger:hover {
-            background: #991b1b;
-            border-color: #ef4444;
-            box-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
-        }
-
-        main {
-            flex: 1;
-            padding: 40px;
-            max-width: 1600px;
-            width: 100%;
-            margin: 0 auto;
-            box-sizing: border-box;
-        }
+        .btn:hover { background-color: rgba(0, 210, 255, 0.05); color: #fff; border-color: var(--neon-blue); }
+        .btn.active { background-color: rgba(0, 210, 255, 0.12); border-color: var(--neon-blue); color: #fff; text-shadow: 0 0 8px var(--neon-blue); }
+        
+        .btn-excel { border-color: #ffaa00; color: #ffaa00; }
+        .btn-excel:hover { background: rgba(255,170,0,0.1); }
+        .btn-clear { border-color: #ecc94b; color: #ecc94b; }
+        .btn-clear:hover { background: rgba(236,201,75,0.1); }
+        .btn-auth { border-color: #00bfff; color: #00bfff; font-weight: bold; }
+        .btn-auth:hover { background: rgba(0,191,255,0.1); }
+        .btn-settings { border-color: #718096; color: #a0aec0; margin-right: auto; }
+        .btn-add { background-color: var(--neon-blue); border-color: var(--neon-blue); color: #030816; box-shadow: 0 4px 15px rgba(0, 210, 255, 0.3); font-weight: 900; }
+        .btn-add:hover { background-color: #00a2cc; transform: translateY(-1px); color: #fff; }
 
         .table-container {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-            margin-bottom: 30px;
-            opacity: 0;
-            transform: translateY(20px);
-            animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            background: var(--panel-bg); border: 1px solid var(--border-color);
+            border-radius: 14px; overflow-x: auto; box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+            backdrop-filter: blur(15px);
         }
 
-        @keyframes fadeInUp {
-            to { opacity: 1; transform: translateY(0); }
+        table { width: 100%; border-collapse: collapse; text-align: center; font-size: 13px; min-width: 1750px; }
+        th, td { padding: 14px 12px; border-bottom: 1px solid rgba(0, 210, 255, 0.03); border-left: 1px solid rgba(0, 210, 255, 0.03); }
+        th { background-color: var(--table-th); color: #00e5ff; font-weight: 700; font-size: 12px; text-transform: uppercase; border-bottom: 2px solid rgba(0, 210, 255, 0.1); }
+        
+        tr.hidden { display: none !important; }
+        tr:hover td { background-color: rgba(0, 210, 255, 0.02); }
+
+        /* ستايل وتأثير الخط الفاصل النيون اللامع والمتحرك */
+        .glow-divider {
+            height: 6px;
+            background: linear-gradient(90deg, #ff2a2a, #00d2ff, #00ff87, #ff2a2a);
+            background-size: 300% 100%;
+            animation: dividerGlowWave 4s linear infinite;
+            box-shadow: 0 0 15px rgba(0, 210, 255, 0.8), 0 0 30px rgba(0, 210, 255, 0.4);
+        }
+        
+        @keyframes dividerGlowWave {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 300% 50%; }
         }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            text-align: right;
+        .glow-divider td {
+            padding: 0 !important;
+            height: 6px;
+            border: none !important;
         }
 
-        th {
-            background-color: rgba(26, 29, 48, 0.8);
-            padding: 18px 24px;
-            font-weight: 700;
-            font-size: 14px;
-            color: var(--text-muted);
-            border-bottom: 2px solid var(--border-color);
-            letter-spacing: 0.5px;
+        .editable-cell { outline: none; transition: 0.2s; }
+        body.is-admin .editable-cell { cursor: text; }
+        body.is-admin .editable-cell:focus { background-color: rgba(0, 210, 255, 0.08) !important; box-shadow: inset 0 0 6px var(--neon-blue); color: #fff; }
+
+        .check-cell { font-size: 16px; font-weight: bold; user-select: none; }
+        body.is-admin .check-cell { cursor: pointer; }
+        .checked { color: #00ff87; text-shadow: 0 0 10px rgba(0,255,135,0.4); }
+        .unchecked { color: #ff3b3b; text-shadow: 0 0 10px rgba(255,59,59,0.3); }
+
+        .report-counter { display: flex; align-items: center; justify-content: center; gap: 5px; }
+        .count-btn {
+            background: #071530; border: 1px solid rgba(0, 210, 255, 0.2); color: #fff; width: 24px; height: 24px;
+            border-radius: 50%; display: none; align-items: center; justify-content: center; cursor: pointer; font-weight: bold;
+        }
+        .count-btn:hover { background: var(--neon-blue); color: #000; }
+        body.is-admin .count-btn { display: flex; }
+        .count-num { font-weight: bold; color: #00e5ff; min-width: 22px; font-family: monospace; font-size: 14px; }
+
+        .table-select {
+            background: rgba(4, 10, 28, 0.95); border: 1px solid rgba(0, 210, 255, 0.1); 
+            color: #fff; font-weight: 800; font-family: 'Cairo', inherit; font-size: 13px;
+            text-align: center; text-align-last: center; outline: none; appearance: none; -webkit-appearance: none; 
+            pointer-events: none; padding: 6px 12px; border-radius: 6px; box-shadow: 0 3px 10px rgba(0, 0, 0, 0.4);
+        }
+        body.is-admin .table-select { pointer-events: auto; cursor: pointer; border: 1px solid rgba(0, 210, 255, 0.3); }
+        body.is-admin .table-select:hover { border-color: var(--neon-blue); box-shadow: 0 0 12px rgba(0, 210, 255, 0.25); }
+        .table-select option { background-color: #040a1c !important; color: #e2e8f0; font-weight: 700; padding: 10px; }
+
+        .select-upgrade { font-weight: 900 !important; }
+        .upgrade-stable { color: #00e5ff !important; text-shadow: 0 0 10px rgba(0, 229, 255, 0.6); }
+        .upgrade-qualified { color: #00ff87 !important; text-shadow: 0 0 15px rgba(0, 255, 135, 0.8); }
+        .upgrade-unqualified { color: #ff2a2a !important; text-shadow: 0 0 15px rgba(255, 42, 42, 0.8); }
+
+        .badge-pill {
+            display: inline-block; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 800;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1);
         }
 
-        td {
-            padding: 16px 24px;
-            border-bottom: 1px solid rgba(38, 43, 76, 0.5);
-            font-size: 15px;
-            font-weight: 600;
-            transition: all 0.2s ease;
+        .toast-container { position: fixed; bottom: 25px; left: 25px; z-index: 99999; display: flex; flex-direction: column; gap: 10px; }
+        .toast-card {
+            background: rgba(4, 10, 28, 0.95); border: 1px solid #00ff87; box-shadow: 0 10px 25px rgba(0, 255, 135, 0.15);
+            padding: 14px 22px; border-radius: 10px; color: #fff; font-size: 13px; font-weight: bold;
+            display: flex; align-items: center; gap: 10px; min-width: 250px; animation: slideIn 0.3s forwards; position: relative; overflow: hidden;
         }
+        .toast-card.error { border-color: var(--accent-color); }
+        .toast-card::after { content: ""; position: absolute; bottom: 0; right: 0; height: 3px; background: #00ff87; width: 100%; animation: toastProgress 2s linear forwards; }
+        .toast-card.error::after { background: var(--accent-color); }
+        @keyframes slideIn { from { transform: translateX(-100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        @keyframes toastProgress { from { width: 100%; } to { width: 0%; } }
 
-        tr:last-child td {
-            border-bottom: none;
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(2, 5, 14, 0.85); backdrop-filter: blur(12px);
+            display: flex; align-items: center; justify-content: center; z-index: 1000; visibility: hidden; opacity: 0; transition: all 0.3s ease;
         }
-
-        tr:hover td {
-            background-color: rgba(26, 29, 48, 0.4);
+        .modal-overlay.open { visibility: visible; opacity: 1; }
+        .modal-box {
+            background: #060e26; border: 1px solid rgba(0, 210, 255, 0.3); box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+            width: 560px; max-width: 95%; border-radius: 16px; padding: 30px; max-height: 85vh; overflow-y: auto;
         }
+        .modal-box h3 { margin-top: 0; color: #fff; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 12px; display: flex; justify-content: space-between; font-size: 18px; }
+        .form-group { margin-bottom: 18px; display: flex; flex-direction: column; gap: 6px; }
+        .form-group label { font-size: 13px; color: #a0aec0; font-weight: bold; }
+        .form-group input, .form-group textarea { background: #030716; border: 1px solid rgba(0, 210, 255, 0.15); padding: 12px; color: #fff; border-radius: 8px; outline: none; }
+        .form-group input:focus { border-color: var(--neon-blue); }
 
-        .rank-badge {
-            display: inline-block;
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 12px;
-            font-weight: 700;
-            border: 1px solid transparent;
+        .items-list-edit { background: #02050f; padding: 12px; border-radius: 8px; max-height: 150px; overflow-y: auto; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.03); }
+        .item-row-manage { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.03); }
+        .action-btn-row { background: none; border: none; cursor: pointer; font-size: 14px; }
+
+        @keyframes pulseGlow { 0%, 100% { transform: scale(1); opacity: 0.9; } 50% { transform: scale(1.03); opacity: 1; } }
+
+        .neon-rules-card {
+            margin-top: 35px; background: linear-gradient(145deg, rgba(6, 14, 38, 0.9) 0%, rgba(3, 7, 18, 0.95) 100%);
+            border: 1px solid rgba(0, 210, 255, 0.2); border-right: 4px solid var(--neon-blue); border-radius: 14px; padding: 25px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5); position: relative; overflow: hidden; animation: cardNeonPulse 6s infinite ease-in-out;
         }
+        @keyframes cardNeonPulse { 0%, 100% { border-color: rgba(0, 210, 255, 0.2); } 50% { border-color: rgba(0, 210, 255, 0.5); } }
 
-        .rank-leader { background: rgba(239, 68, 68, 0.1); color: #ef4444; border-color: rgba(239, 68, 68, 0.2); }
-        .rank-subleader { background: rgba(245, 158, 11, 0.1); color: #f59e0b; border-color: rgba(245, 158, 11, 0.2); }
-        .rank-captain { background: rgba(168, 85, 247, 0.1); color: #a855f7; border-color: rgba(168, 85, 247, 0.2); }
-        .rank-doc { background: rgba(59, 130, 246, 0.1); color: #3b82f6; border-color: rgba(59, 130, 246, 0.2); }
-        .rank-paramedic { background: rgba(16, 185, 129, 0.1); color: #10b981; border-color: rgba(16, 185, 129, 0.2); }
+        .neon-title-wrapper { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid rgba(255, 255, 255, 0.04); padding-bottom: 12px; }
+        .neon-title-wrapper h3 { margin: 0; font-size: 18px; font-weight: 900; color: var(--neon-blue); text-shadow: 0 0 10px rgba(0, 210, 255, 0.6); }
 
-        .editable-cell {
-            position: relative;
-            cursor: pointer;
+        .neon-rule-item { display: flex; align-items: center; gap: 12px; margin: 12px 0; color: #cbd5e0; font-size: 14px; font-weight: 700; transition: transform 0.2s ease; }
+        .neon-rule-item:hover { transform: translateX(-5px); color: #fff; }
+
+        .neon-bullet { width: 8px; height: 8px; background-color: #00e5ff; border-radius: 2px; transform: rotate(45deg); display: inline-block; box-shadow: 0 0 10px #00e5ff; animation: neonGlowShift 4s infinite linear; }
+        @keyframes neonGlowShift { 0%, 100% { background-color: #00e5ff; box-shadow: 0 0 10px #00e5ff; } 55% { background-color: #00ff87; box-shadow: 0 0 10px #00ff87; } }
+
+        .glow-save-btn {
+            position: fixed; bottom: 30px; right: 30px; background: linear-gradient(135deg, #00ff87 0%, #00bc62 100%);
+            color: #04060a; border: none; padding: 16px 32px; font-size: 16px; font-weight: 900; border-radius: 50px;
+            cursor: pointer; box-shadow: 0 0 25px rgba(0, 255, 135, 0.6); display: flex; align-items: center; gap: 10px;
+            z-index: 99999; transform: translateY(150px); opacity: 0; pointer-events: none; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-
-        .editable-cell:hover {
-            color: var(--accent-color);
-        }
-
-        .admin-mode .editable-cell:hover::after {
-            content: '\f304';
-            font-family: 'Font Awesome 5 Free';
-            font-weight: 900;
-            position: absolute;
-            left: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 12px;
-            opacity: 0.7;
-        }
-
-        .cell-input {
-            width: 100%;
-            background: var(--bg-card);
-            border: 1px solid var(--accent-color);
-            color: var(--text-main);
-            padding: 8px 12px;
-            border-radius: 6px;
-            font-size: 14px;
-            font-weight: 600;
-            outline: none;
-            box-shadow: 0 0 10px rgba(255, 42, 95, 0.1);
-        }
-
-        .toast-container {
-            position: fixed;
-            bottom: 30px;
-            left: 30px;
-            z-index: 1000;
-        }
-
-        .toast {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            border-left: 4px solid var(--accent-color);
-            color: var(--text-main);
-            padding: 16px 24px;
-            border-radius: 8px;
-            font-weight: 600;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-top: 10px;
-            transform: translateX(-120%);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        .toast.show {
-            transform: translateX(0);
-        }
-
-        .pending-save-bar {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: linear-gradient(90deg, #1e1b4b 0%, #311042 100%);
-            border-top: 1px solid #4c1d95;
-            padding: 15px 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transform: translateY(100%);
-            transition: transform 0.3s ease;
-            z-index: 99;
-        }
-
-        .pending-save-bar.show {
-            transform: translateY(0);
-        }
-
-        .pending-text {
-            font-size: 14px;
-            font-weight: 600;
-            color: #c084fc;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .pending-text i {
-            animation: spin 2s linear infinite;
-        }
-
-        @keyframes spin {
-            100% { transform: rotate(-360deg); }
-        }
+        .glow-save-btn.visible { transform: translateY(0); opacity: 1; pointer-events: auto; }
+        .glow-save-btn:hover { box-shadow: 0 0 35px rgba(0, 255, 135, 0.9); transform: scale(1.05); }
+        .glow-save-btn .btn-pulse { width: 10px; height: 10px; background-color: #04060a; border-radius: 50%; display: inline-block; }
     </style>
 </head>
 <body>
 
-    <header>
-        <div class="logo-area">
-            <div class="logo-icon">
-                <i class="fa-solid fa-heart-pulse"></i>
-            </div>
-            <div class="logo-text">
-                <h1>الهلال الأحمر</h1>
-                <span>Toronto Roleplay</span>
-            </div>
-        </div>
-        <div class="nav-controls">
-            <button class="btn btn-admin" id="adminToggleBtn" onclick="toggleAdminMode()">
-                <i class="fa-solid fa-lock"></i> وضع المسؤول
-            </button>
-            <button class="btn btn-danger" id="resetBtn" onclick="confirmResetWeek()" style="display: none;">
-                <i class="fa-solid fa-trash-can"></i> تصفير الأسبوع
-            </button>
-        </div>
-    </header>
-
-    <main>
-        <div class="table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th style="width: 80px;">الرقم الرقمي</th>
-                        <th>الاسم الشخصي</th>
-                        <th>الرتبة العسكرية</th>
-                        <th>عدد البلاغات</th>
-                        <th>حالة التفاعل الآلي</th>
-                        <th>ملاحظات الإدارة العليا</th>
-                    </tr>
-                </thead>
-                <tbody id="tableBody">
-                    <!-- سيتم توليد الصفوف برمجياً -->
-                </tbody>
-            </table>
-        </div>
-    </main>
-
-    <div class="pending-save-bar" id="pendingSaveBar">
-        <div class="pending-text">
-            <i class="fa-solid fa-circle-notch"></i> هناك تعديلات غير محفوظة في السحابة...
-        </div>
-        <button class="btn btn-admin active" onclick="saveDataToFirebase()">
-            <i class="fa-solid fa-cloud-arrow-up"></i> حفظ التغييرات الآن
-        </button>
-    </div>
-
+    <div class="stars-background"></div>
+    <div class="watermark-bg" id="wm-text">خاص بسيرفر تورنتو</div>
     <div class="toast-container" id="toastContainer"></div>
 
+    <button id="floatingSaveBtn" class="glow-save-btn" onclick="triggerGlobalSave()">
+        <span class="btn-pulse"></span>
+        💾 حفظ التعديلات في السحابة
+    </button>
+
+    <div class="container">
+        
+        <div class="header-wrapper" onselectstart="return false" oncontextmenu="return false">
+            <div class="logo-glow">🚑</div>
+            <h1 id="site-title">جدول الهلال الأحمر</h1>
+            <p id="site-subtitle">في كل مايتعلق بالهلال الاحمر - مقاطعة تورنتو</p>
+            <div class="system-status">
+                <span class="status-dot" id="auth-dot"></span> 
+                <span id="auth-status-text">وضع المشاهدة (مغلق)</span>
+                <span style="color:#8a8a9a; margin-right:10px;">⏱️ 2026/06/22</span>
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card total-card">
+                <h3>إجمالي الكادر بالسجلات</h3>
+                <div id="stat-total" class="number" style="color: #fff;">0</div>
+            </div>
+            <div class="stat-card active-card">
+                <h3>الكادر النشط حالياً</h3>
+                <div id="stat-active" class="number" style="color: #00ff87;">0</div>
+            </div>
+            <div class="stat-card upgrade-card">
+                <h3>المؤهلين للترقيات</h3>
+                <div id="stat-upgrades" class="number" style="color: #bd10e0;">0</div>
+            </div>
+            <div class="stat-card retired-card">
+                <h3>المستقيلين والمفصولين</h3>
+                <div id="stat-retired" class="number" style="color: #a0aec0;">0</div>
+            </div>
+        </div>
+
+        <div class="toolbar">
+            <input type="text" id="searchBar" class="search-box" placeholder="🔍 ابحث باسم، كود، رتبة أو ديسكورد...">
+            <button id="tabActive" class="btn active" onclick="switchTab('active')">🟢 سجل الكادر النشط</button>
+            <button id="tabRetired" class="btn" onclick="switchTab('retired')">🔴 سجل الاستقالات والفصل</button>
+            <button class="btn btn-excel" onclick="openEvaluationModal()">⚠️ شروط وقوانين الترقيات</button>
+            <button class="btn btn-clear" id="btn-clear-id" onclick="clearAttendance()" disabled style="opacity:0.4;">📅 تصفير الأسبوع</button>
+            <button id="authBtn" class="btn btn-auth" onclick="handleAuthToggle()">🔐 تسجيل دخول الإدارة</button>
+            <button class="btn btn-settings" id="btn-settings-id" onclick="toggleModal('settingsModal', true)" disabled style="opacity:0.4;">⚙️ الإعدادات</button>
+            <button class="btn btn-add" id="btn-add-id" onclick="addNewEmployeeRowDirect()" disabled style="opacity:0.4;">+ إضافة موظف جديد</button>
+        </div>
+
+        <div class="table-container">
+            <table id="emsTable">
+                <thead>
+                    <tr>
+                        <th style="width: 45px;">ت</th>
+                        <th>ديسكورد ID</th>
+                        <th>الاسم</th>
+                        <th>الرتبة</th>
+                        <th>الكود الرقمي</th>
+                        <th>التخصص</th>
+                        <th>الوضعية</th>
+                        <th>الحالة</th>
+                        <th>ج</th><th>خ</th><th>أ</th><th>ث</th><th>ن</th><th>ح</th><th>س</th>
+                        <th>تقرير تواجد</th>
+                        <th>تقرير عمليات</th>
+                        <th>الإنذارات</th>
+                        <th>حالة الترقية</th>
+                        <th>الأوسمة الشرفية</th>
+                        <th>تاريخ الانضمام</th>
+                        <th>إجراء</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody"></tbody>
+            </table>
+        </div>
+
+        <div class="neon-rules-card">
+            <div class="neon-title-wrapper">
+                <h3>📋 لوحة شروط ومستندات الترقيات الإدارية المعتمدة</h3>
+            </div>
+            <div id="rulesContainer" style="text-align:right;"></div>
+        </div>
+
+    </div>
+
+    <div class="modal-overlay" id="settingsModal">
+        <div class="modal-box">
+            <h3>⚙️ لوحة التحكم <button class="action-btn-row" onclick="toggleModal('settingsModal', false)">❌</button></h3>
+            <div class="form-group">
+                <label>اسم الموقع الرئيسي:</label>
+                <input type="text" id="cfg-title" oninput="updateLiveMeta('siteTitle', this.value)">
+            </div>
+            <div class="form-group">
+                <label>الوصف الفرعي للموقع:</label>
+                <input type="text" id="cfg-subtitle" oninput="updateLiveMeta('siteSubtitle', this.value)">
+            </div>
+            <div class="form-group">
+                <label>تغيير كود المرور السري للأدمن:</label>
+                <input type="text" id="cfg-pin" oninput="updateLiveMeta('adminPin', this.value)" placeholder="اكتب الرمز السري الجديد...">
+            </div>
+            <button onclick="downloadUpdatedCode()" style="width:100%; background:#00bfff; color:white; border:none; padding:12px; border-radius:8px; cursor:pointer; margin-bottom:10px; font-weight:bold;">📥 تحميل كود الموقع المحدث بالكامل (index.html)</button>
+            <button onclick="saveGlobalSettings()" style="width:100%; background:#00ff87; color:#000; border:none; padding:12px; border-radius:8px; font-weight:bold; cursor:pointer;">حفظ الإعدادات</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="evaluationModal">
+        <div class="modal-box">
+            <h3>⚠️ شروط التقييم والترقيات <button class="action-btn-row" onclick="toggleModal('evaluationModal', false)">❌</button></h3>
+            <div class="form-group" id="eval-add-input-grp" style="display:none;">
+                <label>إضافة شرط جديد:</label>
+                <textarea id="cfg-rule-text" placeholder="اكتب نص الشرط هنا..."></textarea>
+                <button onclick="addNewRuleItem()" style="width:100%; background:#00bfff; color:white; border:none; padding:10px; border-radius:6px; cursor:pointer; font-weight:bold; margin-top:5px;">+ إدراج الشرط</button>
+            </div>
+            <div class="items-list-edit" id="modalRulesList" style="margin-top:10px;"></div>
+        </div>
+    </div>
+
     <script>
-        // إعدادات مشروع Firebase الخاص بك
+        // إعدادات اتصال Firebase بقاعدة البيانات السحابية الخاصة بك التابعة لتورنتو
         const firebaseConfig = {
             apiKey: "AIzaSyDdgad2rzQ1eQWDQZp2dlfsZfl8CMz9UW4",
             authDomain: "toronto-45374.firebaseapp.com",
@@ -386,194 +460,382 @@
             appId: "1:895878429326:web:526d25948751604e8967df"
         };
 
-        // تهيئة الـ App وقاعدة البيانات
+        // تهيئة Firebase
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // البيانات الافتراضية للجدول في حال كانت قاعدة البيانات فارغة لأول مرة
-        const defaultData = [
-            { id: "101", name: "أحمد المالي", rank: "leader", reports: 24, status: "نشط جداً", notes: "ملتزم بالخفارات الليلية" },
-            { id: "102", name: "مصطفى الجابري", rank: "subleader", reports: 18, status: "نشط", notes: "توجيهات مستمرة للمستجدين" },
-            { id: "105", name: "حسين الساعدي", rank: "captain", reports: 15, status: "نشط", notes: "مسؤول تدريب طاقم الإسعاف" },
-            { id: "110", name: "علي الكناني", rank: "doc", reports: 9, status: "متوسط التفاعل", notes: "يحتاج زيادة ساعات التواجد" },
-            { id: "115", name: "سجاد الكعبي", rank: "paramedic", reports: 3, status: "ضعيف التفاعل", notes: "تنبيه أخير قبل الخفض" }
-        ];
+        document.addEventListener('click', function(e) {
+            let ripple = document.createElement('div');
+            ripple.className = 'click-ripple';
+            ripple.style.left = e.clientX + 'px';
+            ripple.style.top = e.clientY + 'px';
+            document.body.appendChild(ripple);
+            setTimeout(() => { ripple.remove(); }, 600);
+        });
 
-        let emsData = [];
-        let isAdmin = false;
-        let hasPendingChanges = false;
+        function showToast(message, isError = false) {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast-card ${isError ? 'error' : ''}`;
+            toast.innerHTML = isError ? `❌ ${message}` : `💾 ${message}`;
+            container.appendChild(toast);
+            setTimeout(() => { toast.remove(); }, 2000);
+        }
 
-        // دالة تحديد شكل الرتبة باللغة العربية واللون
-        const rankLabels = {
-            leader: { text: "مدير الهلال الأحمر", class: "rank-leader" },
-            subleader: { text: "معاون مدير", class: "rank-subleader" },
-            captain: { text: "نقيب طبيب", class: "rank-captain" },
-            doc: { text: "دكتور جراح", class: "rank-doc" },
-            paramedic: { text: "مسعف أولي", class: "rank-paramedic" }
+        // توزيع كود الرتب منعا للتضارب الرقمي
+        function getCodesForRank(rankName) {
+            if(rankName === "قيادة") return ["E-001", "E-002", "E-003", "E-004"];
+            const levels = {
+                "مستوى 9": 90, "مستوى 8": 80, "مستوى 7": 70, "مستوى 6": 60,
+                "مستوى 5": 50, "مستوى 4": 40, "مستوى 3": 30, "مستوى 2": 20, "مستوى 1": 10
+            };
+            let base = levels[rankName] || 99;
+            let codes = [];
+            for(let i=0; i<9; i++) codes.push(`E-${base + i}`);
+            return codes;
+        }
+
+        const defaultData = {
+            adminPin: "toronto911", 
+            siteTitle: "جدول الهلال الأحمر",
+            siteSubtitle: "في كل مايتعلق بالهلال الاحمر - مقاطعة تورنتو",
+            watermark: "خاص بسيرفر تورنتو",
+            ranks: [
+                { name: "قيادة", color: "#ff2a2a" },
+                { name: "مستوى 9", color: "#e31212" },
+                { name: "مستوى 8", color: "#ff5722" },
+                { name: "مستوى 7", color: "#ff9800" },
+                { name: "مستوى 6", color: "#ffeb3b" },
+                { name: "مستوى 5", color: "#00ff87" },
+                { name: "مستوى 4", color: "#00e5ff" },
+                { name: "مستوى 3", color: "#2196f3" },
+                { name: "مستوى 2", color: "#9c27b0" },
+                { name: "مستوى 1", color: "#e91e63" },
+                { name: "متدرب", color: "#a0aec0" }
+            ],
+            badges: [
+                { name: "بلا وسام", color: "#4a5568" },
+                { name: "🏅 وسام الخدمة", color: "#ffaa00" },
+                { name: "🥈 وسام الشرف", color: "#cbd5e0" }
+            ],
+            rules: [
+                "من متدرب الى مستوى 1 : ساعات تواجد 5",
+                "من مستوى 1 الى مستوى 2 : تقارير عمليات 2 + ساعات تواجد 6",
+                "من مستوى 2 الى مستوى 3 : 5 تقارير عمليات + 10 ساعات تواجد"
+            ],
+            employees: [
+                { id: "592165572888433162", name: "عدي", code: "E-001", rank: "قيادة", spec: "إدارة وتدريب", pos: "إسعاف متقدم", status: "active", attendance: [1,1,1,1,1,1,1], repPresence: 0, repOps: 0, warn: "0/3", upgrade: "مستقر", badge: "🏅 وسام الخدمة", date: "2026/01/15" },
+                { id: "718428168498853131", name: "أكرم نجف", code: "E-002", rank: "قيادة", spec: "إدارة وتدريب", pos: "إسعاف متقدم", status: "active", attendance: [1,1,1,1,1,1,1], repPresence: 5, repOps: 3, warn: "0/3", upgrade: "مؤهل للترقية", badge: "🏅 وسام الخدمة", date: "2026/01/20" },
+                { id: "500000000000000001", name: "اسم الموظف الجديد", code: "E-101", rank: "مستوى 1", spec: "ميداني", pos: "نشط", status: "active", attendance: [0,0,1,1,0,0,0], repPresence: 2, repOps: 1, warn: "0/3", upgrade: "مستقر", badge: "بلا وسام", date: "2026/06/22" }
+            ]
         };
 
-        // الاستماع للتغيرات في Firebase وجلب البيانات فوراً
-        db.ref('emsData').on('value', (snapshot) => {
-            const data = snapshot.val();
-            if (data) {
-                emsData = data;
+        let appData = defaultData;
+        let activeTab = 'active'; let isAdmin = false; let hasPendingChanges = false;
+
+        // الاستماع المباشر للتغيرات السحابية ومزامنتها على شاشات الجميع فوراً
+        db.ref('toronto_ems_cloud_data').on('value', (snapshot) => {
+            const cloudData = snapshot.val();
+            if (cloudData) {
+                appData = cloudData;
             } else {
-                // إذا كانت قاعدة البيانات فارغة تماماً، نرفع البيانات الافتراضية
-                emsData = defaultData;
-                db.ref('emsData').set(emsData);
+                // إذا كانت السحابة فارغة لأول مرة، ارفع البيانات الافتراضية
+                appData = defaultData;
+                db.ref('toronto_ems_cloud_data').set(appData);
             }
             if (!hasPendingChanges) {
-                renderTable();
+                renderApp();
             }
         });
 
-        // بناء الجدول وعرضه للمستخدمين
-        function renderTable() {
-            const tbody = document.getElementById("tableBody");
-            tbody.innerHTML = "";
+        function showPendingSave() { if (isAdmin) { hasPendingChanges = true; document.getElementById('floatingSaveBtn').classList.add('visible'); } }
+        function hidePendingSave() { hasPendingChanges = false; document.getElementById('floatingSaveBtn').classList.remove('visible'); }
 
-            emsData.forEach((row, index) => {
-                const tr = document.createElement("tr");
-                const rankInfo = rankLabels[row.rank] || { text: row.rank, class: "" };
+        // دالة الحفظ السحابي بدلاً من الحفظ المحلي
+        function triggerGlobalSave() {
+            db.ref('toronto_ems_cloud_data').set(appData).then(() => {
+                calculateStats(); hidePendingSave();
+                if(isAdmin) showToast("تم مزامنة وحفظ جميع التعديلات في السحابة بنجاح! ☁️✔️");
+                renderApp();
+            }).catch((err) => {
+                showToast("فشل الحفظ في السحابة! تحقق من الاتصال.", true);
+                console.error(err);
+            });
+        }
+
+        function handleAuthToggle() {
+            if (isAdmin) {
+                isAdmin = false; document.body.classList.remove('is-admin');
+                document.getElementById('authBtn').innerText = "🔐 تسجيل دخول الإدارة";
+                document.getElementById('authBtn').className = "btn btn-auth";
+                document.getElementById('auth-dot').classList.remove('authenticated');
+                document.getElementById('auth-status-text').innerText = "وضع المشاهدة (مغلق)";
+                
+                document.getElementById('btn-clear-id').disabled = true; document.getElementById('btn-clear-id').style.opacity = "0.4";
+                document.getElementById('btn-settings-id').disabled = true; document.getElementById('btn-settings-id').style.opacity = "0.4";
+                document.getElementById('btn-add-id').disabled = true; document.getElementById('btn-add-id').style.opacity = "0.4";
+                document.getElementById('eval-add-input-grp').style.display = "none";
+                hidePendingSave(); showToast("تم قفل لوحة الإدارة."); renderApp();
+            } else {
+                const pin = prompt("أدخل الرمز السري للإدارة للتفعيل:");
+                if (pin === appData.adminPin) {
+                    isAdmin = true; document.body.classList.add('is-admin');
+                    document.getElementById('authBtn').innerText = "🔓 تسجيل خروج الإدارة";
+                    document.getElementById('authBtn').className = "btn btn-clear";
+                    document.getElementById('auth-dot').classList.add('authenticated');
+                    document.getElementById('auth-status-text').innerText = "وضع التعديل النشط (الأدمن)";
+                    
+                    document.getElementById('btn-clear-id').disabled = false; document.getElementById('btn-clear-id').style.opacity = "1";
+                    document.getElementById('btn-settings-id').disabled = false; document.getElementById('btn-settings-id').style.opacity = "1";
+                    document.getElementById('btn-add-id').disabled = false; document.getElementById('btn-add-id').style.opacity = "1";
+                    document.getElementById('eval-add-input-grp').style.display = "block";
+                    showToast("تم فتح صلاحيات التعديل الكاملة."); renderApp();
+                } else if (pin !== null) { showToast("الرمز السري خاطئ!", true); }
+            }
+        }
+
+        function renderApp() {
+            document.getElementById('site-title').innerText = appData.siteTitle;
+            document.getElementById('site-subtitle').innerText = appData.siteSubtitle;
+            document.getElementById('wm-text').innerText = appData.watermark;
+            
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
+            
+            // ترتيب الموظفين: القيادة أولاً ثم البقية
+            let sortedEmployees = [...appData.employees].sort((a, b) => {
+                let aCmd = a.rank === "قيادة" ? 1 : 0;
+                let bCmd = b.rank === "قيادة" ? 1 : 0;
+                return bCmd - aCmd;
+            });
+
+            let leadershipCount = 0;
+            let dividerPlaced = false;
+
+            sortedEmployees.forEach((emp, index) => {
+                if (emp.rank === "قيادة") leadershipCount++;
+
+                if (!dividerPlaced && (leadershipCount > 0 && emp.rank !== "قيادة" || leadershipCount === 4)) {
+                    const dividerTr = document.createElement('tr');
+                    dividerTr.className = 'glow-divider';
+                    dividerTr.innerHTML = `<td colspan="23"></td>`;
+                    tbody.appendChild(dividerTr);
+                    dividerPlaced = true;
+                }
+
+                const tr = document.createElement('tr');
+                tr.setAttribute('data-status', emp.status);
+                
+                const rankObj = appData.ranks.find(r => r.name === emp.rank);
+                const rankColor = rankObj ? rankObj.color : '#fff';
+                const isCommand = emp.rank === "قيادة";
+                
+                let attHtml = '';
+                emp.attendance.forEach((val, dayIdx) => {
+                    attHtml += `<td class="check-cell ${val === 1 ? 'checked' : 'unchecked'}" onclick="toggleCheck(${index}, ${dayIdx})">${val === 1 ? '✔' : '✘'}</td>`;
+                });
+
+                let rankOptions = '';
+                appData.ranks.forEach(r => { rankOptions += `<option value="${r.name}" ${emp.rank === r.name ? 'selected' : ''}>${r.name}</option>`; });
+
+                let availableCodes = getCodesForRank(emp.rank);
+                let codeOptions = '';
+                availableCodes.forEach(c => { codeOptions += `<option value="${c}" ${emp.code === c ? 'selected' : ''}>${c}</option>`; });
+                if(!availableCodes.includes(emp.code)) { codeOptions = `<option value="${emp.code}" selected>${emp.code}</option>` + codeOptions; }
+
+                let badgeOptions = '';
+                appData.badges.forEach(b => { badgeOptions += `<option value="${b.name}" ${emp.badge === b.name ? 'selected' : ''}>${b.name}</option>`; });
+                const badgeObj = appData.badges.find(b => b.name === emp.badge);
+                const badgeColor = badgeObj ? badgeObj.color : '#4a5568';
+
+                let upgradeClass = 'upgrade-stable';
+                if(emp.upgrade === 'مؤهل للترقية') upgradeClass = 'upgrade-qualified';
+                if(emp.upgrade === 'غير مؤهل للترقية') upgradeClass = 'upgrade-unqualified';
 
                 tr.innerHTML = `
-                    <td>#${row.id}</td>
-                    <td>${row.name}</td>
-                    <td><span class="rank-badge ${rankInfo.class}">${rankInfo.text}</span></td>
-                    <td class="editable-cell" onclick="startEdit(${index}, 'reports', this)">${row.reports}</td>
-                    <td class="editable-cell" onclick="startEdit(${index}, 'status', this)">${row.status}</td>
-                    <td class="editable-cell" onclick="startEdit(${index}, 'notes', this)">${row.notes}</td>
+                    <td>${index + 1}</td>
+                    <td class="editable-cell" ${isAdmin ? 'contenteditable="true"' : ''} onblur="updateEmpField(${index}, 'id', this.innerText)" style="color:#627d98; font-family: monospace;">${emp.id}</td>
+                    <td class="editable-cell" ${isAdmin ? 'contenteditable="true"' : ''} onblur="updateEmpField(${index}, 'name', this.innerText)" style="font-weight: bold; color:#fff;">${emp.name}</td>
+                    <td>
+                        <select class="table-select" onchange="handleRankChange(${index}, this.value)" style="color: ${rankColor}; text-shadow: 0 0 8px ${rankColor}; font-weight:900;">
+                            ${rankOptions}
+                        </select>
+                    </td>
+                    <td>
+                        <select class="table-select" onchange="updateEmpField(${index}, 'code', this.value)" style="color: #ffaa00; font-weight: bold; font-family: monospace;">
+                            ${codeOptions}
+                        </select>
+                    </td>
+                    <td class="editable-cell" ${isAdmin ? 'contenteditable="true"' : ''} onblur="updateEmpField(${index}, 'spec', this.innerText)">${emp.spec}</td>
+                    <td class="editable-cell" ${isAdmin ? 'contenteditable="true"' : ''} onblur="updateEmpField(${index}, 'pos', this.innerText)">${emp.pos}</td>
+                    <td>
+                        <select class="table-select" onchange="updateEmpField(${index}, 'status', this.value)" style="color:${emp.status==='active'?'#00ff87':'#ff3b3b'}; font-weight:900;">
+                            <option value="active" ${emp.status==='active'?'selected':''}>🟢 نشط</option>
+                            <option value="retired" ${emp.status==='retired'?'selected':''}>🔴 فصل/استقالة</option>
+                        </select>
+                    </td>
+                    ${attHtml}
+                    <td>
+                        ${isCommand ? `<span style="color:#334e68;">—</span>` : `
+                        <div class="report-counter">
+                            <button class="count-btn" onclick="adjustReport(${index}, 'repPresence', -1)">-</button>
+                            <span class="count-num">${emp.repPresence || 0}</span>
+                            <button class="count-btn" onclick="adjustReport(${index}, 'repPresence', 1)">+</button>
+                        </div>`}
+                    </td>
+                    <td>
+                        ${isCommand ? `<span style="color:#334e68;">—</span>` : `
+                        <div class="report-counter">
+                            <button class="count-btn" onclick="adjustReport(${index}, 'repOps', -1)">-</button>
+                            <span class="count-num">${emp.repOps || 0}</span>
+                            <button class="count-btn" onclick="adjustReport(${index}, 'repOps', 1)">+</button>
+                        </div>`}
+                    </td>
+                    <td class="editable-cell" ${isAdmin ? 'contenteditable="true"' : ''} onblur="updateEmpField(${index}, 'warn', this.innerText)" style="color:#ff3b3b; font-weight:bold;">${emp.warn}</td>
+                    <td>
+                        <select class="table-select select-upgrade ${upgradeClass}" onchange="updateEmpField(${index}, 'upgrade', this.value)">
+                            <option value="مستقر" ${emp.upgrade === 'مستقر' ? 'selected' : ''}>✨ مستقر</option>
+                            <option value="مؤهل للترقية" ${emp.upgrade === 'مؤهل للترقية' ? 'selected' : ''}>🟢 مؤهل للترقية</option>
+                            <option value="غير مؤهل للترقية" ${emp.upgrade === 'غير مؤهل للترقية' ? 'selected' : ''}>🔴 غير مؤهل للترقية</option>
+                        </select>
+                    </td>
+                    <td>
+                        <div class="badge-pill" style="background: rgba(0,0,0,0.4); border-color: ${badgeColor}; color: ${badgeColor}; text-shadow: 0 0 5px ${badgeColor}">
+                            <select class="table-select" onchange="updateEmpField(${index}, 'badge', this.value)" style="color: inherit; font-weight:900; padding:0; background:none; border:none; box-shadow:none;">
+                                ${badgeOptions}
+                            </select>
+                        </div>
+                    </td>
+                    <td class="editable-cell" ${isAdmin ? 'contenteditable="true"' : ''} onblur="updateEmpField(${index}, 'date', this.innerText)" style="color: #627d98; font-family: monospace;">${emp.date}</td>
+                    <td>
+                        <button onclick="deleteEmployee(${index})" style="background:none; border:none; color:#ff2a2a; cursor:${isAdmin?'pointer':'not-allowed'}; opacity:${isAdmin?1:0.2};" ${!isAdmin?'disabled':''}>🗑️</button>
+                    </td>
                 `;
                 tbody.appendChild(tr);
             });
-        }
 
-        // تشغيل وإطفاء وضع الإدارة
-        function toggleAdminMode() {
-            isAdmin = !isAdmin;
-            const btn = document.getElementById("adminToggleBtn");
-            const resetBtn = document.getElementById("resetBtn");
-            const body = document.body;
-
-            if (isAdmin) {
-                btn.classList.add("active");
-                btn.innerHTML = `<i class="fa-solid fa-lock-open"></i> إنهاء وضع المسؤول`;
-                resetBtn.style.display = "flex";
-                body.classList.add("admin-mode");
-                showToast("تم الدخول بصلاحيات المسؤول. يمكنك الآن تعديل خلايا البلاغات والملاحظات بالضغط عليها مباشرة.");
-            } else {
-                btn.classList.remove("active");
-                btn.innerHTML = `<i class="fa-solid fa-lock"></i> وضع المسؤول`;
-                resetBtn.style.display = "none";
-                body.classList.remove("admin-mode");
-                discardOrSavePrompt();
-            }
-        }
-
-        // بدء عملية تعديل الخلية عند الضغط عليها
-        function startEdit(index, field, cellElement) {
-            if (!isAdmin) {
-                showToast("عذراً، يجب تفعيل وضع المسؤول لتتمكن من التعديل!");
-                return;
-            }
-
-            if (cellElement.querySelector('input')) return;
-
-            const originalValue = emsData[index][field];
-            const input = document.createElement('input');
-            input.type = field === 'reports' ? 'number' : 'text';
-            input.className = 'cell-input';
-            input.value = originalValue;
-
-            cellElement.innerHTML = '';
-            cellElement.appendChild(input);
-            input.focus();
-
-            // عند الخروج من الحقل أو ضغط Enter
-            input.addEventListener('blur', () => finishEdit(index, field, input.value, cellElement, originalValue));
-            input.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter') input.blur();
+            const container = document.getElementById('rulesContainer');
+            container.innerHTML = '';
+            appData.rules.forEach((rule) => { 
+                container.innerHTML += `
+                    <div class="neon-rule-item">
+                        <span class="neon-bullet"></span>
+                        <span>${rule}</span>
+                    </div>`; 
             });
+
+            filterData(); calculateStats();
         }
 
-        // إنهاء تعديل الخلية وحفظه مؤقتاً في الذاكرة
-        function finishEdit(index, field, newValue, cellElement, originalValue) {
-            let processedValue = newValue.trim();
-            if (field === 'reports') {
-                processedValue = parseInt(processedValue) || 0;
-            }
-
-            if (processedValue !== originalValue) {
-                emsData[index][field] = processedValue;
-                hasPendingChanges = true;
-                document.getElementById("pendingSaveBar").classList.add("show");
-            }
-
-            renderTable();
+        function handleRankChange(idx, newRank) {
+            if (!isAdmin || !appData.employees[idx]) return;
+            appData.employees[idx].rank = newRank;
+            let availableCodes = getCodesForRank(newRank);
+            appData.employees[idx].code = availableCodes[0] || "E-100";
+            showPendingSave(); renderApp();
         }
 
-        // رفع البيانات النهائية إلى قاعدة بيانات Firebase
-        function saveDataToFirebase() {
-            db.ref('emsData').set(emsData).then(() => {
-                showToast("تم مزامنة وحفظ جميع البيانات في السحابة بنجاح! ☁️✔️");
-                hasPendingChanges = false;
-                document.getElementById("pendingSaveBar").classList.remove("show");
-            }).catch((error) => {
-                showToast("فشل الحفظ، تأكد من اتصالك بالإنترنت وصلاحيات قاعدة البيانات.");
-                console.error(error);
-            });
-        }
-
-        // تصفير الأسبوع للإدارة
-        function confirmResetWeek() {
+        function addNewEmployeeRowDirect() {
             if (!isAdmin) return;
-            if (confirm("⚠️ هل أنت متأكد تماماً من رغبتك في تصفير الأسبوع؟ سيتم تصفير جميع البلاغات وحذف الملاحظات لكل الموظفين!")) {
-                emsData = emsData.map(row => ({
-                    ...row,
-                    reports: 0,
-                    status: "انتظار التفاعل",
-                    notes: "بداية أسبوع جديدة"
-                }));
-                hasPendingChanges = true;
-                document.getElementById("pendingSaveBar").classList.add("show");
-                renderTable();
-                showToast("تم تصفير البيانات محلياً، لا تنسى الضغط على زر الحفظ بالأسفل لتعميمها على الجميع.");
-            }
-        }
-
-        function discardOrSavePrompt() {
-            if (hasPendingChanges) {
-                if (confirm("لديك تعديلات غير محفوظة في قاعدة البيانات. هل تريد حفظها الآن قبل الخروج؟")) {
-                    saveDataToFirebase();
-                } else {
-                    hasPendingChanges = false;
-                    document.getElementById("pendingSaveBar").classList.remove("show");
-                    // إعادة جلب البيانات الأصلية من الـ Database لإلغاء التعديلات المحلية
-                    db.ref('emsData').once('value', (snapshot) => {
-                        if (snapshot.val()) {
-                            emsData = snapshot.val();
-                            renderTable();
-                        }
-                    });
-                }
-            }
-        }
-
-        // نظام التنبيهات المنبثقة الجذاب (Toast Notifications)
-        function showToast(text) {
-            const container = document.getElementById("toastContainer");
-            const toast = document.createElement("div");
-            toast.className = "toast";
-            toast.innerHTML = `<i class="fa-solid fa-circle-info" style="color: var(--accent-color);"></i> <span>${text}</span>`;
+            const todayStr = new Date().toISOString().split('T')[0].replace(/-/g, '/');
+            const defaultRank = "مستوى 1";
+            let availableCodes = getCodesForRank(defaultRank);
             
-            container.appendChild(toast);
-            setTimeout(() => toast.classList.add("show"), 50);
-
-            setTimeout(() => {
-                toast.classList.remove("show");
-                setTimeout(() => toast.remove(), 400);
-            }, 5000);
+            appData.employees.push({
+                id: "500000000000000000", name: "اسم الموظف الجديد", code: availableCodes[0] || "E-101",
+                rank: defaultRank, spec: "ميداني", pos: "نشط", status: activeTab,
+                attendance: [0,0,0,0,0,0,0], repPresence: 0, repOps: 0, warn: "0/3", upgrade: "مستقر", badge: "بلا وسام", date: todayStr
+            });
+            showPendingSave(); renderApp();
         }
+
+        function updateEmpField(idx, field, val) {
+            if (!isAdmin || !appData.employees[idx]) return;
+            if(appData.employees[idx][field].toString() !== val.trim().toString()) {
+                appData.employees[idx][field] = val.trim();
+                showPendingSave(); calculateStats();
+                if (field === 'status' || field === 'badge' || field === 'upgrade') renderApp();
+            }
+        }
+
+        function toggleCheck(empIdx, dayIdx) { if (!isAdmin) return; appData.employees[empIdx].attendance[dayIdx] = appData.employees[empIdx].attendance[dayIdx] === 1 ? 0 : 1; showPendingSave(); renderApp(); }
+        function adjustReport(empIdx, type, val) { if (!isAdmin) return; if (!appData.employees[empIdx][type]) appData.employees[empIdx][type] = 0; appData.employees[empIdx][type] = Math.max(0, appData.employees[empIdx][type] + val); showPendingSave(); renderApp(); }
+
+        function filterData() {
+            const query = document.getElementById('searchBar').value.toLowerCase();
+            document.querySelectorAll('#tableBody tr').forEach((row) => {
+                if(row.classList.contains('glow-divider')) return; 
+                const nameCell = row.cells[2]?.innerText.toLowerCase() || "";
+                const codeCell = row.cells[4]?.innerText.toLowerCase() || "";
+                const idCell = row.cells[1]?.innerText.toLowerCase() || "";
+                let match = nameCell.includes(query) || codeCell.includes(query) || idCell.includes(query);
+                if (query === "") match = true;
+                
+                const status = row.getAttribute('data-status');
+                if (match && status === activeTab) row.classList.remove('hidden');
+                else row.classList.add('hidden');
+            });
+        }
+
+        function switchTab(tab) { activeTab = tab; document.getElementById('tabActive').classList.toggle('active', tab === 'active'); document.getElementById('tabRetired').classList.toggle('active', tab === 'retired'); filterData(); }
+
+        function calculateStats() {
+            let total = appData.employees.length, active = 0, retired = 0, upgrades = 0;
+            appData.employees.forEach(emp => {
+                if (emp.status === 'active') active++; else retired++;
+                if (emp.upgrade === 'مؤهل للترقية') upgrades++;
+            });
+            document.getElementById('stat-total').innerText = total; document.getElementById('stat-active').innerText = active;
+            document.getElementById('stat-retired').innerText = retired; document.getElementById('stat-upgrades').innerText = upgrades;
+        }
+
+        function deleteEmployee(idx) { if (!isAdmin) return; if (confirm("هل تريد مسح هذا الموظف نهائياً؟")) { appData.employees.splice(idx, 1); showPendingSave(); renderApp(); } }
+
+        function clearAttendance() {
+            if (!isAdmin) return;
+            if (confirm("تأكيد تصفير أسبوع العمل للكادر؟ (سيتم حماية واستثناء رتب القيادة تلقائياً)")) {
+                appData.employees.forEach(emp => {
+                    if (emp.rank === "قيادة") return;
+                    emp.attendance = [0, 0, 0, 0, 0, 0, 0]; emp.repPresence = 0; emp.repOps = 0; 
+                });
+                showPendingSave(); renderApp();
+            }
+        }
+
+        function openEvaluationModal() {
+            const list = document.getElementById('modalRulesList'); list.innerHTML = '';
+            appData.rules.forEach((r, idx) => {
+                list.innerHTML += `
+                    <div class="item-row-manage">
+                        <span>${idx+1}. ${r}</span>
+                        <button onclick="deleteRuleItem(${idx})" class="action-btn-row" style="display:${isAdmin?'block':'none'}; color:#ff3333;">❌</button>
+                    </div>`;
+            });
+            toggleModal('evaluationModal', true);
+        }
+
+        function addNewRuleItem() {
+            const text = document.getElementById('cfg-rule-text').value.trim();
+            if(text) { appData.rules.push(text); document.getElementById('cfg-rule-text').value = ''; showPendingSave(); openEvaluationModal(); renderApp(); }
+        }
+
+        function deleteRuleItem(idx) { if(!isAdmin) return; appData.rules.splice(idx, 1); showPendingSave(); openEvaluationModal(); renderApp(); }
+        function toggleModal(id, show) { document.getElementById(id).classList.toggle('open', show); }
+        function updateLiveMeta(field, val) { if(appData[field] !== val) { appData[field] = val; showPendingSave(); } }
+        function saveGlobalSettings() { showPendingSave(); toggleModal('settingsModal', false); renderApp(); }
+
+        function downloadUpdatedCode() {
+            const currentDataStr = JSON.stringify(appData);
+            let fullHtml = document.documentElement.outerHTML;
+            fullHtml = fullHtml.replace(/let appData = defaultData;/, `let appData = ${currentDataStr};`);
+            const blob = new Blob([`<!DOCTYPE html>\n` + fullHtml], { type: 'text/html' });
+            const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'index.html'; a.click();
+            showToast("تم تحميل كود السجل المحدث بنجاح!");
+        }
+
+        document.getElementById('searchBar').addEventListener('input', filterData);
+        document.getElementById('cfg-title').value = appData.siteTitle;
+        document.getElementById('cfg-subtitle').value = appData.siteSubtitle;
     </script>
 </body>
 </html>
