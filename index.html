@@ -3,195 +3,289 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>نظام إدارة الهلال الأحمر</title>
+<title>نظام الهلال الأحمر</title>
 
 <style>
-    body {
-        margin: 0;
-        font-family: Arial, sans-serif;
-        background: #05070d;
-        color: #fff;
-        overflow-x: hidden;
-    }
+body{
+    margin:0;
+    font-family:Arial;
+    background:#05070d;
+    color:white;
+    overflow-x:hidden;
+}
 
-    /* خلفية نيون */
-    .glow-bg {
-        position: fixed;
-        width: 100%;
-        height: 100%;
-        background: radial-gradient(circle at top, #ff003c33, transparent 40%),
-                    radial-gradient(circle at bottom, #00ffcc22, transparent 50%);
-        z-index: -1;
-    }
+/* خلفية خطوط متحركة */
+.background-lines::before{
+    content:"";
+    position:fixed;
+    width:200%;
+    height:200%;
+    background: repeating-linear-gradient(
+        45deg,
+        #00ffcc11,
+        #00ffcc11 2px,
+        transparent 2px,
+        transparent 40px
+    );
+    animation:move 20s linear infinite;
+    z-index:-2;
+}
 
-    header {
-        text-align: center;
-        padding: 20px;
-        background: rgba(0,0,0,0.6);
-        border-bottom: 2px solid #ff003c;
-        box-shadow: 0 0 20px #ff003c;
-    }
+@keyframes move{
+    from{transform:translateX(0);}
+    to{transform:translateX(-200px);}
+}
 
-    header h1 {
-        color: #ff003c;
-        text-shadow: 0 0 10px #ff003c;
-    }
+/* الهيدر */
+header{
+    text-align:center;
+    padding:20px;
+    border-bottom:2px solid #ff003c;
+    box-shadow:0 0 20px #ff003c;
+    position:relative;
+}
 
-    nav {
-        display: flex;
-        justify-content: center;
-        gap: 15px;
-        padding: 15px;
-        flex-wrap: wrap;
-    }
+header h1{
+    color:#ff003c;
+    text-shadow:0 0 10px #ff003c;
+    animation:glow 2s infinite alternate;
+}
 
-    nav button {
-        background: transparent;
-        border: 1px solid #00ffcc;
-        color: #00ffcc;
-        padding: 10px 15px;
-        cursor: pointer;
-        transition: 0.3s;
-        box-shadow: 0 0 10px #00ffcc33;
-    }
+@keyframes glow{
+    from{text-shadow:0 0 5px #ff003c;}
+    to{text-shadow:0 0 20px #ff003c;}
+}
 
-    nav button:hover {
-        background: #00ffcc;
-        color: #000;
-        box-shadow: 0 0 20px #00ffcc;
-    }
+.subtitle{
+    color:#00ffcc;
+    margin-top:5px;
+}
 
-    section {
-        display: none;
-        padding: 20px;
-        animation: fade 0.5s ease-in-out;
-    }
+/* زر الإعدادات */
+.settings-btn{
+    position:absolute;
+    left:15px;
+    top:15px;
+    background:none;
+    border:1px solid #00ffcc;
+    color:#00ffcc;
+    padding:8px;
+    cursor:pointer;
+    box-shadow:0 0 10px #00ffcc33;
+}
 
-    section.active {
-        display: block;
-    }
+/* نوافذ */
+nav{
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    padding:15px;
+    flex-wrap:wrap;
+}
 
-    @keyframes fade {
-        from {opacity: 0; transform: translateY(10px);}
-        to {opacity: 1; transform: translateY(0);}
-    }
+nav button{
+    background:none;
+    border:1px solid #00ffcc;
+    color:#00ffcc;
+    padding:10px;
+    cursor:pointer;
+}
 
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 10px;
-        background: rgba(255,255,255,0.03);
-        box-shadow: 0 0 15px #000;
-    }
+/* جداول */
+table{
+    width:95%;
+    margin:auto;
+    border-collapse:collapse;
+    margin-top:20px;
+}
 
-    th, td {
-        padding: 12px;
-        border: 1px solid #222;
-        text-align: center;
-    }
+th,td{
+    border:1px solid #222;
+    padding:10px;
+    text-align:center;
+}
 
-    th {
-        background: #ff003c22;
-        color: #ff003c;
-        text-shadow: 0 0 5px #ff003c;
-    }
+th{
+    color:#ff003c;
+    background:#ff003c22;
+}
 
-    .box {
-        padding: 15px;
-        border: 1px solid #00ffcc44;
-        margin-top: 10px;
-        box-shadow: 0 0 15px #00ffcc22;
-    }
+section{display:none;}
+section.active{display:block;}
 
-    .title {
-        color: #00ffcc;
-        text-shadow: 0 0 8px #00ffcc;
-    }
+.modal{
+    display:none;
+    position:fixed;
+    top:0;left:0;
+    width:100%;height:100%;
+    background:#000000cc;
+}
+
+.modal-content{
+    background:#111;
+    width:300px;
+    margin:100px auto;
+    padding:20px;
+    border:1px solid #00ffcc;
+}
+input,select{
+    width:100%;
+    padding:8px;
+    margin:5px 0;
+}
+button.action{
+    width:100%;
+    padding:10px;
+    background:#00ffcc;
+    border:none;
+    cursor:pointer;
+}
 </style>
 </head>
 
-<body>
-
-<div class="glow-bg"></div>
+<body class="background-lines">
 
 <header>
-    <h1>🚑 نظام إدارة الهلال الأحمر</h1>
-    <p>لوحة تحكم المسعفين والقيادات</p>
+<button class="settings-btn" onclick="toggleSettings()">⚙️</button>
+<h1>🚑 الهلال الأحمر</h1>
+<div class="subtitle">مقاطعة تورنتو</div>
 </header>
 
 <nav>
-    <button onclick="show('leaders')">القيادات</button>
-    <button onclick="show('medics')">المسعفين</button>
-    <button onclick="show('promotion')">شروط الترقيه</button>
-    <button onclick="show('punishment')">العقوبات</button>
+<button onclick="show('medics')">المسعفين</button>
+<button onclick="show('leaders')">القيادات</button>
 </nav>
 
-<!-- القيادات -->
-<section id="leaders" class="active">
-    <h2 class="title">👑 القيادات</h2>
-    <div class="box">
-        <table>
-            <tr>
-                <th>الاسم</th>
-                <th>الرتبة</th>
-                <th>الكود</th>
-            </tr>
-            <tr>
-                <td>سيد فائز</td>
-                <td>قائد عام</td>
-                <td>CMD-001</td>
-            </tr>
-        </table>
-    </div>
-</section>
-
 <!-- المسعفين -->
-<section id="medics">
-    <h2 class="title">🚑 المسعفين</h2>
-    <div class="box">
-        <table>
-            <tr>
-                <th>الاسم</th>
-                <th>الكود</th>
-                <th>الرتبة</th>
-            </tr>
-            <tr>
-                <td>مسعف 1</td>
-                <td>MED-101</td>
-                <td>مبتدئ</td>
-            </tr>
-        </table>
-    </div>
+<section id="medics" class="active">
+<h2 style="text-align:center;color:#00ffcc;">جدول المسعفين</h2>
+
+<button onclick="openAddMed()" style="margin:10px;">➕ إضافة مسعف</button>
+
+<table>
+<thead>
+<tr>
+<th>الاسم</th>
+<th>الكود</th>
+<th>الرتبة</th>
+<th>تقرير عمليات</th>
+<th>تقرير تواجد</th>
+<th>تحكم</th>
+</tr>
+</thead>
+<tbody id="medicTable"></tbody>
+</table>
 </section>
 
-<!-- الترقيات -->
-<section id="promotion">
-    <h2 class="title">⬆️ شروط الترقيه</h2>
-    <div class="box">
-        <p>• الالتزام الكامل بالدوام</p>
-        <p>• عدم وجود مخالفات</p>
-        <p>• عدد تدخلات لا يقل عن المطلوب</p>
-        <p>• احترام القيادات وعدم مخالفة الأوامر</p>
-    </div>
+<!-- القيادات -->
+<section id="leaders">
+<h2 style="text-align:center;color:#00ffcc;">القيادات</h2>
+
+<button onclick="openAddLead()">➕ إضافة قيادة</button>
+
+<table>
+<tr>
+<th>الاسم</th>
+<th>الرتبة</th>
+</tr>
+<tbody id="leadTable"></tbody>
+</table>
 </section>
 
-<!-- العقوبات -->
-<section id="punishment">
-    <h2 class="title">⚠️ العقوبات</h2>
-    <div class="box">
-        <p>• إنذار أول عند المخالفة</p>
-        <p>• خصم رتبة عند التكرار</p>
-        <p>• فصل مباشر عند الإهمال أو الخيانة</p>
-        <p>• منع من الاستنفار في حال المخالفة الأمنية</p>
-    </div>
-</section>
+<!-- نافذة إضافة مسعف -->
+<div class="modal" id="medModal">
+<div class="modal-content">
+<h3>إضافة مسعف</h3>
+<input id="mName" placeholder="الاسم">
+<input id="mCode" placeholder="الكود">
+<select id="mRank">
+<option>مبتدئ</option>
+<option>مسعف</option>
+<option>نائب</option>
+</select>
+<button class="action" onclick="addMedic()">حفظ</button>
+</div>
+</div>
+
+<!-- إعدادات -->
+<div class="modal" id="settings">
+<div class="modal-content">
+<h3>الإعدادات</h3>
+<button class="action" onclick="clearAll()">مسح كل البيانات</button>
+<button class="action" onclick="toggleSettings()">إغلاق</button>
+</div>
+</div>
 
 <script>
+
+let medics = JSON.parse(localStorage.getItem("medics")||"[]");
+let leaders = JSON.parse(localStorage.getItem("leaders")||"[]");
+
+function save(){
+    localStorage.setItem("medics",JSON.stringify(medics));
+    localStorage.setItem("leaders",JSON.stringify(leaders));
+    render();
+}
+
 function show(id){
-    let sections = document.querySelectorAll("section");
-    sections.forEach(s => s.classList.remove("active"));
+    document.querySelectorAll("section").forEach(s=>s.classList.remove("active"));
     document.getElementById(id).classList.add("active");
 }
+
+function openAddMed(){
+    document.getElementById("medModal").style.display="block";
+}
+
+function addMedic(){
+    medics.push({
+        name:mName.value,
+        code:mCode.value,
+        rank:mRank.value,
+        ops:0,
+        attend:0
+    });
+    save();
+    medModal.style.display="none";
+}
+
+function deleteMed(i){
+    medics.splice(i,1);
+    save();
+}
+
+function render(){
+    medicTable.innerHTML="";
+    medics.forEach((m,i)=>{
+        medicTable.innerHTML+=`
+        <tr>
+        <td>${m.name}</td>
+        <td>${m.code}</td>
+        <td>${m.rank}</td>
+        <td>${m.ops}</td>
+        <td>${m.attend}</td>
+        <td><button onclick="deleteMed(${i})">حذف</button></td>
+        </tr>`;
+    });
+
+    leadTable.innerHTML="";
+    leaders.forEach(l=>{
+        leadTable.innerHTML+=`
+        <tr><td>${l.name}</td><td>${l.rank}</td></tr>`;
+    });
+}
+
+function toggleSettings(){
+    let s=document.getElementById("settings");
+    s.style.display = (s.style.display=="block")?"none":"block";
+}
+
+function clearAll(){
+    localStorage.clear();
+    location.reload();
+}
+
+render();
+
 </script>
 
 </body>
