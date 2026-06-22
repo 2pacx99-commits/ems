@@ -1,122 +1,198 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EMS COMMAND | TORONTO RP</title>
-    <style>
-        :root {
-            --bg-color: #050508;
-            --panel-bg: #0d0d15;
-            --primary-red: #ff1f1f;
-            --primary-blue: #00e5ff;
-            --text-color: #e0e0e0;
-            --glow-red: 0 0 15px rgba(255, 31, 31, 0.6);
-            --glow-blue: 0 0 15px rgba(0, 229, 255, 0.4);
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>نظام إدارة الهلال الأحمر</title>
 
-        body { background-color: var(--bg-color); color: var(--text-color); font-family: 'Segoe UI', sans-serif; margin: 0; padding: 20px; }
+<style>
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #05070d;
+        color: #fff;
+        overflow-x: hidden;
+    }
 
-        /* تأثير التوهج للضغط */
-        .btn, .stat-card, tr { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        .btn:active { transform: scale(0.95); box-shadow: var(--glow-red) !important; }
-        
-        .stat-card {
-            background: linear-gradient(145deg, #11111a, #0d0d15);
-            border: 1px solid #222;
-            padding: 20px; border-radius: 12px; text-align: center;
-            border-bottom: 3px solid var(--primary-red);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-        }
-        
-        .logo-glow {
-            font-size: 50px; animation: pulseGlow 2s infinite;
-            text-shadow: 0 0 20px var(--primary-red);
-        }
-        @keyframes pulseGlow {
-            0%, 100% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.1); opacity: 0.8; }
-        }
+    /* خلفية نيون */
+    .glow-bg {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle at top, #ff003c33, transparent 40%),
+                    radial-gradient(circle at bottom, #00ffcc22, transparent 50%);
+        z-index: -1;
+    }
 
-        .table-container { border: 1px solid #222; background: var(--panel-bg); border-radius: 10px; overflow: hidden; }
-        table { width: 100%; border-collapse: collapse; }
-        th { background: #161622; padding: 15px; color: var(--primary-blue); border-bottom: 2px solid var(--primary-red); }
-        tr:hover { background: #1a1a25; box-shadow: inset 0 0 10px rgba(255,255,255,0.05); }
+    header {
+        text-align: center;
+        padding: 20px;
+        background: rgba(0,0,0,0.6);
+        border-bottom: 2px solid #ff003c;
+        box-shadow: 0 0 20px #ff003c;
+    }
 
-        .btn { background: #1a1a25; border: 1px solid #333; color: white; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; }
-        .btn-add { background: var(--primary-red); border: none; box-shadow: var(--glow-red); }
-        
-        .modal-box { background: var(--panel-bg); border: 1px solid var(--primary-red); border-radius: 15px; padding: 25px; }
-    </style>
+    header h1 {
+        color: #ff003c;
+        text-shadow: 0 0 10px #ff003c;
+    }
+
+    nav {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        padding: 15px;
+        flex-wrap: wrap;
+    }
+
+    nav button {
+        background: transparent;
+        border: 1px solid #00ffcc;
+        color: #00ffcc;
+        padding: 10px 15px;
+        cursor: pointer;
+        transition: 0.3s;
+        box-shadow: 0 0 10px #00ffcc33;
+    }
+
+    nav button:hover {
+        background: #00ffcc;
+        color: #000;
+        box-shadow: 0 0 20px #00ffcc;
+    }
+
+    section {
+        display: none;
+        padding: 20px;
+        animation: fade 0.5s ease-in-out;
+    }
+
+    section.active {
+        display: block;
+    }
+
+    @keyframes fade {
+        from {opacity: 0; transform: translateY(10px);}
+        to {opacity: 1; transform: translateY(0);}
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+        background: rgba(255,255,255,0.03);
+        box-shadow: 0 0 15px #000;
+    }
+
+    th, td {
+        padding: 12px;
+        border: 1px solid #222;
+        text-align: center;
+    }
+
+    th {
+        background: #ff003c22;
+        color: #ff003c;
+        text-shadow: 0 0 5px #ff003c;
+    }
+
+    .box {
+        padding: 15px;
+        border: 1px solid #00ffcc44;
+        margin-top: 10px;
+        box-shadow: 0 0 15px #00ffcc22;
+    }
+
+    .title {
+        color: #00ffcc;
+        text-shadow: 0 0 8px #00ffcc;
+    }
+</style>
 </head>
+
 <body>
 
-    <div class="header-wrapper" style="text-align:center; padding:30px;">
-        <div class="logo-glow">🚑</div>
-        <h1 id="site-title">EMS COMMAND CONTROL</h1>
-        <p style="color:var(--primary-blue);">نظام إدارة الطوارئ - تورنتو RP</p>
-    </div>
+<div class="glow-bg"></div>
 
-    <div class="stats-grid" style="display:grid; grid-template-columns:repeat(5, 1fr); gap:15px; margin-bottom:30px;">
-        <div class="stat-card"><h3>الكادر النشط</h3><div id="stat-active" style="font-size:24px; font-weight:bold; color:var(--primary-blue);">0</div></div>
-        <div class="stat-card"><h3>إجمالي الحالات</h3><div id="stat-cases" style="font-size:24px; font-weight:bold; color:var(--primary-red);">0</div></div>
-        <div class="stat-card"><h3>المؤهلين</h3><div id="stat-upgrades" style="font-size:24px; font-weight:bold; color:#ecc94b;">0</div></div>
-        <div class="stat-card"><h3>الإنذارات</h3><div id="stat-warns" style="font-size:24px; font-weight:bold; color:#ff3333;">0</div></div>
-        <div class="stat-card"><h3>المجموع</h3><div id="stat-total" style="font-size:24px; font-weight:bold; color:#fff;">0</div></div>
-    </div>
+<header>
+    <h1>🚑 نظام إدارة الهلال الأحمر</h1>
+    <p>لوحة تحكم المسعفين والقيادات</p>
+</header>
 
-    <div class="toolbar" style="margin-bottom:20px; display:flex; gap:10px;">
-        <button class="btn btn-add" onclick="addNewEmployee()">+ إضافة مسعف</button>
-        <button class="btn" onclick="saveData()">حفظ البيانات</button>
-    </div>
+<nav>
+    <button onclick="show('leaders')">القيادات</button>
+    <button onclick="show('medics')">المسعفين</button>
+    <button onclick="show('promotion')">شروط الترقيه</button>
+    <button onclick="show('punishment')">العقوبات</button>
+</nav>
 
-    <div class="table-container">
-        <table id="emsTable">
-            <thead>
-                <tr>
-                    <th>الاسم</th><th>الكود</th><th>الرتبة</th><th>الحالة</th><th>الإجراء</th>
-                </tr>
-            </thead>
-            <tbody id="tableBody"></tbody>
+<!-- القيادات -->
+<section id="leaders" class="active">
+    <h2 class="title">👑 القيادات</h2>
+    <div class="box">
+        <table>
+            <tr>
+                <th>الاسم</th>
+                <th>الرتبة</th>
+                <th>الكود</th>
+            </tr>
+            <tr>
+                <td>سيد فائز</td>
+                <td>قائد عام</td>
+                <td>CMD-001</td>
+            </tr>
         </table>
     </div>
+</section>
 
-    <script>
-        // دمج المنطق البرمجي الأساسي مع الواجهة الجديدة
-        let appData = JSON.parse(localStorage.getItem('ems_data')) || { employees: [] };
+<!-- المسعفين -->
+<section id="medics">
+    <h2 class="title">🚑 المسعفين</h2>
+    <div class="box">
+        <table>
+            <tr>
+                <th>الاسم</th>
+                <th>الكود</th>
+                <th>الرتبة</th>
+            </tr>
+            <tr>
+                <td>مسعف 1</td>
+                <td>MED-101</td>
+                <td>مبتدئ</td>
+            </tr>
+        </table>
+    </div>
+</section>
 
-        function render() {
-            const tbody = document.getElementById('tableBody');
-            tbody.innerHTML = '';
-            appData.employees.forEach((emp, i) => {
-                tbody.innerHTML += `
-                    <tr>
-                        <td style="text-align:center;">${emp.name}</td>
-                        <td style="text-align:center; color:var(--primary-blue);">${emp.code}</td>
-                        <td style="text-align:center;">${emp.rank}</td>
-                        <td style="text-align:center;">${emp.status}</td>
-                        <td style="text-align:center;"><button onclick="deleteEmp(${i})">🗑️</button></td>
-                    </tr>
-                `;
-            });
-        }
+<!-- الترقيات -->
+<section id="promotion">
+    <h2 class="title">⬆️ شروط الترقيه</h2>
+    <div class="box">
+        <p>• الالتزام الكامل بالدوام</p>
+        <p>• عدم وجود مخالفات</p>
+        <p>• عدد تدخلات لا يقل عن المطلوب</p>
+        <p>• احترام القيادات وعدم مخالفة الأوامر</p>
+    </div>
+</section>
 
-        function addNewEmployee() {
-            appData.employees.push({ name: "مسعف جديد", code: "E-000", rank: "مستجد", status: "نشط" });
-            render();
-        }
+<!-- العقوبات -->
+<section id="punishment">
+    <h2 class="title">⚠️ العقوبات</h2>
+    <div class="box">
+        <p>• إنذار أول عند المخالفة</p>
+        <p>• خصم رتبة عند التكرار</p>
+        <p>• فصل مباشر عند الإهمال أو الخيانة</p>
+        <p>• منع من الاستنفار في حال المخالفة الأمنية</p>
+    </div>
+</section>
 
-        function deleteEmp(i) {
-            appData.employees.splice(i, 1);
-            render();
-        }
+<script>
+function show(id){
+    let sections = document.querySelectorAll("section");
+    sections.forEach(s => s.classList.remove("active"));
+    document.getElementById(id).classList.add("active");
+}
+</script>
 
-        function saveData() {
-            localStorage.setItem('ems_data', JSON.stringify(appData));
-            alert("تم حفظ البيانات بنجاح في ذاكرة المتصفح!");
-        }
-
-        render();
-    </script>
 </body>
 </html>
