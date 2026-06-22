@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>سجل أطباء ومسعفي الهلال الأحمر - TORONTO RP</title>
+    <style>
+        :root {
+            --bg-color: #0b0b0f;
+            --panel-bg: #111116;
+            --table-th: #161620;
+            --text-color: #ffffff;
+            --accent-color: #ff3333;
+            --accent-glow: #ff0000;
+            --border-color: #1f1f2e;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        .watermark-bg {
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%) rotate(-15deg);
+            font-size: 7rem; font-weight: 900;
+            color: rgba(255, 255, 255, 0.012);
+            white-space: nowrap; pointer-events: none; z-index: -1; user-select: none;
+        }
+
+        .container { max-width: 100%; margin: 0 auto; }
+
+        .header-wrapper {
+            display: flex; flex-direction: column; align-items: center; margin-bottom: 25px; position: relative;
+        }
+        
+        .logo-glow {
+            width: 90px; height: 90px;
+            background: radial-gradient(circle, var(--accent-color) 20%, transparent 70%);
+            border: 2px solid var(--accent-color); border-radius: 50%;
+            box-shadow: 0 0 20px var(--accent-color);
+            display: flex; align-items: center; justify-content: center; font-size: 36px;
+            margin-bottom: 15px; animation: pulseGlow 2s infinite;
+        }
+
+        .header-wrapper h1 {
+            font-size: 36px; font-weight: 900; margin: 0; color: #fff;
+            text-shadow: 0 0 10px #fff, 0 0 20px var(--accent-color);
+        }
+
+        .header-wrapper p {
+            color: #00e5ff; margin: 5px 0 0 0; font-size: 14px; font-weight: bold; letter-spacing: 1px;
+            text-shadow: 0 0 8px rgba(0, 229, 255, 0.5);
+        }
+
+        .system-status {
+            background: rgba(255, 51, 51, 0.1); border: 1px solid var(--accent-color);
+            padding: 4px 15px; border-radius: 20px; font-size: 11px; color: #fff; margin-top: 10px;
+            display: flex; align-items: center; gap: 8px; font-weight: bold;
+        }
+        .status-dot { width: 8px; height: 8px; background-color: #e53e3e; border-radius: 50%; display: inline-block; box-shadow: 0 0 8px #e53e3e; }
+        .status-dot.authenticated { background-color: #48bb78; box-shadow: 0 0 8px #48bb78; }
+
+        .stats-grid {
+            display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background-color: var(--panel-bg); border: 1px solid var(--border-color);
+            padding: 20px 15px; border-radius: 10px; text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5); border-bottom: 4px solid #333;
+        }
+        .stat-card.active-card { border-bottom-color: #48bb78; }
+        .stat-card.warn-card { border-bottom-color: #ecc94b; }
+        .stat-card.total-card { border-bottom-color: var(--accent-color); }
+        .stat-card.upgrade-card { border-bottom-color: #3182ce; }
+        .stat-card.cases-card { border-bottom-color: #e53e3e; }
+        
+        .stat-card h3 { margin: 0 0 8px 0; font-size: 13px; color: #aaa; font-weight: 600; }
+        .stat-card .number { font-size: 32px; font-weight: 900; }
+
+        .toolbar {
+            display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; align-items: center;
+            background: #13131a; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color);
+        }
+
+        .search-box {
+            background-color: #161622; border: 1px solid var(--border-color);
+            padding: 10px 15px; border-radius: 6px; color: white; width: 250px; font-size: 13px; outline: none;
+        }
+
+        .btn {
+            background-color: var(--panel-bg); color: #ccc; border: 1px solid var(--border-color);
+            padding: 10px 16px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 700;
+            transition: 0.2s; display: flex; align-items: center; gap: 6px;
+        }
+        .btn:hover { background-color: #1f1f2e; color: #fff; }
+        .btn.active { background-color: #1d283c; border-color: #3182ce; color: #fff; }
+        
+        .btn-excel { border-color: #38a169; color: #48bb78; }
+        .btn-clear { border-color: #ecc94b; color: #ecc94b; }
+        .btn-auth { border-color: #3182ce; color: #63b3ed; font-weight: bold; }
+        .btn-settings { border-color: #4a5568; color: #a0aec0; margin-right: auto; }
+        .btn-add { background-color: var(--accent-color); border-color: var(--accent-color); color: white; }
+        .btn-add:hover { background-color: #cc2424; }
+
+        .table-container {
+            background-color: var(--panel-bg); border: 1px solid var(--border-color);
+            border-radius: 8px; overflow-x: auto; box-shadow: 0 4px 25px rgba(0,0,0,0.4);
+        }
+
+        table { width: 100%; border-collapse: collapse; text-align: center; font-size: 13px; min-width: 1700px; }
+        th, td { padding: 12px 10px; border-bottom: 1px solid var(--border-color); border-left: 1px solid var(--border-color); }
+        th { background-color: var(--table-th); color: #aaa; font-weight: 700; font-size: 12px; }
+        
+        tr.hidden { display: none !important; }
+        tr:hover td { background-color: #14141c; }
+
+        .editable-cell { outline: none; transition: 0.2s; }
+        body.is-admin .editable-cell { cursor: text; }
+        body.is-admin .editable-cell:focus { background-color: #1f1f35 !important; box-shadow: inset 0 0 4px var(--accent-color); color: #fff; }
+
+        .check-cell { font-size: 16px; font-weight: bold; user-select: none; }
+        body.is-admin .check-cell { cursor: pointer; }
+        .checked { color: #48bb78; text-shadow: 0 0 8px rgba(72,187,120,0.5); }
+        .unchecked { color: #e53e3e; }
+
+        .report-counter { display: flex; align-items: center; justify-content: center; gap: 5px; }
+        .count-btn {
+            background: #1f1f2e; border: 1px solid #2d2d3f; color: #fff; width: 22px; height: 22px;
+            border-radius: 4px; display: none; align-items: center; justify-content: center; cursor: pointer; font-weight: bold;
+        }
+        body.is-admin .count-btn { display: flex; }
+        .count-num { font-weight: bold; color: #00e5ff; min-width: 20px; }
+
+        .table-select {
+            background: none; border: none; color: #fff; font-weight: bold; font-family: inherit; font-size: 13px;
+            text-align: center; text-align-last: center; outline: none; appearance: none; -webkit-appearance: none; pointer-events: none;
+        }
+        body.is-admin .table-select { pointer-events: auto; cursor: pointer; }
+
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); backdrop-filter: blur(8px);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 1000; visibility: hidden; opacity: 0; transition: 0.3s;
+        }
+        .modal-overlay.open { visibility: visible; opacity: 1; }
+        .modal-box {
+            background-color: var(--panel-bg); border: 2px solid var(--accent-color);
+            box-shadow: 0 0 30px rgba(255, 51, 51, 0.2); width: 550px; max-width: 95%;
+            border-radius: 12px; padding: 25px; max-height: 85vh; overflow-y: auto;
+        }
+        .modal-box h3 { margin-top: 0; color: #fff; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; display: flex; justify-content: space-between; }
+        
+        .form-group { margin-bottom: 15px; display: flex; flex-direction: column; gap: 5px; }
+        .form-group label { font-size: 13px; color: #bbb; font-weight: bold; }
+        .form-group input, .form-group textarea {
+            background: #161622; border: 1px solid var(--border-color); padding: 10px; color: #fff; border-radius: 6px; outline: none;
+        }
+
+        .items-list-edit {
+            background: #161622; padding: 10px; border-radius: 6px; max-height: 140px; overflow-y: auto; margin-bottom: 15px;
+        }
+        .item-row-manage { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid #232334; }
+        .action-btn-row { background: none; border: none; cursor: pointer; font-size: 14px; }
+
+        @keyframes pulseGlow { 0%, 100% { box-shadow: 0 0 15px var(--accent-color); } 50% { box-shadow: 0 0 30px var(--accent-color); } }
+    </style>
+</head>
+<body>
+
+    <div class="watermark-bg" id="wm-text">خاص بسيرفر تورنتو</div>
+
+    <div class="container">
+        
+        <div class="header-wrapper">
+            <div class="logo-glow">❤️‍🔥</div>
+            <h1 id="site-title">سجل أطباء ومسعفي الهلال الأحمر</h1>
+            <p id="site-subtitle">TORONTO RP - EMS HIGH COMMAND</p>
+            <div class="system-status">
+                <span class="status-dot" id="auth-dot"></span> 
+                <span id="auth-status-text">وضع المشاهدة (مغلق)</span>
+                <span style="color:#888; margin-right:10px;">⏱️ 2026/06/22</span>
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card cases-card">
+                <h3>حالات وإنعاش</h3>
+                <div id="stat-cases" class="number" style="color: #e53e3e;">0</div>
+            </div>
+            <div class="stat-card warn-card">
+                <h3>مستحقين لفت نظر</h3>
+                <div id="stat-warns" class="number" style="color: #ecc94b;">0</div>
+            </div>
+            <div class="stat-card upgrade-card">
+                <h3>مؤهلين للترقية</h3>
+                <div id="stat-upgrades" class="number" style="color: #3182ce;">0</div>
+            </div>
+            <div class="stat-card active-card">
+                <h3>الكادر النشط</h3>
+                <div id="stat-active" class="number" style="color: #48bb78;">0</div>
+            </div>
+            <div class="stat-card total-card">
+                <h3>إجمالي الكادر</h3>
+                <div id="stat-total" class="number" style="color: #fff;">0</div>
+            </div>
+        </div>
+
+        <div class="toolbar">
+            <input type="text" id="searchBar" class="search-box" placeholder="🔍 ابحث باسم، كود، رتبة أو ديسكورد...">
+            
+            <button id="tabActive" class="btn active" onclick="switchTab('active')">🟢 سجل الكادر النشط</button>
+            <button id="tabRetired" class="btn" onclick="switchTab('retired')">🔴 سجل الاستقالات والفصل</button>
+            
+            <button class="btn btn-excel" onclick="openEvaluationModal()">⚠️ التقييم والترقيات</button>
+            <button class="btn btn-clear" id="btn-clear-id" onclick="clearAttendance()" disabled style="opacity:0.5;">📅 تصفير الأسبوع</button>
+            
+            <button id="authBtn" class="btn btn-auth" onclick="handleAuthToggle()">🔐 تسجيل دخول الإدارة</button>
+            <button class="btn btn-settings" id="btn-settings-id" onclick="toggleModal('settingsModal', true)" disabled style="opacity:0.5;">⚙️ الإعدادات والتحكم</button>
+            <button class="btn btn-add" id="btn-add-id" onclick="addNewEmployeeRowDirect()" disabled style="opacity:0.5;">+ إضافة موظف جديد</button>
+        </div>
+
+        <div class="table-container">
+            <table id="emsTable">
+                <thead>
+                    <tr>
+                        <th style="width: 40px;">ت</th>
+                        <th>ديسكورد ID</th>
+                        <th>الاسم</th>
+                        <th>الكود</th>
+                        <th>الرتبة</th>
+                        <th>التخصص</th>
+                        <th>الوضعية</th>
+                        <th>الحالة</th>
+                        <th>ج</th><th>خ</th><th>أ</th><th>ث</th><th>ن</th><th>ح</th><th>س</th>
+                        <th>تقرير تواجد</th>
+                        <th>تقرير عمليات/نائب</th>
+                        <th>الإنذارات</th>
+                        <th>ترقية %</th>
+                        <th>الأوسمة</th>
+                        <th>تاريخ الانضمام</th>
+                        <th>إجراء</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody"></tbody>
+            </table>
+        </div>
+
+        <div style="margin-top:25px;" class="stat-card">
+            <h3 style="text-align:right; font-size:16px; color:var(--accent-color);">📜 قسم شروط الترقيات المطور</h3>
+            <div id="rulesContainer" style="text-align:right; padding-right:20px; color:#ccc;"></div>
+        </div>
+
+    </div>
+
+    <div class="modal-overlay" id="settingsModal">
+        <div class="modal-box">
+            <h3>⚙️ لوحة الإعدادات والتحكم الشامل <button class="action-btn-row" onclick="toggleModal('settingsModal', false)">❌</button></h3>
+            
+            <div class="form-group">
+                <label>اسم الموقع الرئيسي:</label>
+                <input type="text" id="cfg-title" oninput="updateLiveMeta('siteTitle', this.value)">
+            </div>
+            <div class="form-group">
+                <label>الوصف الفرعي للموقع:</label>
+                <input type="text" id="cfg-subtitle" oninput="updateLiveMeta('siteSubtitle', this.value)">
+            </div>
+            <div class="form-group">
+                <label>نص الخلفية الشفاف:</label>
+                <input type="text" id="cfg-wm" oninput="updateLiveMeta('watermark', this.value)">
+            </div>
+            <div class="form-group">
+                <label>تغيير كود المرور السري للأدمن:</label>
+                <input type="text" id="cfg-pin" placeholder="اكتب الرمز السري الجديد هنا...">
+            </div>
+
+            <h4 style="color:var(--accent-color); margin-bottom:5px;">📋 إدارة وتلوين رتب السيرفر:</h4>
+            <div class="items-list-edit" id="manage-ranks-list"></div>
+            <div style="display:flex; gap:5px; margin-bottom:15px;">
+                <input type="text" id="new-rank-name" style="flex:2;" placeholder="اسم الرتبة الجديدة...">
+                <input type="color" id="new-rank-color" style="flex:1; height:40px; padding:0;" value="#ff3333">
+                <button onclick="addCustomRank()" style="background:#3182ce; color:white; border:none; padding:0 15px; border-radius:6px; cursor:pointer;">+ إضافة</button>
+            </div>
+
+            <h4 style="color:var(--accent-color); margin-bottom:5px;">🏅 إدارة الأوسمة والشرف:</h4>
+            <div class="items-list-edit" id="manage-badges-list"></div>
+            <div style="display:flex; gap:5px; margin-bottom:15px;">
+                <input type="text" id="new-badge-name" style="flex:2;" placeholder="اسم الوسام الجديد...">
+                <input type="color" id="new-badge-color" style="flex:1; height:40px; padding:0;" value="#ecc94b">
+                <button onclick="addCustomBadge()" style="background:#3182ce; color:white; border:none; padding:0 15px; border-radius:6px; cursor:pointer;">+ إضافة</button>
+            </div>
+
+            <button onclick="downloadUpdatedCode()" style="width:100%; background:#3182ce; color:white; border:none; padding:12px; border-radius:6px; cursor:pointer; margin-bottom:10px; font-weight:bold;">📥 تحميل كود الموقع المحدث (HTML)</button>
+            <button onclick="saveGlobalSettings()" style="width:100%; background:#48bb78; color:white; border:none; padding:12px; border-radius:6px; font-weight:bold; cursor:pointer;">حفظ وتطبيق التغييرات</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="evaluationModal">
+        <div class="modal-box">
+            <h3>⚠️ شروط التقييم والترقيات المعمول بها <button class="action-btn-row" onclick="toggleModal('evaluationModal', false)">❌</button></h3>
+            <div class="form-group" id="eval-add-input-grp" style="display:none;">
+                <label>إضافة شرط ترقية جديد للسجلات:</label>
+                <textarea id="cfg-rule-text" placeholder="اكتب نص الشرط الإداري هنا..."></textarea>
+                <button onclick="addNewRuleItem()" style="width:100%; background:#3182ce; color:white; border:none; padding:10px; border-radius:6px; cursor:pointer; font-weight:bold; margin-top:5px;">+ إدراج الشرط</button>
+            </div>
+            <div class="items-list-edit" id="modalRulesList" style="margin-top:10px;"></div>
+        </div>
+    </div>
+
+    <script>
+        const defaultData = {
+            adminPin: "torento911",
+            siteTitle: "سجل أطباء ومسعفي الهلال الأحمر",
+            siteSubtitle: "TORONTO RP - EMS HIGH COMMAND",
+            watermark: "خاص بسيرفر تورنتو",
+            accentColor: "#ff3333",
+            ranks: [
+                { name: "قيادة", color: "#ff3333" },
+                { name: "طبيب استشاري", color: "#e53e3e" },
+                { name: "مسعف أول", color: "#ecc94b" },
+                { name: "مسعف مستجد", color: "#48bb78" }
+            ],
+            badges: [
+                { name: "بلا وسام", color: "#718096" },
+                { name: "🏅 وسام الخدمة", color: "#ecc94b" },
+                { name: "🥈 وسام الشرف", color: "#a0aec0" }
+            ],
+            rules: [
+                "الالتزام الكامل بالحصص المقررة والتواجد الفعال داخل المقاطعة.",
+                "عدم تجاوز الإنذارات المسموحة في السجل لتستحق الترقية الميدانية."
+            ],
+            employees: [
+                { id: "582165572888433162", name: "عدي", code: "E-001", rank: "قيادة", spec: "إدارة وتدريب", pos: "إسعاف متقدم", status: "active", attendance: [1,1,1,1,1,1,1], repPresence: 0, repOps: 0, warn: "0/3", upgrade: "مستقر", badge: "🏅 وسام الخدمة", date: "2026/01/15" },
+                { id: "718428168498853131", name: "أكرم نجف", code: "E-002", rank: "طبيب استشاري", spec: "إدارة وتدريب", pos: "إسعاف متقدم", status: "active", attendance: [1,1,1,1,1,1,1], repPresence: 5, repOps: 3, warn: "0/3", upgrade: "مؤهل للترقية", badge: "🏅 وسام الخدمة", date: "2026/01/20" }
+            ]
+        };
+
+        let appData = JSON.parse(localStorage.getItem('toronto_ems_data')) || defaultData;
+        let activeTab = 'active';
+        let isAdmin = false;
+
+        function saveToStorageDirect() {
+            localStorage.setItem('toronto_ems_data', JSON.stringify(appData));
+            calculateStats();
+        }
+
+        function handleAuthToggle() {
+            if (isAdmin) {
+                isAdmin = false;
+                document.body.classList.remove('is-admin');
+                document.getElementById('authBtn').innerText = "🔐 تسجيل دخول الإدارة";
+                document.getElementById('authBtn').style.borderColor = "#3182ce";
+                document.getElementById('auth-dot').classList.remove('authenticated');
+                document.getElementById('auth-status-text').innerText = "وضع المشاهدة (مغلق)";
+                
+                document.getElementById('btn-clear-id').disabled = true; document.getElementById('btn-clear-id').style.opacity = "0.5";
+                document.getElementById('btn-settings-id').disabled = true; document.getElementById('btn-settings-id').style.opacity = "0.5";
+                document.getElementById('btn-add-id').disabled = true; document.getElementById('btn-add-id').style.opacity = "0.5";
+                document.getElementById('eval-add-input-grp').style.display = "none";
+                renderApp();
+            } else {
+                const pin = prompt("الرجاء إدخال الرمز السري للإدارة لتفعيل التعديل السريع:");
+                if (pin === appData.adminPin) {
+                    isAdmin = true;
+                    document.body.classList.add('is-admin');
+                    document.getElementById('authBtn').innerText = "🔓 تسجيل خروج الإدارة";
+                    document.getElementById('authBtn').style.borderColor = "#48bb78";
+                    document.getElementById('auth-dot').classList.add('authenticated');
+                    document.getElementById('auth-status-text').innerText = "وضع التعديل النشط (الأدمن)";
+                    
+                    document.getElementById('btn-clear-id').disabled = false; document.getElementById('btn-clear-id').style.opacity = "1";
+                    document.getElementById('btn-settings-id').disabled = false; document.getElementById('btn-settings-id').style.opacity = "1";
+                    document.getElementById('btn-add-id').disabled = false; document.getElementById('btn-add-id').style.opacity = "1";
+                    document.getElementById('eval-add-input-grp').style.display = "block";
+                    renderApp();
+                } else if (pin !== null) {
+                    alert("الرمز السري غير صحيح! تم رفض صلاحية التعديل.");
+                }
+            }
+        }
+
+        function renderApp() {
+            document.getElementById('site-title').innerText = appData.siteTitle;
+            document.getElementById('site-subtitle').innerText = appData.siteSubtitle;
+            document.getElementById('wm-text').innerText = appData.watermark;
+            
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
+            
+            appData.employees.forEach((emp, index) => {
+                const tr = document.createElement('tr');
+                tr.setAttribute('data-status', emp.status);
+                
+                const rankObj = appData.ranks.find(r => r.name === emp.rank);
+                const rankColor = rankObj ? rankObj.color : '#fff';
+                const isCommand = emp.rank.includes("قيادة");
+                
+                let attHtml = '';
+                emp.attendance.forEach((val, dayIdx) => {
+                    attHtml += `<td class="check-cell ${val === 1 ? 'checked' : 'unchecked'}" onclick="toggleCheck(${index}, ${dayIdx})">${val === 1 ? '✔' : '✘'}</td>`;
+                });
+
+                let rankOptions = '';
+                appData.ranks.forEach(r => { rankOptions += `<option value="${r.name}" ${emp.rank === r.name ? 'selected' : ''}>${r.name}</option>`; });
+
+                let badgeOptions = '';
+                appData.badges.forEach(b => { badgeOptions += `<option value="${b.name}" ${emp.badge === b.name ? 'selected' : ''}>${b.name}</option>`; });
+
+                tr.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td class="editable-cell" ${isAdmin ? 'contenteditable="true"' : ''} onblur="updateEmpField(${index}, 'id', this.innerText)" style="color:#888;">${emp.id}</td>
+                    <td class="editable-cell" ${isAdmin ? 'contenteditable="true"' : ''} onblur="updateEmpField(${index}, 'name', this.innerText)" style="font-weight: bold; color:#fff;">${emp.name}</td>
+                    <td class="editable-cell" ${isAdmin ? 'contenteditable="true"' : ''} onblur="updateEmpField(${index}, 'code', this.innerText)" style="color: #ecc94b; font-weight: bold;">${emp.code}</td>
+                    
+                    <td>
+                        <select class="table-select" onchange="updateEmpField(${index}, 'rank', this.value)" style="color: ${rankColor}; text-shadow: 0 0 5px ${rankColor}; font-weight:bold;">
+                            ${rankOptions}
+                        </select>
+                    </td>
+                    
+                    <td class="editable-cell" ${isAdmin ? 'contenteditable="true"' : ''} onblur="updateEmpField(${index}, 'spec', this.innerText)">${emp.spec}</td>
+                    <td class="editable-cell" ${isAdmin ? 'contenteditable="true"' : ''} onblur="updateEmpField(${index}, 'pos', this.innerText)">${emp.pos}</td>
+                    
+                    <td>
+                        <select class="table-select" onchange="updateEmpField(${index}, 'status', this.value)" style="color:${emp.status==='active'?'#48bb78':'#e53e3e'}">
+                            <option value="active" ${emp.status==='active'?'selected':''}>🟢 نشط</option>
+                            <option value="retired" ${emp.status==='retired'?'selected':''}>🔴 فصل/استقالة</option>
+                        </select>
+                    </td>
+                    
+                    ${attHtml}
+                    
+                    <td>
+                        ${isCommand ? `<span style="color:#555;">—</span>` : `
+                        <div class="report-counter">
+                            <button class="count-btn" onclick="adjustReport(${index}, 'repPresence', -1)">-</button>
+                            <span class="count-num">${emp.repPresence || 0}</span>
+                            <button class="count-btn" onclick="adjustReport(${index}, 'repPresence', 1)">+</button>
+                        </div>`}
+                    </td>
+                    
+                    <td>
+                        ${isCommand ? `<span style="color:#555;">—</span>` : `
+                        <div class="report-counter">
+                            <button class="count-btn" onclick="adjustReport(${index}, 'repOps', -1)">-</button>
+                            <span class="count-num">${emp.repOps || 0}</span>
+                            <button class="count-btn" onclick="adjustReport(${index}, 'repOps', 1)">+</button>
+                        </div>`}
+                    </td>
+                    
+                    <td class="editable-cell" ${isAdmin ? 'contenteditable="true"' : ''} onblur="updateEmpField(${index}, 'warn', this.innerText)" style="color:#e53e3e; font-weight:bold;">${emp.warn}</td>
+                    <td class="editable-cell" ${isAdmin ? 'contenteditable="true"' : ''} onblur="updateEmpField(${index}, 'upgrade', this.innerText)" style="color:#3182ce; font-weight:bold;">${emp.upgrade}</td>
+                    
+                    <td>
+                        <select class="table-select" onchange="updateEmpField(${index}, 'badge', this.value)" style="font-weight:bold;">
+                            ${badgeOptions}
+                        </select>
+                    </td>
+                    
+                    <td class="editable-cell" ${isAdmin ? 'contenteditable="true"' : ''} onblur="updateEmpField(${index}, 'date', this.innerText)" style="color: #718096;">${emp.date}</td>
+                    <td>
+                        <button onclick="deleteEmployee(${index})" style="background:none; border:none; color:#ff3333; cursor:${isAdmin?'pointer':'not-allowed'}; opacity:${isAdmin?1:0.3};" ${!isAdmin?'disabled':''}>🗑️</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            const container = document.getElementById('rulesContainer');
+            container.innerHTML = '';
+            appData.rules.forEach((rule) => { container.innerHTML += `<p style="margin:5px 0;">🔹 ${rule}</p>`; });
+
+            filterData();
+            calculateStats();
+            populateSettingsLists();
+        }
+
+        function addNewEmployeeRowDirect() {
+            if (!isAdmin) return;
+            const todayStr = new Date().toISOString().split('T')[0].replace(/-/g, '/');
+            const defaultRank = appData.ranks.length > 0 ? appData.ranks[appData.ranks.length - 1].name : "مسعف مستجد";
+            const defaultBadge = appData.badges.length > 0 ? appData.badges[0].name : "بلا وسام";
+            
+            appData.employees.push({
+                id: "اكتب_الـID",
+                name: "اسم الموظف الجديد",
+                code: "E-xxx",
+                rank: defaultRank,
+                spec: "ميداني",
+                pos: "نشط",
+                status: activeTab,
+                attendance: [0,0,0,0,0,0,0],
+                repPresence: 0,
+                repOps: 0,
+                warn: "0/3",
+                upgrade: "مستقر",
+                badge: defaultBadge,
+                date: todayStr
+            });
+            
+            saveToStorageDirect();
+            renderApp();
+            
+            setTimeout(() => {
+                const lastRow = document.querySelector('#tableBody tr:last-child');
+                if(lastRow) {
+                    const nameCell = lastRow.cells[2];
+                    if(nameCell) nameCell.focus();
+                }
+            }, 50);
+        }
+
+        function updateEmpField(idx, field, val) {
+            if (!isAdmin || !appData.employees[idx]) return;
+            appData.employees[idx][field] = val.trim();
+            saveToStorageDirect();
+            if (field === 'rank' || field === 'status' || field === 'badge') {
+                renderApp();
+            } else {
+                calculateStats();
+            }
+        }
+
+        function toggleCheck(empIdx, dayIdx) {
+            if (!isAdmin) return;
+            appData.employees[empIdx].attendance[dayIdx] = appData.employees[empIdx].attendance[dayIdx] === 1 ? 0 : 1;
+            saveToStorageDirect(); renderApp();
+        }
+
+        function adjustReport(empIdx, type, val) {
+            if (!isAdmin) return;
+            if (!appData.employees[empIdx][type]) appData.employees[empIdx][type] = 0;
+            appData.employees[empIdx][type] = Math.max(0, appData.employees[empIdx][type] + val);
+            saveToStorageDirect(); renderApp();
+        }
+
+        function filterData() {
+            const query = document.getElementById('searchBar').value.toLowerCase();
+            document.querySelectorAll('#tableBody tr').forEach((row, idx) => {
+                const emp = appData.employees[idx];
+                if (!emp) return;
+                let match = emp.name.toLowerCase().includes(query) || emp.code.toLowerCase().includes(query) || emp.id.toLowerCase().includes(query) || emp.rank.toLowerCase().includes(query);
+                if (query === "") match = true;
+                if (match && emp.status === activeTab) row.classList.remove('hidden');
+                else row.classList.add('hidden');
+            });
+        }
+
+        function switchTab(tab) {
+            activeTab = tab;
+            document.getElementById('tabActive').classList.toggle('active', tab === 'active');
+            document.getElementById('tabRetired').classList.toggle('active', tab === 'retired');
+            filterData();
+        }
+
+        function calculateStats() {
+            let total = appData.employees.length, active = 0, retired = 0, warns = 0, upgrades = 0, totalCases = 0;
+            appData.employees.forEach(emp => {
+                if (emp.status === 'active') active++; else retired++;
+                if (emp.warn !== '0/3' && emp.warn !== '0' && emp.warn.trim() !== '') warns++;
+                if (emp.upgrade === 'مؤهل للترقية' || emp.upgrade === 'مؤهل') upgrades++;
+                totalCases += (emp.repOps || 0);
+            });
+            document.getElementById('stat-total').innerText = total; document.getElementById('stat-active').innerText = active;
+            document.getElementById('stat-retired').innerText = retired; document.getElementById('stat-warns').innerText = warns;
+            document.getElementById('stat-upgrades').innerText = upgrades; document.getElementById('stat-cases').innerText = totalCases;
+        }
+
+        function populateSettingsLists() {
+            const rankList = document.getElementById('manage-ranks-list');
+            rankList.innerHTML = '';
+            appData.ranks.forEach((r, idx) => {
+                rankList.innerHTML += `
+                    <div class="item-row-manage">
+                        <span style="color:${r.color}; font-weight:bold;">${r.name}</span>
+                        <button onclick="deleteCustomItem('ranks', ${idx})" class="action-btn-row">🗑️</button>
+                    </div>`;
+            });
+
+            const badgeList = document.getElementById('manage-badges-list');
+            badgeList.innerHTML = '';
+            appData.badges.forEach((b, idx) => {
+                badgeList.innerHTML += `
+                    <div class="item-row-manage">
+                        <span style="color:${b.color}; font-weight:bold;">${b.name}</span>
+                        <button onclick="deleteCustomItem('badges', ${idx})" class="action-btn-row">🗑️</button>
+                    </div>`;
+            });
+        }
+
+        function addCustomRank() {
+            const name = document.getElementById('new-rank-name').value.trim();
+            const color = document.getElementById('new-rank-color').value;
+            if (name) {
+                appData.ranks.push({ name, color });
+                document.getElementById('new-rank-name').value = '';
+                saveToStorageDirect(); renderApp();
+            }
+        }
+
+        function addCustomBadge() {
+            const name = document.getElementById('new-badge-name').value.trim();
+            const color = document.getElementById('new-badge-color').value;
+            if (name) {
+                appData.badges.push({ name, color });
+                document.getElementById('new-badge-name').value = '';
+                saveToStorageDirect(); renderApp();
+            }
+        }
+
+        function deleteCustomItem(type, idx) {
+            if (confirm("هل أنت متأكد من حذف هذا البند الإداري؟")) {
+                appData[type].splice(idx, 1);
+                saveToStorageDirect(); renderApp();
+            }
+        }
+
+        function deleteEmployee(idx) {
+            if (!isAdmin) return;
+            if (confirm("هل تريد مسح هذا الموظف نهائياً وكلياً من السجل السري؟")) {
+                appData.employees.splice(idx, 1);
+                saveToStorageDirect(); renderApp();
+            }
+        }
+
+        function clearAttendance() {
+            if (!isAdmin) return;
+            if (confirm("تأكيد تصفير أسبوع العمل؟ سيتم تصفير الحضور وتقارير التواجد والعمليات لجميع المسعفين.")) {
+                appData.employees.forEach(emp => { emp.attendance = [0,0,0,0,0,0,0]; emp.repPresence = 0; emp.repOps = 0; });
+                saveToStorageDirect(); renderApp();
+            }
+        }
+
+        function openEvaluationModal() {
+            const list = document.getElementById('modalRulesList');
+            list.innerHTML = '';
+            appData.rules.forEach((r, idx) => {
+                list.innerHTML += `
+                    <div class="item-row-manage">
+                        <span>${idx+1}. ${r}</span>
+                        <button onclick="deleteRuleItem(${idx})" class="action-btn-row" style="display:${isAdmin?'block':'none'}; color:#ff3333;">❌</button>
+                    </div>`;
+            });
+            toggleModal('evaluationModal', true);
+        }
+
+        function addNewRuleItem() {
+            const text = document.getElementById('cfg-rule-text').value.trim();
+            if(text) {
+                appData.rules.push(text);
+                document.getElementById('cfg-rule-text').value = '';
+                saveToStorageDirect(); openEvaluationModal(); renderApp();
+            }
+        }
+
+        function deleteRuleItem(idx) {
+            if(!isAdmin) return;
+            appData.rules.splice(idx, 1);
+            saveToStorageDirect(); openEvaluationModal(); renderApp();
+        }
+
+        function toggleModal(id, show) { document.getElementById(id).classList.toggle('open', show); }
+        function updateLiveMeta(field, val) { appData[field] = val; saveToStorageDirect(); }
+
+        function saveGlobalSettings() {
+            const newPin = document.getElementById('cfg-pin').value.trim();
+            if (newPin !== "") { appData.adminPin = newPin; document.getElementById('cfg-pin').value = ""; alert("تم تغيير الرمز السري للإدارة بنجاح!"); }
+            saveToStorageDirect(); toggleModal('settingsModal', false); renderApp();
+        }
+
+        function downloadUpdatedCode() {
+            const currentDataStr = JSON.stringify(appData);
+            let fullHtml = document.documentElement.outerHTML;
+            fullHtml = fullHtml.replace(/let appData = JSON\.parse\(localStorage\.getItem\('toronto_ems_data'\)\) \|\| defaultData;/, `let appData = ${currentDataStr};`);
+            const blob = new Blob([`<!DOCTYPE html>\n` + fullHtml], { type: 'text/html' });
+            const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'index.html'; a.click();
+        }
+
+        document.getElementById('searchBar').addEventListener('input', filterData);
+        document.getElementById('cfg-title').value = appData.siteTitle;
+        document.getElementById('cfg-subtitle').value = appData.siteSubtitle;
+        document.getElementById('cfg-wm').value = appData.watermark;
+        renderApp();
+    </script>
+</body>
+</html>
