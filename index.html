@@ -129,8 +129,8 @@
         }
 
         .header-wrapper p {
-            color: #00e5ff; margin: 10px 0 0 0; font-size: 15px; font-weight: 800; letter-spacing: 2px;
-            text-shadow: 0 0 10px rgba(0, 229, 255, 0.4);
+            color: #00e5ff; margin: 10px 0 0 0; font-size: 17px; font-weight: 800; letter-spacing: 1.5px;
+            text-shadow: 0 0 10px rgba(0, 229, 255, 0.6), 0 0 20px rgba(0, 229, 255, 0.2);
             cursor: not-allowed;
         }
 
@@ -326,6 +326,140 @@
         .action-btn-row { background: none; border: none; cursor: pointer; font-size: 14px; }
 
         @keyframes pulseGlow { 0%, 100% { box-shadow: 0 0 25px var(--card-glow); transform: scale(1); } 50% { box-shadow: 0 0 45px rgba(255, 42, 42, 0.35); transform: scale(1.03); } }
+
+        /* تصميم كليشة الشروط بتأثيرات النيون والـ Glow السينمائي */
+        .neon-rules-card {
+            margin-top: 35px;
+            background: linear-gradient(145deg, rgba(15, 16, 25, 0.9) 0%, rgba(8, 9, 13, 0.95) 100%);
+            border: 1px solid rgba(255, 68, 68, 0.15);
+            border-right: 4px solid #ff3333;
+            border-radius: 14px;
+            padding: 25px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.7), 
+                        inset 0 1px 2px rgba(255, 255, 255, 0.03);
+            position: relative;
+            overflow: hidden;
+            animation: cardNeonPulse 6s infinite ease-in-out;
+        }
+
+        .neon-rules-card::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 51, 51, 0.02), transparent);
+            transform: translateX(-100%);
+            animation: sweepLight 4s infinite linear;
+            pointer-events: none;
+        }
+
+        @keyframes sweepLight {
+            100% { transform: translateX(100%); }
+        }
+
+        @keyframes cardNeonPulse {
+            0%, 100% { border-color: rgba(255, 51, 51, 0.15); box-shadow: 0 15px 35px rgba(0, 0, 0, 0.7), 0 0 15px rgba(255, 51, 51, 0.02); }
+            50% { border-color: rgba(255, 51, 51, 0.4); box-shadow: 0 15px 35px rgba(0, 0, 0, 0.7), 0 0 25px rgba(255, 51, 51, 0.08); }
+        }
+
+        .neon-title-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            padding-bottom: 12px;
+        }
+
+        .neon-title-wrapper h3 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 900;
+            color: #ff3333;
+            text-shadow: 0 0 10px rgba(255, 51, 51, 0.6), 0 0 20px rgba(255, 51, 51, 0.2);
+            letter-spacing: 0.5px;
+        }
+
+        .neon-rule-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 12px 0;
+            color: #cbd5e0;
+            font-size: 14px;
+            font-weight: 700;
+            transition: transform 0.2s ease;
+        }
+
+        .neon-rule-item:hover {
+            transform: translateX(-5px);
+            color: #fff;
+        }
+
+        /* كيو فريم لتحريك علامة النيون الجانبية وتغيير ألوانها بانسيابية */
+        .neon-bullet {
+            width: 8px;
+            height: 8px;
+            background-color: #00e5ff;
+            border-radius: 2px;
+            transform: rotate(45deg);
+            display: inline-block;
+            box-shadow: 0 0 10px #00e5ff, 0 0 20px #00e5ff;
+            animation: neonGlowShift 4s infinite linear;
+        }
+
+        @keyframes neonGlowShift {
+            0%, 100% { background-color: #00e5ff; box-shadow: 0 0 10px #00e5ff, 0 0 20px #00e5ff; }
+            33% { background-color: #ff3333; box-shadow: 0 0 10px #ff3333, 0 0 20px #ff3333; }
+            66% { background-color: #00ff87; box-shadow: 0 0 10px #00ff87, 0 0 20px #00ff87; }
+        }
+
+        .glow-save-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, #00ff87 0%, #00bc62 100%);
+            color: #04060a;
+            border: none;
+            padding: 16px 32px;
+            font-size: 16px;
+            font-weight: 900;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 0 25px rgba(0, 255, 135, 0.6), 0 10px 20px rgba(0,0,0,0.4);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 99999;
+            transform: translateY(150px);
+            opacity: 0;
+            pointer-events: none;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .glow-save-btn.visible {
+            transform: translateY(0);
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .glow-save-btn:hover {
+            box-shadow: 0 0 35px rgba(0, 255, 135, 0.9), 0 15px 30px rgba(0,0,0,0.5);
+            transform: scale(1.05);
+        }
+
+        .glow-save-btn:active {
+            transform: scale(0.98);
+        }
+
+        .glow-save-btn .btn-pulse {
+            width: 10px; height: 10px; background-color: #04060a; border-radius: 50%;
+            display: inline-block; animation: dotPulse 1.5s infinite ease-in-out;
+        }
+
+        @keyframes dotPulse {
+            0%, 100% { transform: scale(0.7); opacity: 0.5; }
+            50% { transform: scale(1.2); opacity: 1; }
+        }
     </style>
 </head>
 <body>
@@ -333,12 +467,18 @@
     <div class="watermark-bg" id="wm-text">خاص بسيرفر تورنتو</div>
     <div class="toast-container" id="toastContainer"></div>
 
+    <button id="floatingSaveBtn" class="glow-save-btn" onclick="triggerGlobalSave()">
+        <span class="btn-pulse"></span>
+        💾 حفض التعديل
+    </button>
+
     <div class="container">
         
         <div class="header-wrapper" onselectstart="return false" oncontextmenu="return false">
             <div class="logo-glow">❤️‍🔥</div>
             <h1 id="site-title">جدول الهلال الأحمر</h1>
-            <p id="site-subtitle">TORONTO RP - EMS HIGH COMMAND</p>
+            <!-- تم تعديل السطر بالكامل طبقا لصورة image_7.png -->
+            <p id="site-subtitle">في كل مايتعلق بالهلال الاحمر - مقاطعة تورنتو</p>
             <div class="system-status">
                 <span class="status-dot" id="auth-dot"></span> 
                 <span id="auth-status-text">وضع المشاهدة (مغلق)</span>
@@ -405,9 +545,12 @@
             </table>
         </div>
 
-        <div style="margin-top:30px;" class="stat-card">
-            <h3 style="text-align:right; font-size:16px; color:var(--accent-color); text-shadow: 0 0 10px rgba(255,42,42,0.2);">📜 لوحة شروط ومستندات الترقيات الإدارية المعتمدة</h3>
-            <div id="rulesContainer" style="text-align:right; padding-right:20px; color:#b4b4c4; line-height: 1.8;"></div>
+        <!-- كليشة الشروط المتوهجة والمحدثة بالكامل طبقا لصورة image_6.png -->
+        <div class="neon-rules-card">
+            <div class="neon-title-wrapper">
+                <h3>📋 لوحة شروط ومستندات الترقيات الإدارية المعتمدة</h3>
+            </div>
+            <div id="rulesContainer" style="text-align:right;"></div>
         </div>
 
     </div>
@@ -437,7 +580,7 @@
             <div class="items-list-edit" id="manage-ranks-list"></div>
             <div style="display:flex; gap:5px; margin-bottom:15px;">
                 <input type="text" id="new-rank-name" style="flex:2;" placeholder="اسم الرتبة الجديدة...">
-                <input type="color" id="new-rank-color" style="flex:1; height:42px; padding:0; background:none; border:none;" value="#ff3333">
+                <input type="color" id="new-rank-color" style="flex:1; height:42px; padding:0; background:none; border:none;" value="#ff3333" onchange="showPendingSave()">
                 <button onclick="addCustomRank()" style="background:#00bfff; color:white; border:none; padding:0 15px; border-radius:6px; cursor:pointer; font-weight:bold;">+ إضافة</button>
             </div>
 
@@ -445,12 +588,12 @@
             <div class="items-list-edit" id="manage-badges-list"></div>
             <div style="display:flex; gap:5px; margin-bottom:15px;">
                 <input type="text" id="new-badge-name" style="flex:2;" placeholder="اسم الوسام الجديد...">
-                <input type="color" id="new-badge-color" style="flex:1; height:42px; padding:0; background:none; border:none;" value="#ecc94b">
+                <input type="color" id="new-badge-color" style="flex:1; height:42px; padding:0; background:none; border:none;" value="#ecc94b" onchange="showPendingSave()">
                 <button onclick="addCustomBadge()" style="background:#00bfff; color:white; border:none; padding:0 15px; border-radius:6px; cursor:pointer; font-weight:bold;">+ إضافة</button>
             </div>
 
             <button onclick="downloadUpdatedCode()" style="width:100%; background:#00bfff; color:white; border:none; padding:12px; border-radius:8px; cursor:pointer; margin-bottom:10px; font-weight:bold; box-shadow: 0 4px 12px rgba(0,191,255,0.2);">📥 تحميل كود الموقع المحدث بالكامل (index.html)</button>
-            <button onclick="saveGlobalSettings()" style="width:100%; background:#00ff87; color:#000; border:none; padding:12px; border-radius:8px; font-weight:bold; cursor:pointer; box-shadow: 0 4px 12px rgba(0,255,135,0.2);">حفظ وتطبيق التغييرات</button>
+            <button onclick="saveGlobalSettings()" style="width:100%; background:#00ff87; color:#000; border:none; padding:12px; border-radius:8px; font-weight:bold; cursor:pointer; box-shadow: 0 4px 12px rgba(0,255,135,0.2);">حفظ التعديل المباشر</button>
         </div>
     </div>
 
@@ -509,10 +652,11 @@
             return generateCodeRange(300, 350);
         }
 
+        // تم تضمين الشروط والفرع الجديد كـ Default تماماً كما في الصور المعروضة
         const defaultData = {
             adminPin: "toronto911", 
             siteTitle: "جدول الهلال الأحمر",
-            siteSubtitle: "TORONTO RP - EMS HIGH COMMAND",
+            siteSubtitle: "في كل مايتعلق بالهلال الاحمر - مقاطعة تورنتو",
             watermark: "خاص بسيرفر تورنتو",
             accentColor: "#ff2a2a",
             ranks: [
@@ -534,8 +678,9 @@
                 { name: "🥈 وسام الشرف", color: "#cbd5e0" }
             ],
             rules: [
-                "الالتزام الكامل بالحصص المقررة والتواجد الفعال داخل المقاطعة الرسمية.",
-                "عدم تجاوز الإنذارات المسموحة في السجل لتستحق الترقية الميدانية المعتمدة."
+                "من متدرب الى مستوى 1 : ساعات تواجد 5",
+                "من مستوى 1 الى مستوى 2 : تقارير عمليات 2 + ساعات تواجد 6",
+                "من مستوى 2 الى مستوى 3 : 5 تقارير عمليات + 10 ساعات تواجد"
             ],
             employees: [
                 { id: "582165572888433162", name: "عدي", code: "E-001", rank: "قيادة", spec: "إدارة وتدريب", pos: "إسعاف متقدم", status: "active", attendance: [1,1,1,1,1,1,1], repPresence: 0, repOps: 0, warn: "0/3", upgrade: "مستقر", badge: "🏅 وسام الخدمة", date: "2026/01/15" },
@@ -546,13 +691,28 @@
         let appData = JSON.parse(localStorage.getItem('toronto_ems_data')) || defaultData;
         let activeTab = 'active';
         let isAdmin = false;
+        let hasPendingChanges = false; 
 
-        function saveToStorageDirect(showNotification = true) {
+        function showPendingSave() {
+            if (isAdmin) {
+                hasPendingChanges = true;
+                document.getElementById('floatingSaveBtn').classList.add('visible');
+            }
+        }
+
+        function hidePendingSave() {
+            hasPendingChanges = false;
+            document.getElementById('floatingSaveBtn').classList.remove('visible');
+        }
+
+        function triggerGlobalSave() {
             localStorage.setItem('toronto_ems_data', JSON.stringify(appData));
             calculateStats();
-            if(showNotification && isAdmin) {
-                showToast("تم الحفظ تلقائياً ومزامنة البيانات.");
+            hidePendingSave();
+            if(isAdmin) {
+                showToast("تم حفض التعديل بالموقع بنجاح! ✔️");
             }
+            renderApp();
         }
 
         function handleAuthToggle() {
@@ -568,6 +728,7 @@
                 document.getElementById('btn-settings-id').disabled = true; document.getElementById('btn-settings-id').style.opacity = "0.4";
                 document.getElementById('btn-add-id').disabled = true; document.getElementById('btn-add-id').style.opacity = "0.4";
                 document.getElementById('eval-add-input-grp').style.display = "none";
+                hidePendingSave();
                 showToast("تم قفل لوحة الإدارة بنجاح.");
                 renderApp();
             } else {
@@ -709,9 +870,16 @@
                 tbody.appendChild(tr);
             });
 
+            // بناء البنود بتصاميم الـ Glow والنيون المتحرك
             const container = document.getElementById('rulesContainer');
             container.innerHTML = '';
-            appData.rules.forEach((rule) => { container.innerHTML += `<p style="margin:6px 0;">🔹 ${rule}</p>`; });
+            appData.rules.forEach((rule) => { 
+                container.innerHTML += `
+                    <div class="neon-rule-item">
+                        <span class="neon-bullet"></span>
+                        <span>${rule}</span>
+                    </div>`; 
+            });
 
             filterData();
             calculateStats();
@@ -723,7 +891,7 @@
             appData.employees[idx].rank = newRank;
             let availableCodes = getCodesForRank(newRank);
             appData.employees[idx].code = availableCodes[0] || "E-000";
-            saveToStorageDirect();
+            showPendingSave(); 
             renderApp();
         }
 
@@ -751,33 +919,35 @@
                 date: todayStr
             });
             
-            saveToStorageDirect(false);
-            showToast("تم إضافة صف جديد بنجاح! تم قفل الكود حسب الرتبة.");
+            showPendingSave(); 
             renderApp();
         }
 
         function updateEmpField(idx, field, val) {
             if (!isAdmin || !appData.employees[idx]) return;
-            appData.employees[idx][field] = val.trim();
-            saveToStorageDirect();
-            if (field === 'status' || field === 'badge' || field === 'upgrade') {
-                renderApp();
-            } else {
+            if(appData.employees[idx][field].toString() !== val.trim().toString()) {
+                appData.employees[idx][field] = val.trim();
+                showPendingSave(); 
                 calculateStats();
+                if (field === 'status' || field === 'badge' || field === 'upgrade') {
+                    renderApp();
+                }
             }
         }
 
         function toggleCheck(empIdx, dayIdx) {
             if (!isAdmin) return;
             appData.employees[empIdx].attendance[dayIdx] = appData.employees[empIdx].attendance[dayIdx] === 1 ? 0 : 1;
-            saveToStorageDirect(); renderApp();
+            showPendingSave(); 
+            renderApp();
         }
 
         function adjustReport(empIdx, type, val) {
             if (!isAdmin) return;
             if (!appData.employees[empIdx][type]) appData.employees[empIdx][type] = 0;
             appData.employees[empIdx][type] = Math.max(0, appData.employees[empIdx][type] + val);
-            saveToStorageDirect(); renderApp();
+            showPendingSave(); 
+            renderApp();
         }
 
         function filterData() {
@@ -837,7 +1007,8 @@
             if (name) {
                 appData.ranks.push({ name, color });
                 document.getElementById('new-rank-name').value = '';
-                saveToStorageDirect(); renderApp();
+                showPendingSave(); 
+                renderApp();
             }
         }
 
@@ -847,14 +1018,16 @@
             if (name) {
                 appData.badges.push({ name, color });
                 document.getElementById('new-badge-name').value = '';
-                saveToStorageDirect(); renderApp();
+                showPendingSave(); 
+                renderApp();
             }
         }
 
         function deleteCustomItem(type, idx) {
             if (confirm("هل أنت متأكد من حذف هذا البند؟")) {
                 appData[type].splice(idx, 1);
-                saveToStorageDirect(); renderApp();
+                showPendingSave(); 
+                renderApp();
             }
         }
 
@@ -862,30 +1035,24 @@
             if (!isAdmin) return;
             if (confirm("هل تريد مسح هذا الموظف نهائياً؟")) {
                 appData.employees.splice(idx, 1);
-                saveToStorageDirect(false);
-                showToast("تم إزالة ملف الموظف.");
+                showPendingSave(); 
                 renderApp();
             }
         }
 
-        /* دالة تصفير الأسبوع المحمية والمحدثة لمنع الاقتراب من رتبة القيادة نهائياً */
         function clearAttendance() {
             if (!isAdmin) return;
             if (confirm("تأكيد تصفير أسبوع العمل للكادر؟ (سيتم استثناء رتب القيادة تلقائياً وحمايتها)")) {
                 appData.employees.forEach(emp => {
-                    // التحقق ما إذا كانت الرتبة تحتوي على كلمة "قيادة" لتفعيل الحماية
                     if (emp.rank && emp.rank.includes("قيادة")) {
-                        return; // تخطي الشخص فورياً دون تصفير بياناته
+                        return;
                     }
-                    
-                    // تصفير الحضور والتقارير لباقي الرتب غير القيادية فقط
                     emp.attendance = [0, 0, 0, 0, 0, 0, 0]; 
                     emp.repPresence = 0; 
                     emp.repOps = 0; 
                 });
                 
-                saveToStorageDirect(false);
-                showToast("تم تصفير أسبوع العمل مع الحفاظ على كامل بيانات القيادة بنجاح! 🔒");
+                showPendingSave(); 
                 renderApp();
             }
         }
@@ -908,23 +1075,38 @@
             if(text) {
                 appData.rules.push(text);
                 document.getElementById('cfg-rule-text').value = '';
-                saveToStorageDirect(false); showToast("تم إدراج شرط الترقية."); openEvaluationModal(); renderApp();
+                showPendingSave(); 
+                openEvaluationModal(); 
+                renderApp();
             }
         }
 
         function deleteRuleItem(idx) {
             if(!isAdmin) return;
             appData.rules.splice(idx, 1);
-            saveToStorageDirect(false); showToast("تم حذف الشرط."); openEvaluationModal(); renderApp();
+            showPendingSave(); 
+            openEvaluationModal(); 
+            renderApp();
         }
 
         function toggleModal(id, show) { document.getElementById(id).classList.toggle('open', show); }
-        function updateLiveMeta(field, val) { appData[field] = val; saveToStorageDirect(false); }
+        
+        function updateLiveMeta(field, val) { 
+            if(appData[field] !== val) {
+                appData[field] = val; 
+                showPendingSave(); 
+            }
+        }
 
         function saveGlobalSettings() {
             const newPin = document.getElementById('cfg-pin').value.trim();
-            if (newPin !== "") { appData.adminPin = newPin; document.getElementById('cfg-pin').value = ""; showToast("تم تغيير الرمز السري!"); }
-            saveToStorageDirect(false); showToast("تم تطبيق الإعدادات العامة."); toggleModal('settingsModal', false); renderApp();
+            if (newPin !== "") { 
+                appData.adminPin = newPin; 
+                document.getElementById('cfg-pin').value = ""; 
+            }
+            showPendingSave(); 
+            toggleModal('settingsModal', false); 
+            renderApp();
         }
 
         function downloadUpdatedCode() {
