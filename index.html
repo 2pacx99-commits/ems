@@ -2,36 +2,38 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>سجل أطباء ومسعفي الهلال الأحمر</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة تحكم الهلال الأحمر</title>
     <style>
-        /* التنسيق العام */
-        body { background-color: #1a1a2e; color: white; font-family: sans-serif; margin: 0; padding: 20px; }
-        
-        /* تصميم الصورة (الملصق) */
-        .ems-banner {
-            width: 100%;
-            max-width: 500px;
-            margin: 20px auto;
-            border-radius: 15px;
-            overflow: hidden;
-            border: 3px solid #e74c3c;
-            box-shadow: 0 0 20px rgba(231, 76, 60, 0.3);
+        body {
+            background-color: #1a1a2e;
+            color: #ffffff;
+            font-family: sans-serif;
+            margin: 0;
+            padding: 20px;
         }
-        .ems-banner img { width: 100%; display: block; }
-
-        /* تنسيق الجدول */
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; background: #16213e; }
-        th, td { padding: 12px; border: 1px solid #0f3460; text-align: center; }
-        th { background-color: #0f3460; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #16213e;
+        }
+        th, td {
+            padding: 15px;
+            border: 1px solid #0f3460;
+            text-align: center;
+        }
+        th {
+            background-color: #0f3460;
+        }
+        h2 {
+            text-align: center;
+        }
     </style>
 </head>
 <body>
 
-    <div class="ems-banner">
-        <img src="رابط_الصورة_المباشر_هنا" alt="الهلال الأحمر">
-    </div>
-
-    <h2 style="text-align: center;">سجل أطباء ومسعفي الهلال الأحمر</h2>
+    <h2>لوحة تحكم الهلال الأحمر</h2>
 
     <table>
         <thead>
@@ -47,12 +49,83 @@
     </table>
 
     <script>
-        // كود بسيط لعرض البيانات من الـ LocalStorage
+        // هنا يمكنك إضافة منطق جلب البيانات من LocalStorage أو أي مصدر آخر
         const data = JSON.parse(localStorage.getItem('emsData')) || [];
         const tableBody = document.getElementById('ems-table-body');
         
         data.forEach(item => {
-            const row = `<tr><td>${item.name}</td><td>${item.code}</td><td>${item.rank}</td><td>${item.status}</td></tr>`;
+            const row = `<tr>
+                <td>${item.name}</td>
+                <td>${item.code}</td>
+                <td>${item.rank}</td>
+                <td>${item.status}</td>
+            </tr>`;
+            tableBody.innerHTML += row;
+        });
+    </script>
+</body>
+</html><!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة تحكم الهلال الأحمر</title>
+    <style>
+        body {
+            background-color: #1a1a2e;
+            color: #ffffff;
+            font-family: sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #16213e;
+        }
+        th, td {
+            padding: 15px;
+            border: 1px solid #0f3460;
+            text-align: center;
+        }
+        th {
+            background-color: #0f3460;
+        }
+        h2 {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>لوحة تحكم الهلال الأحمر</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>الاسم</th>
+                <th>الكود</th>
+                <th>الرتبة</th>
+                <th>الحالة</th>
+            </tr>
+        </thead>
+        <tbody id="ems-table-body">
+            </tbody>
+    </table>
+
+    <script>
+        // هنا يمكنك إضافة منطق جلب البيانات من LocalStorage أو أي مصدر آخر
+        const data = JSON.parse(localStorage.getItem('emsData')) || [];
+        const tableBody = document.getElementById('ems-table-body');
+        
+        data.forEach(item => {
+            const row = `<tr>
+                <td>${item.name}</td>
+                <td>${item.code}</td>
+                <td>${item.rank}</td>
+                <td>${item.status}</td>
+            </tr>`;
             tableBody.innerHTML += row;
         });
     </script>
