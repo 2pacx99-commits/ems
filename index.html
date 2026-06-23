@@ -29,7 +29,6 @@
             overflow-x: hidden;
         }
 
-        /* تأثير الخلفية الشفافة المتحركة الفاخرة */
         body::before {
             content: "";
             position: fixed;
@@ -47,7 +46,6 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* تأثير Click Glow */
         .click-ripple {
             position: fixed;
             border-radius: 50%;
@@ -75,7 +73,6 @@
 
         .container { max-width: 100%; margin: 0 auto; position: relative; z-index: 1; }
 
-        /* تعديلات الهيدر الفخم الممنوع من التعديل والمؤشر المخصص */
         .header-wrapper {
             display: flex; flex-direction: column; align-items: center; margin-bottom: 35px; position: relative;
             padding: 20px; border-radius: 16px; background: rgba(255, 255, 255, 0.01);
@@ -93,7 +90,6 @@
             cursor: not-allowed;
         }
 
-        /* ضبط العنوان بخط فخم وعريض وتأثير لمعة وكيفريم متحرك وقفزة مرنة */
         .header-wrapper h1 {
             font-size: 54px; 
             font-weight: 900; 
@@ -104,24 +100,17 @@
             position: relative;
             cursor: not-allowed;
             padding: 5px 15px;
-            
-            /* دمج اللمعة البيضاء البطيئة فوق النص */
             background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
             background-size: 200% 100%;
             background-position: 120% 0;
             -webkit-background-clip: text;
-            
-            /* توهج أحمر نيوني متكامل عالي الدقة */
             text-shadow: 0 0 10px rgba(255, 42, 42, 0.65),
                          0 0 20px rgba(255, 42, 42, 0.45),
                          0 0 45px rgba(255, 42, 42, 0.3);
-                         
-            /* حركة تفاعلية مرنة كالقفزة عند اقتراب أو مرور الماوس */
             transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275), text-shadow 0.3s ease;
             animation: textShine 6s infinite linear;
         }
 
-        /* تفاعل العنوان الممنوع التعديل عليه مع قفزة مجسمة رائعة */
         .header-wrapper h1:hover {
             transform: translateY(-6px) scale(1.02);
             text-shadow: 0 0 15px rgba(255, 42, 42, 0.95),
@@ -129,7 +118,6 @@
                          0 0 65px rgba(255, 42, 42, 0.5);
         }
 
-        /* أنيميشن حركة اللمعة البيضاء يميناً ويساراً بشكل بطيئ فخم */
         @keyframes textShine {
             0% { background-position: 160% 0; }
             50% { background-position: -60% 0; }
@@ -155,7 +143,6 @@
         .status-dot { width: 8px; height: 8px; background-color: #e53e3e; border-radius: 50%; display: inline-block; box-shadow: 0 0 8px #e53e3e; }
         .status-dot.authenticated { background-color: #00ff87; box-shadow: 0 0 12px #00ff87; }
 
-        /* كتل الإحصائيات بعد التعديل (4 كروت متناسقة فخمة) */
         .stats-grid {
             display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 30px;
         }
@@ -168,9 +155,7 @@
             border-bottom: 3px solid rgba(255,255,255,0.1);
             transition: transform 0.3s, box-shadow 0.3s;
         }
-        .stat-card:hover {
-            transform: translateY(-4px);
-        }
+        .stat-card:hover { transform: translateY(-4px); }
         .stat-card.active-card { border-bottom-color: #00ff87; box-shadow: 0 5px 20px rgba(0, 255, 135, 0.05), inset 0 1px 1px rgba(255,255,255,0.05); }
         .stat-card.upgrade-card { border-bottom-color: #00bfff; box-shadow: 0 5px 20px rgba(0, 191, 255, 0.05), inset 0 1px 1px rgba(255,255,255,0.05); }
         .stat-card.total-card { border-bottom-color: var(--accent-color); box-shadow: 0 5px 20px rgba(255, 42, 42, 0.05), inset 0 1px 1px rgba(255,255,255,0.05); }
@@ -224,10 +209,12 @@
         tr:hover td { background-color: rgba(255,255,255,0.015); }
 
         .editable-cell { outline: none; transition: 0.2s; }
+        body:not(.is-admin) .editable-cell { pointer-events: none; }
         body.is-admin .editable-cell { cursor: text; }
         body.is-admin .editable-cell:focus { background-color: rgba(255,42,42,0.05) !important; box-shadow: inset 0 0 6px var(--accent-color); color: #fff; }
 
         .check-cell { font-size: 16px; font-weight: bold; user-select: none; }
+        body:not(.is-admin) .check-cell { pointer-events: none; }
         body.is-admin .check-cell { cursor: pointer; }
         .checked { color: #00ff87; text-shadow: 0 0 10px rgba(0,255,135,0.4); }
         .unchecked { color: #ff3b3b; text-shadow: 0 0 10px rgba(255,59,59,0.3); }
@@ -241,7 +228,6 @@
         body.is-admin .count-btn { display: flex; }
         .count-num { font-weight: bold; color: #00e5ff; min-width: 22px; font-family: monospace; font-size: 14px; }
 
-        /* تصفية وإلغاء شكل قوائم جوجل البيضاء وبناؤها بستايل فخم بريميوم ومتحرك */
         .table-select {
             background: rgba(14, 15, 22, 0.9); 
             border: 1px solid rgba(255, 255, 255, 0.04); 
@@ -261,7 +247,6 @@
             transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
         }
         
-        /* تفعيل التصميم المتقدم الفخم حصرياً للأدمن داخل السجل عند تعديل الرتب أو القوائم المنسدلة */
         body.is-admin .table-select { 
             pointer-events: auto; 
             cursor: pointer; 
@@ -275,7 +260,6 @@
             color: #fff;
         }
 
-        /* ستايل مخصص لتنسيق خيارات القائمة الداخلية وتغييرها من الشكل الافتراضي للمتصفح */
         .table-select option {
             background-color: #0c0d12 !important;
             color: #e2e8f0;
@@ -283,14 +267,12 @@
             padding: 10px;
         }
 
-        /* ستايل مخصص فاخر للأوسمة المتوهجة احترافياً داخل الجدول */
         .badge-pill {
             display: inline-block; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 800;
             box-shadow: 0 2px 8px rgba(0,0,0,0.3); text-shadow: 0 1px 2px rgba(0,0,0,0.8);
             border: 1px solid rgba(255,255,255,0.1);
         }
 
-        /* نظام الإشعارات المنبثقة للتنبيه بالحفظ التلقائي */
         .toast-container {
             position: fixed; bottom: 25px; left: 25px; z-index: 99999;
             display: flex; flex-direction: column; gap: 10px;
@@ -312,7 +294,6 @@
         @keyframes slideIn { from { transform: translateX(-100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
         @keyframes toastProgress { from { width: 100%; } to { width: 0%; } }
 
-        /* المودال الشفاف الفاخر */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(4, 4, 6, 0.8); backdrop-filter: blur(12px);
@@ -434,15 +415,15 @@
             
             <div class="form-group">
                 <label>اسم الموقع الرئيسي:</label>
-                <input type="text" id="cfg-title" oninput="updateLiveMeta('siteTitle', this.value)">
+                <input type="text" id="cfg-title">
             </div>
             <div class="form-group">
                 <label>الوصف الفرعي للموقع:</label>
-                <input type="text" id="cfg-subtitle" oninput="updateLiveMeta('siteSubtitle', this.value)">
+                <input type="text" id="cfg-subtitle">
             </div>
             <div class="form-group">
                 <label>نص الخلفية الشفاف:</label>
-                <input type="text" id="cfg-wm" oninput="updateLiveMeta('watermark', this.value)">
+                <input type="text" id="cfg-wm">
             </div>
             <div class="form-group">
                 <label>تغيير كود المرور السري للأدمن:</label>
@@ -465,8 +446,7 @@
                 <button onclick="addCustomBadge()" style="background:#00bfff; color:white; border:none; padding:0 15px; border-radius:6px; cursor:pointer; font-weight:bold;">+ إضافة</button>
             </div>
 
-            <button onclick="downloadUpdatedCode()" style="width:100%; background:#00bfff; color:white; border:none; padding:12px; border-radius:8px; cursor:pointer; margin-bottom:10px; font-weight:bold; box-shadow: 0 4px 12px rgba(0,191,255,0.2);">📥 تحميل كود الموقع المحدث بالكامل (index.html)</button>
-            <button onclick="saveGlobalSettings()" style="width:100%; background:#00ff87; color:#000; border:none; padding:12px; border-radius:8px; font-weight:bold; cursor:pointer; box-shadow: 0 4px 12px rgba(0,255,135,0.2);">حفظ وتطبيق التغييرات</button>
+            <button onclick="saveGlobalSettings()" style="width:100%; background:#00ff87; color:#000; border:none; padding:12px; border-radius:8px; font-weight:bold; cursor:pointer; box-shadow: 0 4px 12px rgba(0,255,135,0.2);">حفظ وتطبيق التغييرات على السيرفر</button>
         </div>
     </div>
 
@@ -484,49 +464,30 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { getDatabase, ref, set, onValue, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-        // إعدادات الفايربيس الحية الخاصة بك
+        // 🔥 ضع بيانات الـ Firebase الخاصة بمشروعك هنا بدقة ليشتغل الربط الفوري
         const firebaseConfig = {
-          apiKey: "AIzaSyDdgaD2rzQ1eQWDQZp2dLfsZfL8CMz9UW4",
-          authDomain: "toronto-45374.firebaseapp.com",
-          databaseURL: "https://toronto-45374-default-rtdb.firebaseio.com",
-          projectId: "toronto-45374",
-          storageBucket: "toronto-45374.appspot.com",
-          messagingSenderId: "895878429326",
-          appId: "1:895878429326:web:526d25948751604e8967df"
+            apiKey: "AIzaSyDdgaD2rzQ1eQWDQZp2dlfsZfl8CMz9UW4",
+            authDomain: "torento-45374.firebaseapp.com",
+            databaseURL: "https://torento-45374-default-rtdb.firebaseio.com",
+            projectId: "torento-45374",
+            storageBucket: "torento-45374.firebasestorage.app",
+            messagingSenderId: "895878429326",
+            appId: "1:895878429326:web:526d25948751604e8967df"
         };
 
+        // تهيئة فايربيز وقاعدة البيانات والربط بها عولمياً لإتاحتها لبقية الدوال
         const app = initializeApp(firebaseConfig);
-        const database = getDatabase(app);
+        const db = getDatabase(app);
+        window.firebaseDB = db;
 
-        // نظام توليد تأثير الوهج عند النقر Click Glow Effect
-        document.addEventListener('click', function(e) {
-            let ripple = document.createElement('div');
-            ripple.className = 'click-ripple';
-            ripple.style.left = e.clientX + 'px';
-            ripple.style.top = e.clientY + 'px';
-            document.body.appendChild(ripple);
-            setTimeout(() => { ripple.remove(); }, 600);
-        });
-
-        // نظام التنبيهات المشرقة الفاخرة للحفظ التلقائي الذكي
-        window.showToast = function(message, isError = false) {
-            const container = document.getElementById('toastContainer');
-            const toast = document.createElement('div');
-            toast.className = `toast-card ${isError ? 'error' : ''}`;
-            toast.innerHTML = isError ? `❌ ${message}` : `💾 ${message}`;
-            container.appendChild(toast);
-            setTimeout(() => { toast.remove(); }, 2000);
-        }
-
-        // كائن البيانات الشامل والمحدث الافتراضي للموقع المطور بسيرفر تورنتو
+        // الكائن الأساسي الافتراضي لتهيئة قاعدة البيانات لأول مرة فقط إذا كانت فارغة تماماً
         const defaultData = {
             adminPin: "torento911", 
             siteTitle: "جدول الهلال الأحمر",
             siteSubtitle: "TORONTO RP - EMS HIGH COMMAND",
             watermark: "خاص بسيرفر تورنتو",
-            accentColor: "#ff2a2a",
             ranks: [
                 { name: "قيادة", color: "#ff2a2a" },
                 { name: "طبيب استشاري", color: "#ff5e5e" },
@@ -542,47 +503,75 @@
                 "الالتزام الكامل بالحصص المقررة والتواجد الفعال داخل المقاطعة الرسمية.",
                 "عدم تجاوز الإنذارات المسموحة في السجل لتستحق الترقية الميدانية المعتمدة."
             ],
-            employees: [
-                { id: "582165572888433162", name: "عدي", code: "E-001", rank: "قيادة", spec: "إدارة وتدريب", pos: "إسعاف متقدم", status: "active", attendance: [1,1,1,1,1,1,1], repPresence: 0, repOps: 0, warn: "0/3", upgrade: "مستقر", badge: "🏅 وسام الخدمة", date: "2026/01/15" },
-                { id: "718428168498853131", name: "أكرم نجف", code: "E-002", rank: "طبيب استشاري", spec: "إدارة وتدريب", pos: "إسعاف متقدم", status: "active", attendance: [1,1,1,1,1,1,1], repPresence: 5, repOps: 3, warn: "0/3", upgrade: "مؤهل للترقية", badge: "🏅 وسام الخدمة", date: "2026/01/20" }
-            ]
+            employees: []
         };
 
-        // تفعيل الاستماع الفوري لقاعدة البيانات بدلاً من اللوكال ستورج لربط مباشر وحي
         window.appData = defaultData;
-        let activeTab = 'active';
-        let isAdmin = false;
+        window.activeTab = 'active';
+        window.isAdmin = false;
 
-        // ربط حي مباشر: بمجرد فتح الصفحة يستمع للفايربيس ويعرض البيانات فوراً لأي جهاز ثاني
-        const globalDataRef = ref(database, 'toronto_ems_live_data');
-        onValue(globalDataRef, (snapshot) => {
+        // الاستماع الحي والتحديث الفوري لجميع المتصفحين في نفس الوقت
+        const rootRef = ref(db, "toronto_ems_root");
+        onValue(rootRef, (snapshot) => {
             const data = snapshot.val();
             if (data) {
                 window.appData = data;
+                if (!window.appData.employees) window.appData.employees = [];
+                if (!window.appData.ranks) window.appData.ranks = [];
+                if (!window.appData.badges) window.appData.badges = [];
+                if (!window.appData.rules) window.appData.rules = [];
             } else {
-                // أول مرة تفتح الداتا بيس فارغة ترفع البيانات الافتراضية تلقائياً لتأسيسها
-                set(globalDataRef, defaultData);
+                // إذا كانت قاعدة البيانات جديدة تماماً قم برفع الهيكل المبدئي
+                set(rootRef, defaultData);
                 window.appData = defaultData;
             }
-            // تحديث الحقول بالإعدادات الحالية قبل إعادة البناء على الشاشة
-            document.getElementById('cfg-title').value = window.appData.siteTitle || "";
-            document.getElementById('cfg-subtitle').value = window.appData.siteSubtitle || "";
-            document.getElementById('cfg-wm').value = window.appData.watermark || "";
             renderApp();
         });
+    </script>
 
-        window.saveToStorageDirect = function(showNotification = true) {
-            // حفظ مباشر وحي داخل الفايربيس ليراه الجهاز الآخر بنفس اللحظة
-            set(globalDataRef, window.appData)
-            .then(() => {
-                if(showNotification && isAdmin) {
-                    showToast("تم الحفظ والمزامنة السحابية الفورية بنجاح !");
-                }
-            });
-            calculateStats();
+    <script>
+        document.addEventListener('click', function(e) {
+            let ripple = document.createElement('div');
+            ripple.className = 'click-ripple';
+            ripple.style.left = e.clientX + 'px';
+            ripple.style.top = e.clientY + 'px';
+            document.body.appendChild(ripple);
+            setTimeout(() => { ripple.remove(); }, 600);
+        });
+
+        function showToast(message, isError = false) {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast-card ${isError ? 'error' : ''}`;
+            toast.innerHTML = isError ? `❌ ${message}` : `💾 ${message}`;
+            container.appendChild(toast);
+            setTimeout(() => { toast.remove(); }, 2000);
         }
 
-        window.handleAuthToggle = function() {
+        // إرسال وحفظ التعديلات مباشرة للسيرفر (Firebase)
+        function saveToServer() {
+            if (!isAdmin) return;
+            const db = window.firebaseDB;
+            if (db) {
+                const { ref, set } = window.FirebaseDatabase || { 
+                    ref: (d, path) => window.coreFirebaseRef(d, path),
+                    set: (r, v) => window.coreFirebaseSet(r, v) 
+                };
+                
+                // استخدام دوال النفاذ المباشر المربوطة بالموديول
+                const rootRef = window.coreRef ? window.coreRef() : {path: "toronto_ems_root"};
+                // إرسال الكائن المحدث للفايربيز مباشرة
+                fetch(`${document.getElementById('emsTable').getAttribute('data-url') || ''}`, {
+                    method: 'PUT',
+                    body: JSON.stringify(window.appData)
+                }).catch(() => {});
+                
+                // تصفح محلي آمن ومباشر عبر الـ API الفوري المتاح بالموديول
+                window.firebaseDirectSave && window.firebaseDirectSave(window.appData);
+            }
+        }
+
+        function handleAuthToggle() {
             if (isAdmin) {
                 isAdmin = false;
                 document.body.classList.remove('is-admin');
@@ -595,7 +584,7 @@
                 document.getElementById('btn-settings-id').disabled = true; document.getElementById('btn-settings-id').style.opacity = "0.4";
                 document.getElementById('btn-add-id').disabled = true; document.getElementById('btn-add-id').style.opacity = "0.4";
                 document.getElementById('eval-add-input-grp').style.display = "none";
-                showToast("تم تسجيل خروج الإدارة وقفل التعديلات السريعة.");
+                showToast("تم قفل وضع الإدارة والعودة لوضع المشاهدة الآمن.");
                 renderApp();
             } else {
                 const pin = prompt("الرجاء إدخال الرمز السري للإدارة لتفعيل التعديل السريع المباشر:");
@@ -611,7 +600,7 @@
                     document.getElementById('btn-settings-id').disabled = false; document.getElementById('btn-settings-id').style.opacity = "1";
                     document.getElementById('btn-add-id').disabled = false; document.getElementById('btn-add-id').style.opacity = "1";
                     document.getElementById('eval-add-input-grp').style.display = "block";
-                    showToast("مرحباً بك لوحة الإدارة! تم تفعيل التعديل التلقائي السريع.");
+                    showToast("تمت المصادقة! مرحباً بك في لوحة تحكم الإدارة.");
                     renderApp();
                 } else if (pin !== null) {
                     showToast("الرمز السري غير صحيح ! تم رفض الصلاحية.", true);
@@ -619,117 +608,113 @@
             }
         }
 
-        window.renderApp = function() {
-            document.getElementById('site-title').innerText = window.appData.siteTitle;
-            document.getElementById('site-subtitle').innerText = window.appData.siteSubtitle;
-            document.getElementById('wm-text').innerText = window.appData.watermark;
+        function renderApp() {
+            document.getElementById('site-title').innerText = window.appData.siteTitle || "جدول الهلال الأحمر";
+            document.getElementById('site-subtitle').innerText = window.appData.siteSubtitle || "";
+            document.getElementById('wm-text').innerText = window.appData.watermark || "";
             
             const tbody = document.getElementById('tableBody');
             tbody.innerHTML = '';
             
-            if (window.appData.employees) {
-                window.appData.employees.forEach((emp, index) => {
-                    const tr = document.createElement('tr');
-                    tr.setAttribute('data-status', emp.status);
-                    
-                    const rankObj = window.appData.ranks.find(r => r.name === emp.rank);
-                    const rankColor = rankObj ? rankObj.color : '#fff';
-                    const isCommand = emp.rank.includes("قيادة");
-                    
-                    let attHtml = '';
-                    emp.attendance.forEach((val, dayIdx) => {
-                        attHtml += `<td class="check-cell ${val === 1 ? 'checked' : 'unchecked'}" onclick="toggleCheck(${index}, ${dayIdx})">${val === 1 ? '✔' : '✘'}</td>`;
-                    });
-
-                    let rankOptions = '';
-                    window.appData.ranks.forEach(r => { rankOptions += `<option value="${r.name}" ${emp.rank === r.name ? 'selected' : ''}>${r.name}</option>`; });
-
-                    let badgeOptions = '';
-                    window.appData.badges.forEach(b => { badgeOptions += `<option value="${b.name}" ${emp.badge === b.name ? 'selected' : ''}>${b.name}</option>`; });
-
-                    const badgeObj = window.appData.badges.find(b => b.name === emp.badge);
-                    const badgeColor = badgeObj ? badgeObj.color : '#4a5568';
-
-                    tr.innerHTML = `
-                        <td>${index + 1}</td>
-                        <td class="editable-cell" ${isAdmin ? 'contenteditable="true"' : ''} onblur="updateEmpField(${index}, 'id', this.innerText)" style="color:#666; font-family: monospace;">${emp.id}</td>
-                        <td class="editable-cell" ${isAdmin ? 'contenteditable="true"' : ''} onblur="updateEmpField(${index}, 'name', this.innerText)" style="font-weight: bold; color:#fff;">${emp.name}</td>
-                        <td class="editable-cell" ${isAdmin ? 'contenteditable="true"' : ''} onblur="updateEmpField(${index}, 'code', this.innerText)" style="color: #ffaa00; font-weight: bold; font-family: monospace;">${emp.code}</td>
-                        
-                        <td>
-                            <select class="table-select" onchange="updateEmpField(${index}, 'rank', this.value)" style="color: ${rankColor}; text-shadow: 0 0 8px ${rankColor}; font-weight:900;">
-                                ${rankOptions}
-                            </select>
-                        </td>
-                        
-                        <td class="editable-cell" ${isAdmin ? 'contenteditable="true"' : ''} onblur="updateEmpField(${index}, 'spec', this.innerText)">${emp.spec}</td>
-                        <td class="editable-cell" ${isAdmin ? 'contenteditable="true"' : ''} onblur="updateEmpField(${index}, 'pos', this.innerText)">${emp.pos}</td>
-                        
-                        <td>
-                            <select class="table-select" onchange="updateEmpField(${index}, 'status', this.value)" style="color:${emp.status==='active'?'#00ff87':'#ff3b3b'}; font-weight:900;">
-                                <option value="active" ${emp.status==='active'?'selected':''}>🟢 نشط</option>
-                                <option value="retired" ${emp.status==='retired'?'selected':''}>🔴 فصل/استقالة</option>
-                            </select>
-                        </td>
-                        
-                        ${attHtml}
-                        
-                        <td>
-                            ${isCommand ? `<span style="color:#444;">—</span>` : `
-                            <div class="report-counter">
-                                <button class="count-btn" onclick="adjustReport(${index}, 'repPresence', -1)">-</button>
-                                <span class="count-num">${emp.repPresence || 0}</span>
-                                <button class="count-btn" onclick="adjustReport(${index}, 'repPresence', 1)">+</button>
-                            </div>`}
-                        </td>
-                        
-                        <td>
-                            ${isCommand ? `<span style="color:#444;">—</span>` : `
-                            <div class="report-counter">
-                                <button class="count-btn" onclick="adjustReport(${index}, 'repOps', -1)">-</button>
-                                <span class="count-num">${emp.repOps || 0}</span>
-                                <button class="count-btn" onclick="adjustReport(${index}, 'repOps', 1)">+</button>
-                            </div>`}
-                        </td>
-                        
-                        <td class="editable-cell" ${isAdmin ? 'contenteditable="true"' : ''} onblur="updateEmpField(${index}, 'warn', this.innerText)" style="color:#ff3b3b; font-weight:bold;">${emp.warn}</td>
-                        <td class="editable-cell" ${isAdmin ? 'contenteditable="true"' : ''} onblur="updateEmpField(${index}, 'upgrade', this.innerText)" style="color:#00bfff; font-weight:bold;">${emp.upgrade}</td>
-                        
-                        <td>
-                            <div class="badge-pill" style="background: rgba(0,0,0,0.4); border-color: ${badgeColor}; color: ${badgeColor}; text-shadow: 0 0 5px ${badgeColor}">
-                                <select class="table-select" onchange="updateEmpField(${index}, 'badge', this.value)" style="color: inherit; font-weight:900; padding:0; background:none; border:none; box-shadow:none;">
-                                    ${badgeOptions}
-                                </select>
-                            </div>
-                        </td>
-                        
-                        <td class="editable-cell" ${isAdmin ? 'contenteditable="true"' : ''} onblur="updateEmpField(${index}, 'date', this.innerText)" style="color: #718096; font-family: monospace;">${emp.date}</td>
-                        <td>
-                            <button onclick="deleteEmployee(${index})" style="background:none; border:none; color:#ff2a2a; cursor:${isAdmin?'pointer':'not-allowed'}; opacity:${isAdmin?1:0.2};" ${!isAdmin?'disabled':''}>🗑️</button>
-                        </td>
-                    `;
-                    tbody.appendChild(tr);
+            const employees = window.appData.employees || [];
+            employees.forEach((emp, index) => {
+                const tr = document.createElement('tr');
+                tr.setAttribute('data-status', emp.status);
+                
+                const rankObj = window.appData.ranks.find(r => r.name === emp.rank);
+                const rankColor = rankObj ? rankObj.color : '#fff';
+                const isCommand = emp.rank && emp.rank.includes("قيادة");
+                
+                let attHtml = '';
+                emp.attendance.forEach((val, dayIdx) => {
+                    attHtml += `<td class="check-cell ${val === 1 ? 'checked' : 'unchecked'}" onclick="toggleCheck(${index}, ${dayIdx})">${val === 1 ? '✔' : '✘'}</td>`;
                 });
-            }
+
+                let rankOptions = '';
+                window.appData.ranks.forEach(r => { rankOptions += `<option value="${r.name}" ${emp.rank === r.name ? 'selected' : ''}>${r.name}</option>`; });
+
+                let badgeOptions = '';
+                window.appData.badges.forEach(b => { badgeOptions += `<option value="${b.name}" ${emp.badge === b.name ? 'selected' : ''}>${b.name}</option>`; });
+
+                const badgeObj = window.appData.badges.find(b => b.name === emp.badge);
+                const badgeColor = badgeObj ? badgeObj.color : '#4a5568';
+
+                tr.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td class="editable-cell" ${isAdmin ? 'contenteditable="true"' : ''} onblur="updateEmpField(${index}, 'id', this.innerText)" style="color:#666; font-family: monospace;">${emp.id}</td>
+                    <td class="editable-cell" ${isAdmin ? 'contenteditable="true"' : ''} onblur="updateEmpField(${index}, 'name', this.innerText)" style="font-weight: bold; color:#fff;">${emp.name}</td>
+                    <td class="editable-cell" ${isAdmin ? 'contenteditable="true"' : ''} onblur="updateEmpField(${index}, 'code', this.innerText)" style="color: #ffaa00; font-weight: bold; font-family: monospace;">${emp.code}</td>
+                    
+                    <td>
+                        <select class="table-select" onchange="updateEmpField(${index}, 'rank', this.value)" style="color: ${rankColor}; text-shadow: 0 0 8px ${rankColor}; font-weight:900;">
+                            ${rankOptions}
+                        </select>
+                    </td>
+                    
+                    <td class="editable-cell" ${isAdmin ? 'contenteditable="true"' : ''} onblur="updateEmpField(${index}, 'spec', this.innerText)">${emp.spec}</td>
+                    <td class="editable-cell" ${isAdmin ? 'contenteditable="true"' : ''} onblur="updateEmpField(${index}, 'pos', this.innerText)">${emp.pos}</td>
+                    
+                    <td>
+                        <select class="table-select" onchange="updateEmpField(${index}, 'status', this.value)" style="color:${emp.status==='active'?'#00ff87':'#ff3b3b'}; font-weight:900;">
+                            <option value="active" ${emp.status==='active'?'selected':''}>🟢 نشط</option>
+                            <option value="retired" ${emp.status==='retired'?'selected':''}>🔴 فصل/استقالة</option>
+                        </select>
+                    </td>
+                    
+                    ${attHtml}
+                    
+                    <td>
+                        ${isCommand ? `<span style="color:#444;">—</span>` : `
+                        <div class="report-counter">
+                            <button class="count-btn" onclick="adjustReport(${index}, 'repPresence', -1)">-</button>
+                            <span class="count-num">${emp.repPresence || 0}</span>
+                            <button class="count-btn" onclick="adjustReport(${index}, 'repPresence', 1)">+</button>
+                        </div>`}
+                    </td>
+                    
+                    <td>
+                        ${isCommand ? `<span style="color:#444;">—</span>` : `
+                        <div class="report-counter">
+                            <button class="count-btn" onclick="adjustReport(${index}, 'repOps', -1)">-</button>
+                            <span class="count-num">${emp.repOps || 0}</span>
+                            <button class="count-btn" onclick="adjustReport(${index}, 'repOps', 1)">+</button>
+                        </div>`}
+                    </td>
+                    
+                    <td class="editable-cell" ${isAdmin ? 'contenteditable="true"' : ''} onblur="updateEmpField(${index}, 'warn', this.innerText)" style="color:#ff3b3b; font-weight:bold;">${emp.warn}</td>
+                    <td class="editable-cell" ${isAdmin ? 'contenteditable="true"' : ''} onblur="updateEmpField(${index}, 'upgrade', this.innerText)" style="color:#00bfff; font-weight:bold;">${emp.upgrade}</td>
+                    
+                    <td>
+                        <div class="badge-pill" style="background: rgba(0,0,0,0.4); border-color: ${badgeColor}; color: ${badgeColor}; text-shadow: 0 0 5px ${badgeColor}">
+                            <select class="table-select" onchange="updateEmpField(${index}, 'badge', this.value)" style="color: inherit; font-weight:900; padding:0; background:none; border:none; box-shadow:none;">
+                                ${badgeOptions}
+                            </select>
+                        </div>
+                    </td>
+                    
+                    <td class="editable-cell" ${isAdmin ? 'contenteditable="true"' : ''} onblur="updateEmpField(${index}, 'date', this.innerText)" style="color: #718096; font-family: monospace;">${emp.date}</td>
+                    <td>
+                        <button onclick="deleteEmployee(${index})" style="background:none; border:none; color:#ff2a2a; cursor:${isAdmin?'pointer':'not-allowed'}; opacity:${isAdmin?1:0.2};" ${!isAdmin?'disabled':''}>🗑️</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
 
             const container = document.getElementById('rulesContainer');
             container.innerHTML = '';
-            if (window.appData.rules) {
-                window.appData.rules.forEach((rule) => { container.innerHTML += `<p style="margin:6px 0;">🔹 ${rule}</p>`; });
-            }
+            (window.appData.rules || []).forEach((rule) => { container.innerHTML += `<p style="margin:6px 0;">🔹 ${rule}</p>`; });
 
             filterData();
             calculateStats();
             populateSettingsLists();
         }
 
-        window.addNewEmployeeRowDirect = function() {
+        function addNewEmployeeRowDirect() {
             if (!isAdmin) return;
             const todayStr = new Date().toISOString().split('T')[0].replace(/-/g, '/');
             const defaultRank = window.appData.ranks.length > 0 ? window.appData.ranks[window.appData.ranks.length - 1].name : "مسعف مستجد";
             const defaultBadge = window.appData.badges.length > 0 ? window.appData.badges[0].name : "بلا وسام";
             
-            if(!window.appData.employees) window.appData.employees = [];
             window.appData.employees.push({
                 id: "اكتب_الـID",
                 name: "اسم الموظف الجديد",
@@ -747,190 +732,197 @@
                 date: todayStr
             });
             
-            saveToStorageDirect(false);
-            showToast("تم إنشاء صف لموظف جديد بنجاح، يمكنك التعديل الفوري الآن.");
-            
-            setTimeout(() => {
-                const lastRow = document.querySelector('#tableBody tr:last-child');
-                if(lastRow) {
-                    const nameCell = lastRow.cells[2];
-                    if(nameCell) nameCell.focus();
-                }
-            }, 50);
+            saveToServer();
+            showToast("تم إضافة الموظف الجديد ومزامنته سحابياً.");
+            renderApp();
         }
 
-        window.updateEmpField = function(idx, field, val) {
+        function updateEmpField(idx, field, val) {
             if (!isAdmin || !window.appData.employees[idx]) return;
             window.appData.employees[idx][field] = val.trim();
-            saveToStorageDirect();
+            saveToServer();
+            if (field === 'rank' || field === 'status' || field === 'badge') {
+                renderApp();
+            } else {
+                calculateStats();
+            }
         }
 
-        window.toggleCheck = function(empIdx, dayIdx) {
+        function toggleCheck(empIdx, dayIdx) {
             if (!isAdmin) return;
             window.appData.employees[empIdx].attendance[dayIdx] = window.appData.employees[empIdx].attendance[dayIdx] === 1 ? 0 : 1;
-            saveToStorageDirect();
+            saveToServer(); renderApp();
         }
 
-        window.adjustReport = function(empIdx, type, val) {
+        function adjustReport(empIdx, type, val) {
             if (!isAdmin) return;
             if (!window.appData.employees[empIdx][type]) window.appData.employees[empIdx][type] = 0;
             window.appData.employees[empIdx][type] = Math.max(0, window.appData.employees[empIdx][type] + val);
-            saveToStorageDirect();
+            saveToServer(); renderApp();
         }
 
-        window.filterData = function() {
+        function filterData() {
             const query = document.getElementById('searchBar').value.toLowerCase();
             document.querySelectorAll('#tableBody tr').forEach((row, idx) => {
                 const emp = window.appData.employees[idx];
                 if (!emp) return;
-                let match = emp.name.toLowerCase().includes(query) || emp.code.toLowerCase().includes(query) || emp.id.toLowerCase().includes(query) || emp.rank.toLowerCase().includes(query);
+                let match = emp.name.toLowerCase().includes(query) || emp.code.toLowerCase().includes(query) || emp.id.toLowerCase().includes(query) || (emp.rank && emp.rank.toLowerCase().includes(query));
                 if (query === "") match = true;
                 if (match && emp.status === activeTab) row.classList.remove('hidden');
                 else row.classList.add('hidden');
             });
         }
 
-        window.switchTab = function(tab) {
+        function switchTab(tab) {
             activeTab = tab;
             document.getElementById('tabActive').classList.toggle('active', tab === 'active');
             document.getElementById('tabRetired').classList.toggle('active', tab === 'retired');
             filterData();
         }
 
-        window.calculateStats = function() {
-            let total = 0, active = 0, retired = 0, upgrades = 0;
-            if (window.appData.employees) {
-                total = window.appData.employees.length;
-                window.appData.employees.forEach(emp => {
-                    if (emp.status === 'active') active++; else retired++;
-                    if (emp.upgrade === 'مؤهل للترقية' || emp.upgrade === 'مؤهل') upgrades++;
-                });
-            }
+        function calculateStats() {
+            let total = window.appData.employees.length, active = 0, retired = 0, upgrades = 0;
+            window.appData.employees.forEach(emp => {
+                if (emp.status === 'active') active++; else retired++;
+                if (emp.upgrade === 'مؤهل للترقية' || emp.upgrade === 'مؤهل') upgrades++;
+            });
             document.getElementById('stat-total').innerText = total; document.getElementById('stat-active').innerText = active;
             document.getElementById('stat-retired').innerText = retired; document.getElementById('stat-upgrades').innerText = upgrades;
         }
 
-        window.populateSettingsLists = function() {
+        function populateSettingsLists() {
             const rankList = document.getElementById('manage-ranks-list');
             rankList.innerHTML = '';
-            if (window.appData.ranks) {
-                window.appData.ranks.forEach((r, idx) => {
-                    rankList.innerHTML += `
-                        <div class="item-row-manage">
-                            <span style="color:${r.color}; font-weight:bold;">${r.name}</span>
-                            <button onclick="deleteCustomItem('ranks', ${idx})" class="action-btn-row">🗑️</button>
-                        </div>`;
-                });
-            }
+            window.appData.ranks.forEach((r, idx) => {
+                rankList.innerHTML += `
+                    <div class="item-row-manage">
+                        <span style="color:${r.color}; font-weight:bold;">${r.name}</span>
+                        <button onclick="deleteCustomItem('ranks', ${idx})" class="action-btn-row">🗑️</button>
+                    </div>`;
+            });
 
             const badgeList = document.getElementById('manage-badges-list');
             badgeList.innerHTML = '';
-            if (window.appData.badges) {
-                window.appData.badges.forEach((b, idx) => {
-                    badgeList.innerHTML += `
-                        <div class="item-row-manage">
-                            <span style="color:${b.color}; font-weight:bold;">${b.name}</span>
-                            <button onclick="deleteCustomItem('badges', ${idx})" class="action-btn-row">🗑️</button>
-                        </div>`;
-                });
-            }
+            window.appData.badges.forEach((b, idx) => {
+                badgeList.innerHTML += `
+                    <div class="item-row-manage">
+                        <span style="color:${b.color}; font-weight:bold;">${b.name}</span>
+                        <button onclick="deleteCustomItem('badges', ${idx})" class="action-btn-row">🗑️</button>
+                    </div>`;
+            });
+            
+            document.getElementById('cfg-title').value = window.appData.siteTitle || "";
+            document.getElementById('cfg-subtitle').value = window.appData.siteSubtitle || "";
+            document.getElementById('cfg-wm').value = window.appData.watermark || "";
         }
 
-        window.addCustomRank = function() {
+        function addCustomRank() {
             const name = document.getElementById('new-rank-name').value.trim();
             const color = document.getElementById('new-rank-color').value;
             if (name) {
-                if(!window.appData.ranks) window.appData.ranks = [];
                 window.appData.ranks.push({ name, color });
                 document.getElementById('new-rank-name').value = '';
-                saveToStorageDirect();
+                saveToServer(); renderApp();
             }
         }
 
-        window.addCustomBadge = function() {
+        function addCustomBadge() {
             const name = document.getElementById('new-badge-name').value.trim();
             const color = document.getElementById('new-badge-color').value;
             if (name) {
-                if(!window.appData.badges) window.appData.badges = [];
                 window.appData.badges.push({ name, color });
                 document.getElementById('new-badge-name').value = '';
-                saveToStorageDirect();
+                saveToServer(); renderApp();
             }
         }
 
-        window.deleteCustomItem = function(type, idx) {
-            if (confirm("هل أنت متأكد من حذف هذا البند الإداري النهائي؟")) {
+        function deleteCustomItem(type, idx) {
+            if (!isAdmin) return;
+            if (confirm("هل أنت متأكد من حذف هذا البند الإداري؟")) {
                 window.appData[type].splice(idx, 1);
-                saveToStorageDirect();
+                saveToServer(); renderApp();
             }
         }
 
-        window.deleteEmployee = function(idx) {
+        function deleteEmployee(idx) {
             if (!isAdmin) return;
-            if (confirm("هل تريد مسح هذا الموظف نهائياً وكلياً من السجل المطور؟")) {
+            if (confirm("هل تريد مسح هذا الموظف نهائياً؟")) {
                 window.appData.employees.splice(idx, 1);
-                saveToStorageDirect(false);
-                showToast("تم إزالة ملف الموظف بنجاح.");
+                saveToServer();
+                showToast("تم حذف سجل الموظف.");
+                renderApp();
             }
         }
 
-        window.clearAttendance = function() {
+        function clearAttendance() {
             if (!isAdmin) return;
-            if (confirm("تأكيد تصفير أسبوع العمل? سيتم تصفير الحضور وتقارير التواجد والعمليات لجميع المسعفين.")) {
+            if (confirm("تأكيد تصفير أسبوع العمل؟ سيتم تصفير الحضور وتقارير التواجد لجميع المسعفين.")) {
                 window.appData.employees.forEach(emp => { emp.attendance = [0,0,0,0,0,0,0]; emp.repPresence = 0; emp.repOps = 0; });
-                saveToStorageDirect(false);
-                showToast("تم تصفير الإحصائيات الأسبوعية بنجاح.");
+                saveToServer();
+                showToast("تم تصفير الإحصائيات الأسبوعية.");
+                renderApp();
             }
         }
 
-        window.openEvaluationModal = function() {
+        function openEvaluationModal() {
             const list = document.getElementById('modalRulesList');
             list.innerHTML = '';
-            if (window.appData.rules) {
-                window.appData.rules.forEach((r, idx) => {
-                    list.innerHTML += `
-                        <div class="item-row-manage">
-                            <span>${idx+1}. ${r}</span>
-                            <button onclick="deleteRuleItem(${idx})" class="action-btn-row" style="display:${isAdmin?'block':'none'}; color:#ff3333;">❌</button>
-                        </div>`;
-                });
-            }
+            (window.appData.rules || []).forEach((r, idx) => {
+                list.innerHTML += `
+                    <div class="item-row-manage">
+                        <span>${idx+1}. ${r}</span>
+                        <button onclick="deleteRuleItem(${idx})" class="action-btn-row" style="display:${isAdmin?'block':'none'}; color:#ff3333;">❌</button>
+                    </div>`;
+            });
             toggleModal('evaluationModal', true);
         }
 
-        window.addNewRuleItem = function() {
+        function addNewRuleItem() {
             const text = document.getElementById('cfg-rule-text').value.trim();
             if(text) {
-                if(!window.appData.rules) window.appData.rules = [];
                 window.appData.rules.push(text);
                 document.getElementById('cfg-rule-text').value = '';
-                saveToStorageDirect(false); showToast("تم إدراج شرط الترقية بنجاح."); openEvaluationModal();
+                saveToServer(); showToast("تم إدراج شرط الترقية."); openEvaluationModal(); renderApp();
             }
         }
 
-        window.deleteRuleItem = function(idx) {
+        function deleteRuleItem(idx) {
             if(!isAdmin) return;
             window.appData.rules.splice(idx, 1);
-            saveToStorageDirect(false); showToast("تم حذف الشرط."); openEvaluationModal();
+            saveToServer(); showToast("تم حذف الشرط."); openEvaluationModal(); renderApp();
         }
 
-        window.toggleModal = function(id, show) { document.getElementById(id).classList.toggle('open', show); }
-        window.updateLiveMeta = function(field, val) { window.appData[field] = val; saveToStorageDirect(false); }
+        function toggleModal(id, show) { document.getElementById(id).classList.toggle('open', show); }
 
-        window.saveGlobalSettings = function() {
+        function saveGlobalSettings() {
+            if(!isAdmin) return;
+            window.appData.siteTitle = document.getElementById('cfg-title').value;
+            window.appData.siteSubtitle = document.getElementById('cfg-subtitle').value;
+            window.appData.watermark = document.getElementById('cfg-wm').value;
+            
             const newPin = document.getElementById('cfg-pin').value.trim();
-            if (newPin !== "") { window.appData.adminPin = newPin; document.getElementById('cfg-pin').value = ""; showToast("تم تغيير الرمز السري للإدارة!"); }
-            saveToStorageDirect(false); showToast("تم تطبيق وحفظ كافة الإعدادات العامة للموقع."); toggleModal('settingsModal', false);
+            if (newPin !== "") { 
+                window.appData.adminPin = newPin; 
+                document.getElementById('cfg-pin').value = ""; 
+            }
+            
+            saveToServer(); 
+            showToast("تم تحديث وحفظ الإعدادات العامة للسيرفر."); 
+            toggleModal('settingsModal', false); 
+            renderApp();
         }
 
-        window.downloadUpdatedCode = function() {
-            const currentDataStr = JSON.stringify(window.appData);
-            let fullHtml = document.documentElement.outerHTML;
-            fullHtml = fullHtml.replace(/window\.appData = defaultData;/, `window.appData = ${currentDataStr};`);
-            const blob = new Blob([`<!DOCTYPE html>\n` + fullHtml], { type: 'text/html' });
-            const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'index.html'; a.click();
-            showToast("تم تصدير وتحميل الملف بنجاح!");
-        }
+        // حقن الفانكشنز البرمجية بداخل الـ Module لضمان قراءتها من أزرار الـ HTML
+        window.window = window;
+        window.coreRef = () => ref(window.firebaseDB, "toronto_ems_root");
+        window.coreFirebaseSet = (r, v) => set(r, v);
+        window.firebaseDirectSave = (data) => {
+            const db = window.firebaseDB;
+            if(db) {
+                const rootRef = ref(db, "toronto_ems_root");
+                set(rootRef, data);
+            }
+        };
 
         document.getElementById('searchBar').addEventListener('input', filterData);
     </script>
