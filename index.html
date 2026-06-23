@@ -1,1203 +1,184 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MDT System</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=Changa:wght@400;600;800&family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
-    
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MDT V1</title>
 
-    <style>
-        :root {
-            --primary-color: #0a192f;
-            --secondary-color: #112240;
-            --accent-color: #00d2ff;
-            --accent-glow: rgba(0, 210, 255, 0.8);
-            --text-main: #e6f1ff;
-            --text-muted: #8892b0;
-            --danger: #ff4d4d;
-            --success: #00e676;
-            --warning: #ffea00;
-            --glass-bg: rgba(17, 34, 64, 0.55);
-            --glass-border: rgba(0, 210, 255, 0.3);
-            --table-bg: rgba(0, 0, 0, 0.4);
-            --btn-color: #00d2ff;
-            --font-main: 'Tajawal', sans-serif;
-            --font-header: 'Changa', sans-serif;
-            --font-number: 'Cairo', sans-serif;
-        }
+<style>
+body{
+    margin:0;
+    font-family:tahoma;
+    background:#0a192f;
+    color:white;
+}
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: var(--font-main); background-color: var(--primary-color); color: var(--text-main); overflow: hidden; height: 100vh; display: flex; flex-direction: column; transition: background-color 0.5s; }
+header{
+    padding:15px;
+    background:#112240;
+    text-align:center;
+    font-size:22px;
+    font-weight:bold;
+}
 
-        #bg-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
+.container{
+    display:flex;
+    height:calc(100vh - 60px);
+}
 
-        .glass-panel {
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            border-radius: 15px;
-            box-shadow: 0 10px 40px 0 rgba(0, 0, 0, 0.5);
-            transition: all 0.4s ease;
-        }
-        .glass-panel:hover { box-shadow: 0 10px 50px 0 var(--accent-glow); }
+/* sidebar */
+.sidebar{
+    width:220px;
+    background:#112240;
+    padding:10px;
+}
 
-        .neon-text { color: var(--accent-color); text-shadow: 0 0 15px var(--accent-glow), 0 0 30px var(--accent-glow); }
-        .neon-border { border: 1px solid var(--accent-color); box-shadow: 0 0 15px var(--accent-glow) inset, 0 0 15px var(--accent-glow); }
+.btn{
+    width:100%;
+    padding:12px;
+    margin:5px 0;
+    border:none;
+    cursor:pointer;
+    background:#00d2ff;
+    font-weight:bold;
+}
 
-        .app-container { display: flex; flex: 1; height: calc(100vh - 80px); overflow: hidden; }
+/* content */
+.content{
+    flex:1;
+    padding:20px;
+}
 
-        header { height: 80px; display: flex; justify-content: space-between; align-items: center; padding: 0 30px; z-index: 10; border-bottom: 1px solid var(--glass-border); }
-        .header-logo { display: flex; align-items: center; gap: 15px; font-family: var(--font-header); font-size: 28px; font-weight: 800; letter-spacing: 2px; }
-        .header-logo img { height: 50px; width: 50px; object-fit: contain; border-radius: 50%; display: none; }
-        .header-info { display: flex; gap: 20px; font-family: var(--font-number); font-size: 18px; font-weight: 700; }
-        .time-box { display: flex; align-items: center; gap: 10px; padding: 10px 20px; border-radius: 10px; }
+/* table */
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:10px;
+}
 
-        .sidebar { width: 280px; padding: 20px 10px; display: flex; flex-direction: column; gap: 10px; overflow-y: auto; border-left: 1px solid var(--glass-border); z-index: 10; }
-        .sidebar::-webkit-scrollbar { width: 5px; }
-        .sidebar::-webkit-scrollbar-thumb { background: var(--accent-color); border-radius: 10px; }
+th,td{
+    border:1px solid #333;
+    padding:8px;
+    text-align:center;
+}
 
-        .nav-btn { background: transparent; border: none; color: var(--text-muted); padding: 16px 20px; text-align: right; font-size: 17px; font-family: var(--font-main); font-weight: 700; border-radius: 10px; cursor: pointer; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); display: flex; align-items: center; gap: 15px; position: relative; overflow: hidden; }
-        .nav-btn i { width: 25px; text-align: center; font-size: 20px; transition: transform 0.3s; }
-        .nav-btn:hover { color: var(--text-main); background: rgba(255, 255, 255, 0.08); transform: translateX(-8px); }
-        .nav-btn:hover i { transform: scale(1.2); color: var(--accent-color); }
-        .nav-btn.active { color: var(--text-main); background: var(--glass-bg); border-right: 5px solid var(--accent-color); box-shadow: 0 0 20px rgba(0, 210, 255, 0.2) inset; text-shadow: 0 0 10px rgba(255,255,255,0.5); }
+input{
+    padding:10px;
+    width:100%;
+    margin:5px 0;
+}
 
-        .main-content { flex: 1; padding: 30px; overflow-y: auto; position: relative; z-index: 10; }
-        .main-content::-webkit-scrollbar { width: 8px; }
-        .main-content::-webkit-scrollbar-thumb { background: var(--accent-color); border-radius: 10px; }
+/* modal */
+.modal{
+    position:fixed;
+    top:0;left:0;
+    width:100%;height:100%;
+    background:rgba(0,0,0,0.7);
+    display:none;
+    justify-content:center;
+    align-items:center;
+}
 
-        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; animation: slideDown 0.6s ease; }
-        .section-title { font-family: var(--font-header); font-size: 34px; font-weight: 800; display: flex; align-items: center; gap: 15px; }
-
-        .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 25px; margin-bottom: 30px; }
-        .stat-card { padding: 25px; display: flex; flex-direction: column; gap: 10px; position: relative; overflow: hidden; border-radius: 15px; cursor: pointer; }
-        .stat-card:hover { transform: translateY(-8px); box-shadow: 0 15px 30px var(--accent-glow); }
-        .stat-icon { position: absolute; left: -15px; bottom: -15px; font-size: 110px; opacity: 0.08; color: var(--accent-color); transition: all 0.5s ease; }
-        .stat-card:hover .stat-icon { transform: scale(1.2) rotate(-15deg); opacity: 0.2; }
-        .stat-title { font-size: 18px; color: var(--text-muted); font-weight: 700; z-index: 1; }
-        .stat-value { font-size: 48px; font-family: var(--font-number); font-weight: 900; color: var(--accent-color); z-index: 1; text-shadow: 0 0 20px var(--accent-glow); }
-
-        .charts-container { display: grid; grid-template-columns: 2fr 1fr; gap: 25px; margin-bottom: 30px; animation: fadeIn 1s ease; }
-        .chart-box { padding: 20px; height: 350px; }
-
-        .controls-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; gap: 15px; flex-wrap: wrap; }
-        .search-box { position: relative; flex: 1; min-width: 300px; }
-        .search-box i { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: var(--accent-color); font-size: 18px; }
-        .search-input { width: 100%; padding: 15px 45px 15px 15px; border-radius: 10px; border: 1px solid var(--glass-border); background: rgba(0, 0, 0, 0.5); color: white; font-family: var(--font-main); font-size: 16px; outline: none; transition: all 0.3s; }
-        .search-input:focus { border-color: var(--accent-color); box-shadow: 0 0 20px var(--accent-glow); background: rgba(0,0,0,0.7); }
-
-        .btn-group { display: flex; gap: 10px; }
-        .btn { background: var(--btn-color); color: var(--primary-color); border: none; padding: 12px 25px; border-radius: 8px; font-family: var(--font-main); font-weight: 800; font-size: 16px; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 0 15px rgba(0, 210, 255, 0.4); display: flex; align-items: center; gap: 10px; position: relative; overflow: hidden; }
-        .btn:hover { transform: translateY(-3px); box-shadow: 0 5px 25px var(--accent-glow); filter: brightness(1.2); }
-        .btn-export { background: transparent; color: var(--accent-color); border: 1px solid var(--accent-color); }
-        .btn-export:hover { background: var(--accent-color); color: var(--primary-color); }
-
-        .table-wrapper { overflow-x: auto; border-radius: 15px; background: var(--table-bg); border: 1px solid var(--glass-border); margin-bottom: 20px; }
-        table { width: 100%; border-collapse: collapse; text-align: right; }
-        th, td { padding: 18px 20px; border-bottom: 1px solid var(--glass-border); vertical-align: middle; }
-        th { background: rgba(0, 0, 0, 0.6); color: var(--accent-color); font-weight: 800; font-family: var(--font-header); font-size: 17px; letter-spacing: 1px; cursor: pointer; transition: background 0.3s; position: sticky; top: 0; }
-        th:hover { background: rgba(0, 0, 0, 0.8); color: white; text-shadow: 0 0 10px var(--accent-glow); }
-        tbody tr { transition: all 0.3s; }
-        tbody tr:hover { background: rgba(255, 255, 255, 0.1); transform: scale(1.005); }
-        
-        .avatar-img { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent-color); box-shadow: 0 0 10px var(--accent-glow); }
-        .rank-badge { display: inline-flex; align-items: center; gap: 8px; padding: 6px 15px; border-radius: 20px; font-weight: 800; font-size: 14px; box-shadow: 0 0 10px rgba(0,0,0,0.5); text-shadow: 1px 1px 2px rgba(0,0,0,0.8); color: white; }
-
-        .action-btns { display: flex; gap: 15px; }
-        .btn-icon { background: transparent; border: none; color: var(--text-muted); font-size: 20px; cursor: pointer; transition: all 0.3s; }
-        .btn-icon.edit:hover { color: var(--success); transform: scale(1.3) rotate(10deg); text-shadow: 0 0 10px var(--success); }
-        .btn-icon.delete:hover { color: var(--danger); transform: scale(1.3) rotate(-10deg); text-shadow: 0 0 10px var(--danger); }
-
-        .pagination { display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 20px; flex-wrap: wrap; }
-        .page-btn { background: var(--glass-bg); border: 1px solid var(--glass-border); color: white; padding: 10px 18px; border-radius: 8px; cursor: pointer; transition: 0.3s; font-weight: 700; font-family: var(--font-number); }
-        .page-btn:hover { background: rgba(255,255,255,0.1); transform: translateY(-2px); }
-        .page-btn.active { background: var(--accent-color); color: var(--primary-color); box-shadow: 0 0 15px var(--accent-glow); border-color: transparent; }
-        .page-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(10px); display: flex; justify-content: center; align-items: center; z-index: 1000; opacity: 0; visibility: hidden; transition: all 0.4s; }
-        .modal-overlay.active { opacity: 1; visibility: visible; }
-        .modal-content { width: 100%; max-width: 600px; padding: 40px; border-radius: 20px; transform: translateY(-50px) scale(0.9); transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); max-height: 90vh; overflow-y: auto; }
-        .modal-content::-webkit-scrollbar { width: 5px; }
-        .modal-content::-webkit-scrollbar-thumb { background: var(--accent-color); }
-        .modal-overlay.active .modal-content { transform: translateY(0) scale(1); }
-        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 1px solid var(--glass-border); padding-bottom: 15px; }
-        .close-modal { background: none; border: none; color: var(--text-muted); font-size: 28px; cursor: pointer; transition: 0.3s; }
-        .close-modal:hover { color: var(--danger); transform: rotate(90deg) scale(1.2); text-shadow: 0 0 15px var(--danger); }
-        
-        .form-group { margin-bottom: 25px; }
-        .form-group label { display: block; margin-bottom: 10px; font-weight: 800; color: var(--accent-color); font-size: 16px; }
-        .form-control { width: 100%; padding: 15px; border-radius: 10px; border: 1px solid var(--glass-border); background: rgba(0, 0, 0, 0.5); color: white; font-family: var(--font-main); font-size: 16px; outline: none; transition: 0.3s; }
-        .form-control:focus { border-color: var(--accent-color); box-shadow: 0 0 15px var(--accent-glow); background: rgba(0,0,0,0.8); }
-        .image-preview-container { display: flex; align-items: center; gap: 15px; margin-top: 10px; }
-        .img-preview { width: 80px; height: 80px; border-radius: 10px; object-fit: cover; border: 2px solid var(--glass-border); display: none; }
-
-        .toast-container { position: fixed; bottom: 30px; right: 30px; display: flex; flex-direction: column; gap: 15px; z-index: 9999; }
-        .toast { padding: 18px 30px; border-radius: 12px; display: flex; align-items: center; gap: 20px; font-weight: 800; font-size: 16px; transform: translateX(120%); transition: 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55); box-shadow: 0 10px 30px rgba(0,0,0,0.6); backdrop-filter: blur(10px); }
-        .toast.show { transform: translateX(0); }
-        .toast.success { background: rgba(0, 230, 118, 0.15); border: 1px solid var(--success); color: var(--success); text-shadow: 0 0 10px rgba(0,230,118,0.5); }
-        .toast.error { background: rgba(255, 77, 77, 0.15); border: 1px solid var(--danger); color: var(--danger); text-shadow: 0 0 10px rgba(255,77,77,0.5); }
-
-        .settings-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
-        .settings-card { padding: 30px; }
-        .theme-btn { width: 100%; padding: 15px; margin-bottom: 15px; border-radius: 10px; border: 1px solid var(--glass-border); background: rgba(0,0,0,0.5); color: white; cursor: pointer; transition: 0.3s; font-family: var(--font-main); font-weight: 800; font-size: 16px; display: flex; justify-content: space-between; align-items: center; }
-        .theme-btn:hover, .theme-btn.active { background: var(--accent-color); color: var(--primary-color); box-shadow: 0 0 20px var(--accent-glow); transform: scale(1.02); }
-        
-        .color-picker-group { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px; }
-        .color-picker { width: 50px; height: 50px; border: none; border-radius: 10px; cursor: pointer; background: transparent; }
-        .color-picker::-webkit-color-swatch { border-radius: 10px; border: 2px solid var(--glass-border); }
-
-        /* Ripple Effect */
-        .ripple { position: absolute; border-radius: 50%; transform: scale(0); animation: ripple-anim 600ms linear; background-color: rgba(255, 255, 255, 0.7); }
-        @keyframes ripple-anim { to { transform: scale(4); opacity: 0; } }
-
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes slideDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
-        .view-section { display: none; }
-        .view-section.active { display: block; animation: fadeIn 0.5s ease-in-out; }
-    </style>
+.box{
+    background:#112240;
+    padding:20px;
+    width:300px;
+}
+</style>
 </head>
+
 <body>
 
-    <canvas id="bg-canvas"></canvas>
+<header>MDT SYSTEM V1</header>
+
+<div class="container">
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+    <button class="btn" onclick="show('officers')">الضباط</button>
+</div>
+
+<!-- CONTENT -->
+<div class="content">
+
+<h2>إدارة الضباط</h2>
+
+<button class="btn" onclick="openModal()">+ إضافة ضابط</button>
+
+<table>
+<thead>
+<tr>
+<th>الاسم</th>
+<th>الرتبة</th>
+<th>تحكم</th>
+</tr>
+</thead>
+<tbody id="table"></tbody>
+</table>
+
+</div>
+</div>
+
+<!-- MODAL -->
+<div class="modal" id="modal">
+<div class="box">
+<h3>إضافة ضابط</h3>
+
+<input id="name" placeholder="اسم الضابط">
+<input id="rank" placeholder="الرتبة">
+
+<button class="btn" onclick="add()">حفظ</button>
+<button class="btn" onclick="closeModal()">إغلاق</button>
+</div>
+</div>
+
+<script>
+let data = JSON.parse(localStorage.getItem("officers")) || [];
+
+function render(){
+    let table = document.getElementById("table");
+    table.innerHTML = "";
+
+    data.forEach((o,i)=>{
+        table.innerHTML += `
+        <tr>
+            <td>${o.name}</td>
+            <td>${o.rank}</td>
+            <td>
+                <button onclick="del(${i})">حذف</button>
+            </td>
+        </tr>`;
+    });
+
+    localStorage.setItem("officers", JSON.stringify(data));
+}
+
+function add(){
+    let name = document.getElementById("name").value;
+    let rank = document.getElementById("rank").value;
+
+    if(!name || !rank) return;
+
+    data.push({name, rank});
+    render();
+    closeModal();
+}
+
+function del(i){
+    data.splice(i,1);
+    render();
+}
+
+function openModal(){
+    document.getElementById("modal").style.display="flex";
+}
+
+function closeModal(){
+    document.getElementById("modal").style.display="none";
+}
+
+render();
+</script>
 
-    <header class="glass-panel">
-        <div class="header-logo neon-text">
-            <img id="site-logo-img" src="" alt="Logo">
-            <i class="fa-solid fa-shield-halved" id="site-logo-icon"></i>
-            <span id="site-name-display">Toronto RP MDT</span>
-        </div>
-        <div class="header-info">
-            <div class="time-box glass-panel">
-                <i class="fa-regular fa-calendar text-muted"></i>
-                <span id="current-date"></span>
-            </div>
-            <div class="time-box glass-panel neon-border">
-                <i class="fa-regular fa-clock"></i>
-                <span id="current-time"></span>
-            </div>
-        </div>
-    </header>
-
-    <div class="app-container">
-        <nav class="sidebar glass-panel">
-            <button class="nav-btn active" data-target="dashboard"><i class="fa-solid fa-chart-pie"></i> لوحة التحكم</button>
-            <button class="nav-btn" data-target="officers"><i class="fa-solid fa-user-shield"></i> إدارة الضباط</button>
-            <button class="nav-btn" data-target="ems"><i class="fa-solid fa-truck-medical"></i> إدارة المسعفين</button>
-            <button class="nav-btn" data-target="wanted"><i class="fa-solid fa-handcuffs"></i> المطلوبين</button>
-            <button class="nav-btn" data-target="cases"><i class="fa-solid fa-folder-open"></i> القضايا</button>
-            <button class="nav-btn" data-target="reports"><i class="fa-solid fa-phone-volume"></i> البلاغات</button>
-            <button class="nav-btn" data-target="vehicles"><i class="fa-solid fa-car-on"></i> المركبات</button>
-            <button class="nav-btn" data-target="weapons"><i class="fa-solid fa-gun"></i> الأسلحة</button>
-            <button class="nav-btn" data-target="promotions"><i class="fa-solid fa-medal"></i> الترقيات</button>
-            <button class="nav-btn" data-target="punishments"><i class="fa-solid fa-gavel"></i> العقوبات</button>
-            <button class="nav-btn" data-target="logs"><i class="fa-solid fa-clipboard-list"></i> سجل النشاطات</button>
-            <div style="flex: 1;"></div>
-            <button class="nav-btn" data-target="settings"><i class="fa-solid fa-gear"></i> الإعدادات</button>
-        </nav>
-
-        <main class="main-content">
-            
-            <div id="dashboard" class="view-section active">
-                <div class="section-header">
-                    <h2 class="section-title neon-text"><i class="fa-solid fa-chart-pie"></i> نظرة عامة</h2>
-                </div>
-                <div class="dashboard-grid">
-                    <div class="stat-card glass-panel" onclick="navigateTo('officers')">
-                        <i class="fa-solid fa-user-shield stat-icon"></i>
-                        <div class="stat-title">عدد الضباط</div>
-                        <div class="stat-value" id="stat-officers">0</div>
-                    </div>
-                    <div class="stat-card glass-panel" onclick="navigateTo('ems')">
-                        <i class="fa-solid fa-truck-medical stat-icon"></i>
-                        <div class="stat-title">عدد المسعفين</div>
-                        <div class="stat-value" id="stat-ems">0</div>
-                    </div>
-                    <div class="stat-card glass-panel" onclick="navigateTo('wanted')">
-                        <i class="fa-solid fa-handcuffs stat-icon" style="color: var(--danger);"></i>
-                        <div class="stat-title">المطلوبين حالياً</div>
-                        <div class="stat-value" id="stat-wanted" style="color: var(--danger);">0</div>
-                    </div>
-                    <div class="stat-card glass-panel" onclick="navigateTo('cases')">
-                        <i class="fa-solid fa-folder-open stat-icon"></i>
-                        <div class="stat-title">القضايا المفتوحة</div>
-                        <div class="stat-value" id="stat-cases">0</div>
-                    </div>
-                    <div class="stat-card glass-panel" onclick="navigateTo('reports')">
-                        <i class="fa-solid fa-phone-volume stat-icon"></i>
-                        <div class="stat-title">إجمالي البلاغات</div>
-                        <div class="stat-value" id="stat-reports">0</div>
-                    </div>
-                    <div class="stat-card glass-panel" onclick="navigateTo('vehicles')">
-                        <i class="fa-solid fa-car-on stat-icon"></i>
-                        <div class="stat-title">المركبات المسجلة</div>
-                        <div class="stat-value" id="stat-vehicles">0</div>
-                    </div>
-                    <div class="stat-card glass-panel" onclick="navigateTo('weapons')">
-                        <i class="fa-solid fa-gun stat-icon"></i>
-                        <div class="stat-title">الأسلحة المرخصة</div>
-                        <div class="stat-value" id="stat-weapons">0</div>
-                    </div>
-                </div>
-
-                <div class="charts-container">
-                    <div class="chart-box glass-panel">
-                        <canvas id="barChart"></canvas>
-                    </div>
-                    <div class="chart-box glass-panel">
-                        <canvas id="doughnutChart"></canvas>
-                    </div>
-                </div>
-                <div class="charts-container" style="grid-template-columns: 1fr;">
-                    <div class="chart-box glass-panel">
-                        <canvas id="lineChart"></canvas>
-                    </div>
-                </div>
-            </div>
-
-            <div id="dynamic-views-container"></div>
-
-            <div id="settings" class="view-section">
-                <div class="section-header">
-                    <h2 class="section-title neon-text"><i class="fa-solid fa-gear"></i> إعدادات النظام المتقدمة</h2>
-                    <div class="btn-group">
-                        <button class="btn btn-export" onclick="exportBackup()"><i class="fa-solid fa-download"></i> تصدير نسخة احتياطية</button>
-                        <button class="btn btn-export" onclick="document.getElementById('import-json').click()"><i class="fa-solid fa-upload"></i> استيراد نسخة</button>
-                        <input type="file" id="import-json" style="display:none;" accept=".json" onchange="importBackup(event)">
-                    </div>
-                </div>
-                <div class="settings-grid">
-                    <div class="settings-card glass-panel">
-                        <h3 style="margin-bottom: 25px; color: var(--accent-color); border-bottom: 1px solid var(--glass-border); padding-bottom: 10px;">الهوية والخلفيات</h3>
-                        <div class="form-group">
-                            <label>اسم الموقع (MDT Name)</label>
-                            <input type="text" id="setting-site-name" class="form-control" onchange="updateSetting('siteName', this.value)">
-                        </div>
-                        <div class="form-group">
-                            <label>شعار الموقع (صورة)</label>
-                            <input type="file" class="form-control" accept="image/*" onchange="updateLogo(event)">
-                            <div class="image-preview-container">
-                                <img id="setting-logo-preview" class="img-preview" src="">
-                                <button class="btn btn-export" style="padding: 5px 10px; font-size:12px;" onclick="updateSetting('siteLogo', ''); document.getElementById('setting-logo-preview').style.display='none'; document.getElementById('site-logo-img').style.display='none'; document.getElementById('site-logo-icon').style.display='block';"><i class="fa-solid fa-trash"></i> إزالة الشعار</button>
-                            </div>
-                        </div>
-                        <h4 style="margin: 25px 0 15px; color: white;">تأثيرات الخلفية المتحركة</h4>
-                        <button class="theme-btn bg-btn" onclick="setBgMode('rain')">مطر متساقط (Rain) <i class="fa-solid fa-cloud-rain"></i></button>
-                        <button class="theme-btn bg-btn" onclick="setBgMode('stars')">نجوم متحركة (Stars) <i class="fa-solid fa-star"></i></button>
-                        <button class="theme-btn bg-btn" onclick="setBgMode('particles')">جزيئات (Particles) <i class="fa-solid fa-atom"></i></button>
-                        <button class="theme-btn bg-btn" onclick="setBgMode('cyber')">شبكة سايبر (Cyber Grid) <i class="fa-solid fa-network-wired"></i></button>
-                        <button class="theme-btn bg-btn" onclick="setBgMode('matrix')">ماتريكس (Matrix Effect) <i class="fa-solid fa-barcode"></i></button>
-                    </div>
-                    <div class="settings-card glass-panel">
-                        <h3 style="margin-bottom: 25px; color: var(--accent-color); border-bottom: 1px solid var(--glass-border); padding-bottom: 10px;">الألوان والتخصيص</h3>
-                        <div class="color-picker-group">
-                            <span>لون التوهج والأزرار (Accent)</span>
-                            <input type="color" class="color-picker" id="color-accent" onchange="updateThemeColor('--accent-color', this.value, true)">
-                        </div>
-                        <div class="color-picker-group">
-                            <span>لون الخلفية الأساسي</span>
-                            <input type="color" class="color-picker" id="color-primary" onchange="updateThemeColor('--primary-color', this.value)">
-                        </div>
-                        <div class="color-picker-group">
-                            <span>لون الجداول والخلايا</span>
-                            <input type="color" class="color-picker" id="color-table" onchange="updateThemeColor('--table-bg', this.value)">
-                        </div>
-                        <div style="margin-top: 30px;">
-                            <button class="btn btn-export" style="width: 100%; justify-content: center;" onclick="resetSettings()"><i class="fa-solid fa-rotate-right"></i> استعادة الافتراضيات</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-        </main>
-    </div>
-
-    <div class="modal-overlay" id="dynamic-modal">
-        <div class="modal-content glass-panel neon-border">
-            <div class="modal-header">
-                <h2 class="neon-text" id="modal-title" style="margin: 0;">إضافة سجل</h2>
-                <button class="close-modal" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            <form id="dynamic-form" onsubmit="handleFormSubmit(event)">
-                <div id="modal-body"></div>
-                <div style="text-align: left; margin-top: 30px;">
-                    <button type="submit" class="btn" style="width: 100%; justify-content: center; font-size: 18px; padding: 15px;">حفظ البيانات <i class="fa-solid fa-floppy-disk"></i></button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <div class="toast-container" id="toast-container"></div>
-
-    <script>
-        /* ================= Default Data & Config ================= */
-        const policeRanks = [
-            { name: 'مفوض', color: '#888888', icon: 'fa-shield' },
-            { name: 'مفوض أول', color: '#999999', icon: 'fa-shield' },
-            { name: 'وكيل عريف', color: '#55aa55', icon: 'fa-chevron-up' },
-            { name: 'عريف', color: '#44cc44', icon: 'fa-angles-up' },
-            { name: 'رقيب', color: '#33dd33', icon: 'fa-star' },
-            { name: 'رقيب أول', color: '#22ff22', icon: 'fa-star' },
-            { name: 'ملازم', color: '#5555ff', icon: 'fa-star-half-stroke' },
-            { name: 'ملازم أول', color: '#7777ff', icon: 'fa-star' },
-            { name: 'نقيب', color: '#9999ff', icon: 'fa-certificate' },
-            { name: 'رائد', color: '#ffaa00', icon: 'fa-sun' },
-            { name: 'مقدم', color: '#ffcc00', icon: 'fa-crown' },
-            { name: 'عقيد', color: '#ffff00', icon: 'fa-crown' },
-            { name: 'عميد', color: '#ff5555', icon: 'fa-user-tie' },
-            { name: 'لواء', color: '#ff3333', icon: 'fa-user-shield' },
-            { name: 'فريق', color: '#ff0000', icon: 'fa-chess-king' },
-            { name: 'مدير الأمن', color: '#cc0000', icon: 'fa-building-shield' }
-        ];
-
-        const defaultModules = {
-            officers: {
-                title: 'إدارة الضباط', icon: 'fa-user-shield',
-                fields: [
-                    { key: 'image', label: 'الصورة الشخصية', type: 'image' },
-                    { key: 'id', label: 'الرقم العسكري', type: 'text' },
-                    { key: 'name', label: 'اسم الضابط', type: 'text' },
-                    { key: 'rank', label: 'الرتبة', type: 'select', options: policeRanks.map(r => r.name) },
-                    { key: 'status', label: 'الحالة', type: 'select', options: ['في الخدمة', 'خارج الخدمة', 'إجازة'] }
-                ],
-                data: []
-            },
-            ems: {
-                title: 'إدارة المسعفين', icon: 'fa-truck-medical',
-                fields: [
-                    { key: 'image', label: 'الصورة الشخصية', type: 'image' },
-                    { key: 'id', label: 'الرقم الوظيفي', type: 'text' },
-                    { key: 'name', label: 'الاسم', type: 'text' },
-                    { key: 'role', label: 'التخصص', type: 'select', options: ['مسعف طوارئ', 'طبيب جراح', 'مدير مستشفى', 'طيار إخلاء'] },
-                    { key: 'status', label: 'الحالة', type: 'select', options: ['متاح', 'في بلاغ', 'غير متاح'] }
-                ],
-                data: []
-            },
-            wanted: {
-                title: 'المطلوبين', icon: 'fa-handcuffs',
-                fields: [
-                    { key: 'image', label: 'صورة المطلوب', type: 'image' },
-                    { key: 'name', label: 'اسم المطلوب', type: 'text' },
-                    { key: 'crime', label: 'التهمة', type: 'text' },
-                    { key: 'bounty', label: 'المكافأة ($)', type: 'number' },
-                    { key: 'priority', label: 'الأولوية', type: 'select', options: ['قصوى', 'عالية', 'عادية'] }
-                ],
-                data: []
-            },
-            cases: {
-                title: 'القضايا', icon: 'fa-folder-open',
-                fields: [
-                    { key: 'caseId', label: 'رقم القضية', type: 'text' },
-                    { key: 'title', label: 'عنوان القضية', type: 'text' },
-                    { key: 'officer', label: 'الضابط المسؤول', type: 'text' },
-                    { key: 'status', label: 'الحالة', type: 'select', options: ['مفتوحة', 'مغلقة', 'تحت التحقيق'] }
-                ],
-                data: []
-            },
-            reports: {
-                title: 'البلاغات', icon: 'fa-phone-volume',
-                fields: [
-                    { key: 'caller', label: 'المتصل', type: 'text' },
-                    { key: 'number', label: 'رقم الهاتف', type: 'text' },
-                    { key: 'location', label: 'الموقع', type: 'text' },
-                    { key: 'desc', label: 'الوصف', type: 'text' },
-                    { key: 'status', label: 'الحالة', type: 'select', options: ['جديد', 'قيد الاستجابة', 'منتهي'] }
-                ],
-                data: []
-            },
-            vehicles: {
-                title: 'المركبات', icon: 'fa-car-on',
-                fields: [
-                    { key: 'plate', label: 'رقم اللوحة', type: 'text' },
-                    { key: 'model', label: 'الموديل', type: 'text' },
-                    { key: 'owner', label: 'المالك', type: 'text' },
-                    { key: 'flag', label: 'ملاحظة', type: 'text' }
-                ],
-                data: []
-            },
-            weapons: {
-                title: 'الأسلحة', icon: 'fa-gun',
-                fields: [
-                    { key: 'serial', label: 'الرقم التسلسلي', type: 'text' },
-                    { key: 'type', label: 'النوع', type: 'text' },
-                    { key: 'owner', label: 'المالك', type: 'text' },
-                    { key: 'status', label: 'الحالة', type: 'select', options: ['مرخص', 'مسروق', 'مصادر'] }
-                ],
-                data: []
-            },
-            promotions: {
-                title: 'الترقيات', icon: 'fa-medal',
-                fields: [
-                    { key: 'name', label: 'الاسم', type: 'text' },
-                    { key: 'oldRank', label: 'الرتبة السابقة', type: 'select', options: policeRanks.map(r => r.name) },
-                    { key: 'newRank', label: 'الرتبة الجديدة', type: 'select', options: policeRanks.map(r => r.name) },
-                    { key: 'date', label: 'التاريخ', type: 'date' }
-                ],
-                data: []
-            },
-            punishments: {
-                title: 'العقوبات', icon: 'fa-gavel',
-                fields: [
-                    { key: 'name', label: 'الاسم', type: 'text' },
-                    { key: 'reason', label: 'السبب', type: 'text' },
-                    { key: 'action', label: 'الإجراء', type: 'text' },
-                    { key: 'date', label: 'التاريخ', type: 'date' }
-                ],
-                data: []
-            },
-            logs: {
-                title: 'سجل النشاطات', icon: 'fa-clipboard-list',
-                fields: [
-                    { key: 'action', label: 'الحدث', type: 'text' },
-                    { key: 'module', label: 'القسم', type: 'text' },
-                    { key: 'date', label: 'التاريخ', type: 'text' },
-                    { key: 'time', label: 'الوقت', type: 'text' }
-                ],
-                data: []
-            }
-        };
-
-        const defaultSettings = {
-            siteName: 'Toronto RP MDT',
-            siteLogo: '',
-            bgMode: 'cyber',
-            colors: {
-                '--primary-color': '#0a192f',
-                '--accent-color': '#00d2ff',
-                '--table-bg': 'rgba(0, 0, 0, 0.4)'
-            }
-        };
-
-        let modulesConfig = {};
-        let settings = {};
-        let currentActiveModule = '';
-        let editingIndex = -1;
-        let paginationState = {};
-        const itemsPerPage = 10;
-        let chartsInstance = {};
-
-        /* ================= Initialization ================= */
-        document.addEventListener('DOMContentLoaded', () => {
-            initStorage();
-            initSettings();
-            generateViews();
-            setupNavigation();
-            updateClock();
-            setInterval(updateClock, 1000);
-            initCanvas();
-            updateDashboardStats();
-            setupRipples();
-        });
-
-        /* ================= Storage & Settings ================= */
-        function initStorage() {
-            try {
-                const storedData = localStorage.getItem('mdt_modules_v2');
-                if (storedData) {
-                    modulesConfig = JSON.parse(storedData);
-                    // Merge fields in case of updates
-                    for (let key in defaultModules) {
-                        if (!modulesConfig[key]) modulesConfig[key] = defaultModules[key];
-                        else modulesConfig[key].fields = defaultModules[key].fields;
-                    }
-                } else {
-                    modulesConfig = JSON.parse(JSON.stringify(defaultModules));
-                    logAction('تهيئة النظام لأول مرة', 'النظام');
-                }
-
-                const storedSettings = localStorage.getItem('mdt_settings_v2');
-                if (storedSettings) {
-                    settings = JSON.parse(storedSettings);
-                } else {
-                    settings = JSON.parse(JSON.stringify(defaultSettings));
-                }
-            } catch (e) {
-                console.error(e);
-                modulesConfig = JSON.parse(JSON.stringify(defaultModules));
-                settings = JSON.parse(JSON.stringify(defaultSettings));
-            }
-
-            for (let key in modulesConfig) paginationState[key] = { page: 1, query: '' };
-        }
-
-        function saveStorage() {
-            try {
-                localStorage.setItem('mdt_modules_v2', JSON.stringify(modulesConfig));
-                localStorage.setItem('mdt_settings_v2', JSON.stringify(settings));
-            } catch (e) { showToast('خطأ في حفظ البيانات (قد تكون الصور كبيرة جداً)', 'error'); }
-        }
-
-        function initSettings() {
-            document.getElementById('site-name-display').innerText = settings.siteName;
-            document.getElementById('setting-site-name').value = settings.siteName;
-            
-            if (settings.siteLogo) {
-                document.getElementById('site-logo-img').src = settings.siteLogo;
-                document.getElementById('site-logo-img').style.display = 'block';
-                document.getElementById('site-logo-icon').style.display = 'none';
-                document.getElementById('setting-logo-preview').src = settings.siteLogo;
-                document.getElementById('setting-logo-preview').style.display = 'block';
-            }
-
-            for (const [prop, val] of Object.entries(settings.colors)) {
-                document.documentElement.style.setProperty(prop, val);
-                const input = document.getElementById(`color-${prop.replace('--', '').split('-')[0]}`);
-                if (input) input.value = val;
-                if (prop === '--accent-color') document.documentElement.style.setProperty('--accent-glow', val + 'cc');
-            }
-            
-            setBgMode(settings.bgMode, false);
-        }
-
-        function updateSetting(key, value) {
-            settings[key] = value;
-            if (key === 'siteName') document.getElementById('site-name-display').innerText = value;
-            saveStorage();
-            logAction(`تغيير إعدادات: ${key}`, 'الإعدادات');
-            showToast('تم حفظ الإعدادات', 'success');
-        }
-
-        function updateThemeColor(prop, value, isAccent = false) {
-            settings.colors[prop] = value;
-            document.documentElement.style.setProperty(prop, value);
-            if (isAccent) document.documentElement.style.setProperty('--accent-glow', value + 'cc');
-            saveStorage();
-            logAction(`تغيير لون ${prop}`, 'الإعدادات');
-        }
-
-        function updateLogo(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = function(evt) {
-                updateSetting('siteLogo', evt.target.result);
-                document.getElementById('site-logo-img').src = evt.target.result;
-                document.getElementById('site-logo-img').style.display = 'block';
-                document.getElementById('site-logo-icon').style.display = 'none';
-                document.getElementById('setting-logo-preview').src = evt.target.result;
-                document.getElementById('setting-logo-preview').style.display = 'block';
-            };
-            reader.readAsDataURL(file);
-        }
-
-        function resetSettings() {
-            settings = JSON.parse(JSON.stringify(defaultSettings));
-            initSettings();
-            saveStorage();
-            showToast('تم استعادة الإعدادات الافتراضية', 'success');
-        }
-
-        /* ================= Dynamic Views & Tables ================= */
-        function generateViews() {
-            const container = document.getElementById('dynamic-views-container');
-            container.innerHTML = '';
-            
-            for (const [modKey, modConfig] of Object.entries(modulesConfig)) {
-                if (modKey === 'logs') continue; // Logs handled specially below
-                
-                const section = document.createElement('div');
-                section.id = modKey;
-                section.className = 'view-section';
-                
-                let headersHTML = modConfig.fields.map(f => `<th onclick="sortTable('${modKey}', '${f.key}')">${f.label} <i class="fa-solid fa-sort" style="font-size:12px; margin-right:5px; opacity:0.5;"></i></th>`).join('');
-                headersHTML += `<th>الإجراءات</th>`;
-
-                section.innerHTML = `
-                    <div class="section-header">
-                        <h2 class="section-title neon-text"><i class="fa-solid ${modConfig.icon}"></i> ${modConfig.title}</h2>
-                        <div class="btn-group">
-                            <button class="btn btn-export" onclick="exportExcel('${modKey}')"><i class="fa-solid fa-file-excel"></i> Excel</button>
-                            <button class="btn btn-export" onclick="exportPDF('${modKey}')"><i class="fa-solid fa-file-pdf"></i> PDF</button>
-                        </div>
-                    </div>
-                    <div class="glass-panel" style="padding: 25px;">
-                        <div class="controls-bar">
-                            <div class="search-box">
-                                <i class="fa-solid fa-search"></i>
-                                <input type="text" class="search-input" placeholder="بحث في ${modConfig.title}..." onkeyup="handleSearch('${modKey}', this.value)">
-                            </div>
-                            <button class="btn" onclick="openModal('${modKey}')">
-                                <i class="fa-solid fa-plus"></i> إضافة جديد
-                            </button>
-                        </div>
-                        <div class="table-wrapper">
-                            <table id="table-${modKey}">
-                                <thead><tr>${headersHTML}</tr></thead>
-                                <tbody id="tbody-${modKey}"></tbody>
-                            </table>
-                        </div>
-                        <div class="pagination" id="pagination-${modKey}"></div>
-                    </div>
-                `;
-                container.appendChild(section);
-            }
-
-            // Generate Logs section without Add/Edit buttons
-            const logsSection = document.createElement('div');
-            logsSection.id = 'logs';
-            logsSection.className = 'view-section';
-            let logsHeaders = modulesConfig.logs.fields.map(f => `<th>${f.label}</th>`).join('');
-            logsSection.innerHTML = `
-                <div class="section-header">
-                    <h2 class="section-title neon-text"><i class="fa-solid fa-clipboard-list"></i> سجل النشاطات</h2>
-                    <button class="btn btn-export" onclick="exportExcel('logs')"><i class="fa-solid fa-file-excel"></i> Excel</button>
-                </div>
-                <div class="glass-panel" style="padding: 25px;">
-                    <div class="controls-bar">
-                        <div class="search-box">
-                            <i class="fa-solid fa-search"></i><input type="text" class="search-input" placeholder="بحث في السجل..." onkeyup="handleSearch('logs', this.value)">
-                        </div>
-                    </div>
-                    <div class="table-wrapper">
-                        <table id="table-logs"><thead><tr>${logsHeaders}</tr></thead><tbody id="tbody-logs"></tbody></table>
-                    </div>
-                    <div class="pagination" id="pagination-logs"></div>
-                </div>
-            `;
-            container.appendChild(logsSection);
-
-            for (let k in modulesConfig) renderTable(k);
-        }
-
-        function getRankBadgeHTML(rankName) {
-            const rank = policeRanks.find(r => r.name === rankName);
-            if (!rank) return rankName;
-            return `<span class="rank-badge" style="background-color: ${rank.color};"><i class="fa-solid ${rank.icon}"></i> ${rank.name}</span>`;
-        }
-
-        function renderTable(modKey) {
-            const tbody = document.getElementById(`tbody-${modKey}`);
-            const pagContainer = document.getElementById(`pagination-${modKey}`);
-            if (!tbody) return;
-            
-            const config = modulesConfig[modKey];
-            let rawData = config.data;
-            const query = paginationState[modKey].query.toLowerCase();
-
-            if (query) {
-                rawData = rawData.filter(row => Object.values(row).some(val => String(val).toLowerCase().includes(query)));
-            }
-
-            const totalItems = rawData.length;
-            const totalPages = Math.ceil(totalItems / itemsPerPage) || 1;
-            if (paginationState[modKey].page > totalPages) paginationState[modKey].page = totalPages;
-            const currentPage = paginationState[modKey].page;
-            
-            const startIdx = (currentPage - 1) * itemsPerPage;
-            const dataToRender = rawData.slice(startIdx, startIdx + itemsPerPage);
-            
-            tbody.innerHTML = '';
-            
-            if (dataToRender.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="${config.fields.length + (modKey==='logs'?0:1)}" style="text-align:center; color:var(--text-muted); font-weight:bold;">لا توجد بيانات متاحة</td></tr>`;
-                pagContainer.innerHTML = '';
-                return;
-            }
-
-            dataToRender.forEach((row) => {
-                const actualIndex = config.data.indexOf(row);
-                let tr = document.createElement('tr');
-                let tdHtml = '';
-                
-                config.fields.forEach(field => {
-                    let val = row[field.key] || '';
-                    if (field.type === 'image') {
-                        val = val ? `<img src="${val}" class="avatar-img">` : `<div class="avatar-img" style="display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.5);"><i class="fa-solid fa-user text-muted"></i></div>`;
-                    } else if (field.key === 'rank' || field.key === 'oldRank' || field.key === 'newRank') {
-                        val = getRankBadgeHTML(val);
-                    } else {
-                        if (val === 'قصوى' || val === 'خارج الخدمة' || val === 'غير متاح' || val === 'مسروق' || val === 'مصادر') val = `<span style="color: var(--danger); font-weight:900;">${val}</span>`;
-                        if (val === 'في الخدمة' || val === 'متاح' || val === 'مرخص' || val === 'منتهي') val = `<span style="color: var(--success); font-weight:900;">${val}</span>`;
-                        if (val === 'تحت التحقيق' || val === 'قيد الاستجابة') val = `<span style="color: var(--warning); font-weight:900;">${val}</span>`;
-                    }
-                    tdHtml += `<td>${val}</td>`;
-                });
-
-                if (modKey !== 'logs') {
-                    tdHtml += `
-                        <td class="action-btns">
-                            <button class="btn-icon edit" onclick="openModal('${modKey}', ${actualIndex})" title="تعديل"><i class="fa-solid fa-pen-to-square"></i></button>
-                            <button class="btn-icon delete" onclick="deleteRecord('${modKey}', ${actualIndex})" title="حذف"><i class="fa-solid fa-trash-can"></i></button>
-                        </td>
-                    `;
-                }
-                tr.innerHTML = tdHtml;
-                tbody.appendChild(tr);
-            });
-
-            renderPagination(modKey, currentPage, totalPages);
-        }
-
-        function renderPagination(modKey, current, total) {
-            const container = document.getElementById(`pagination-${modKey}`);
-            let html = `<button class="page-btn" onclick="changePage('${modKey}', ${current - 1})" ${current === 1 ? 'disabled' : ''}><i class="fa-solid fa-chevron-right"></i> السابق</button>`;
-            
-            for (let i = 1; i <= total; i++) {
-                if (i === 1 || i === total || (i >= current - 1 && i <= current + 1)) {
-                    html += `<button class="page-btn ${i === current ? 'active' : ''}" onclick="changePage('${modKey}', ${i})">${i}</button>`;
-                } else if (i === current - 2 || i === current + 2) {
-                    html += `<span style="color:white;">...</span>`;
-                }
-            }
-            
-            html += `<button class="page-btn" onclick="changePage('${modKey}', ${current + 1})" ${current === total ? 'disabled' : ''}>التالي <i class="fa-solid fa-chevron-left"></i></button>`;
-            container.innerHTML = html;
-        }
-
-        function changePage(modKey, page) {
-            paginationState[modKey].page = page;
-            renderTable(modKey);
-        }
-
-        function handleSearch(modKey, query) {
-            paginationState[modKey].query = query;
-            paginationState[modKey].page = 1;
-            renderTable(modKey);
-        }
-
-        let sortDirection = {};
-        function sortTable(modKey, key) {
-            sortDirection[key] = !sortDirection[key];
-            modulesConfig[modKey].data.sort((a, b) => {
-                let valA = a[key] || ''; let valB = b[key] || '';
-                if (typeof valA === 'string') valA = valA.toLowerCase();
-                if (typeof valB === 'string') valB = valB.toLowerCase();
-                if (valA < valB) return sortDirection[key] ? -1 : 1;
-                if (valA > valB) return sortDirection[key] ? 1 : -1;
-                return 0;
-            });
-            renderTable(modKey);
-        }
-
-        function deleteRecord(modKey, index) {
-            if (confirm('هل أنت متأكد من حذف هذا السجل نهائياً؟')) {
-                modulesConfig[modKey].data.splice(index, 1);
-                saveStorage();
-                renderTable(modKey);
-                if(modKey!=='logs') updateDashboardStats();
-                logAction(`حذف سجل`, modKey);
-                showToast('تم الحذف بنجاح', 'success');
-            }
-        }
-
-        /* ================= Modals & Form Handling ================= */
-        function openModal(modKey, index = -1) {
-            currentActiveModule = modKey;
-            editingIndex = index;
-            const config = modulesConfig[modKey];
-            const modal = document.getElementById('dynamic-modal');
-            const formBody = document.getElementById('modal-body');
-            
-            document.getElementById('modal-title').innerHTML = index === -1 ? `<i class="fa-solid fa-plus"></i> إضافة جديد - ${config.title}` : `<i class="fa-solid fa-pen"></i> تعديل سجل - ${config.title}`;
-            formBody.innerHTML = '';
-
-            let rowData = index === -1 ? {} : config.data[index];
-
-            config.fields.forEach(field => {
-                const group = document.createElement('div');
-                group.className = 'form-group';
-                let inputHtml = '';
-                let val = rowData[field.key] || '';
-
-                if (field.type === 'select') {
-                    let options = field.options.map(opt => `<option value="${opt}" ${val === opt ? 'selected' : ''}>${opt}</option>`).join('');
-                    inputHtml = `<select id="field-${field.key}" class="form-control" required>${options}</select>`;
-                } else if (field.type === 'image') {
-                    inputHtml = `
-                        <input type="file" id="field-${field.key}" class="form-control" accept="image/*" onchange="previewFormImage(event, '${field.key}')">
-                        <input type="hidden" id="hidden-${field.key}" value="${val}">
-                        <div class="image-preview-container">
-                            <img id="preview-${field.key}" class="img-preview" src="${val}" style="display:${val ? 'block' : 'none'}">
-                        </div>
-                    `;
-                } else {
-                    let type = field.type === 'date' ? 'date' : (field.type === 'number' ? 'number' : 'text');
-                    inputHtml = `<input type="${type}" id="field-${field.key}" class="form-control" value="${val}" required>`;
-                }
-
-                group.innerHTML = `<label>${field.label}</label>${inputHtml}`;
-                formBody.appendChild(group);
-            });
-
-            modal.classList.add('active');
-        }
-
-        function closeModal() { document.getElementById('dynamic-modal').classList.remove('active'); }
-
-        function previewFormImage(e, key) {
-            const file = e.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = function(evt) {
-                document.getElementById(`hidden-${key}`).value = evt.target.result;
-                document.getElementById(`preview-${key}`).src = evt.target.result;
-                document.getElementById(`preview-${key}`).style.display = 'block';
-            };
-            reader.readAsDataURL(file);
-        }
-
-        function handleFormSubmit(e) {
-            e.preventDefault();
-            const config = modulesConfig[currentActiveModule];
-            const newRecord = {};
-            
-            config.fields.forEach(field => {
-                if (field.type === 'image') {
-                    newRecord[field.key] = document.getElementById(`hidden-${field.key}`).value;
-                } else {
-                    newRecord[field.key] = document.getElementById(`field-${field.key}`).value;
-                }
-            });
-
-            if (editingIndex === -1) {
-                config.data.unshift(newRecord);
-                logAction(`إضافة سجل جديد`, currentActiveModule);
-                showToast('تمت الإضافة بنجاح', 'success');
-            } else {
-                config.data[editingIndex] = newRecord;
-                logAction(`تعديل سجل`, currentActiveModule);
-                showToast('تم التعديل بنجاح', 'success');
-            }
-
-            saveStorage();
-            renderTable(currentActiveModule);
-            updateDashboardStats();
-            closeModal();
-        }
-
-        /* ================= Logs & Utils ================= */
-        function logAction(actionTxt, modName) {
-            const now = new Date();
-            modulesConfig.logs.data.unshift({
-                action: actionTxt,
-                module: modulesConfig[modName] ? modulesConfig[modName].title : modName,
-                date: now.toLocaleDateString('ar-SA'),
-                time: now.toLocaleTimeString('ar-SA')
-            });
-            if(modulesConfig.logs.data.length > 500) modulesConfig.logs.data.pop(); // Limit logs
-            saveStorage();
-            if(document.getElementById('tbody-logs')) renderTable('logs');
-        }
-
-        function showToast(message, type = 'success') {
-            const container = document.getElementById('toast-container');
-            const toast = document.createElement('div');
-            toast.className = `toast ${type}`;
-            toast.innerHTML = `<i class="fa-solid ${type === 'success' ? 'fa-circle-check' : 'fa-circle-exclamation'}"></i> <span>${message}</span>`;
-            container.appendChild(toast);
-            setTimeout(() => toast.classList.add('show'), 10);
-            setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 500); }, 3000);
-        }
-
-        function updateClock() {
-            const now = new Date();
-            document.getElementById('current-time').innerText = now.toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
-            document.getElementById('current-date').innerText = now.toLocaleDateString('ar-SA', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
-        }
-
-        function setupNavigation() {
-            const navBtns = document.querySelectorAll('.nav-btn');
-            navBtns.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    navBtns.forEach(b => b.classList.remove('active'));
-                    btn.classList.add('active');
-                    document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
-                    const targetId = btn.getAttribute('data-target');
-                    document.getElementById(targetId).classList.add('active');
-                    if (targetId === 'dashboard') updateDashboardStats();
-                });
-            });
-        }
-
-        function navigateTo(modKey) {
-            document.querySelector(`.nav-btn[data-target="${modKey}"]`).click();
-        }
-
-        function setupRipples() {
-            document.addEventListener('click', function(e) {
-                const target = e.target.closest('.btn, .nav-btn, .page-btn, .theme-btn');
-                if (!target) return;
-                const circle = document.createElement('span');
-                const diameter = Math.max(target.clientWidth, target.clientHeight);
-                const radius = diameter / 2;
-                const rect = target.getBoundingClientRect();
-                circle.style.width = circle.style.height = `${diameter}px`;
-                circle.style.left = `${e.clientX - rect.left - radius}px`;
-                circle.style.top = `${e.clientY - rect.top - radius}px`;
-                circle.classList.add('ripple');
-                const existing = target.querySelector('.ripple');
-                if (existing) existing.remove();
-                target.appendChild(circle);
-            });
-        }
-
-        /* ================= Charts & Dashboard ================= */
-        function updateDashboardStats() {
-            document.getElementById('stat-officers').innerText = modulesConfig.officers.data.length;
-            document.getElementById('stat-ems').innerText = modulesConfig.ems.data.length;
-            document.getElementById('stat-wanted').innerText = modulesConfig.wanted.data.length;
-            document.getElementById('stat-cases').innerText = modulesConfig.cases.data.length;
-            document.getElementById('stat-reports').innerText = modulesConfig.reports.data.length;
-            document.getElementById('stat-vehicles').innerText = modulesConfig.vehicles.data.length;
-            document.getElementById('stat-weapons').innerText = modulesConfig.weapons.data.length;
-
-            renderCharts();
-        }
-
-        function renderCharts() {
-            Chart.defaults.color = '#8892b0';
-            Chart.defaults.font.family = "'Tajawal', sans-serif";
-            const accent = getComputedStyle(document.documentElement).getPropertyValue('--accent-color').trim() || '#00d2ff';
-
-            const barCtx = document.getElementById('barChart');
-            if(chartsInstance.bar) chartsInstance.bar.destroy();
-            chartsInstance.bar = new Chart(barCtx, {
-                type: 'bar',
-                data: {
-                    labels: ['الضباط', 'المسعفين', 'المطلوبين', 'القضايا', 'البلاغات', 'المركبات', 'الأسلحة'],
-                    datasets: [{
-                        label: 'إحصائيات النظام',
-                        data: [
-                            modulesConfig.officers.data.length, modulesConfig.ems.data.length,
-                            modulesConfig.wanted.data.length, modulesConfig.cases.data.length,
-                            modulesConfig.reports.data.length, modulesConfig.vehicles.data.length,
-                            modulesConfig.weapons.data.length
-                        ],
-                        backgroundColor: accent + '80',
-                        borderColor: accent,
-                        borderWidth: 2,
-                        borderRadius: 5
-                    }]
-                },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
-            });
-
-            const dougCtx = document.getElementById('doughnutChart');
-            if(chartsInstance.doug) chartsInstance.doug.destroy();
-            let caseStatus = { 'مفتوحة':0, 'مغلقة':0, 'تحت التحقيق':0 };
-            modulesConfig.cases.data.forEach(c => { if(caseStatus[c.status] !== undefined) caseStatus[c.status]++; });
-            chartsInstance.doug = new Chart(dougCtx, {
-                type: 'doughnut',
-                data: {
-                    labels: Object.keys(caseStatus),
-                    datasets: [{
-                        data: Object.values(caseStatus),
-                        backgroundColor: ['#ffea00', '#00e676', '#ff4d4d'],
-                        borderWidth: 0,
-                        hoverOffset: 10
-                    }]
-                },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { title: { display: true, text: 'حالة القضايا', color: 'white' } } }
-            });
-
-            const lineCtx = document.getElementById('lineChart');
-            if(chartsInstance.line) chartsInstance.line.destroy();
-            // Mocking dates for line chart based on logs or simply recent activity
-            chartsInstance.line = new Chart(lineCtx, {
-                type: 'line',
-                data: {
-                    labels: ['السبت', 'الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة'],
-                    datasets: [{
-                        label: 'نشاط النظام (أسبوعي)',
-                        data: [12, 19, 15, 25, 22, 30, modulesConfig.logs.data.length > 30 ? 30 : modulesConfig.logs.data.length],
-                        borderColor: accent,
-                        backgroundColor: accent + '33',
-                        fill: true,
-                        tension: 0.4,
-                        borderWidth: 3,
-                        pointBackgroundColor: 'white',
-                        pointRadius: 5
-                    }]
-                },
-                options: { responsive: true, maintainAspectRatio: false }
-            });
-        }
-
-        /* ================= Exports & Backup ================= */
-        function exportBackup() {
-            const dataStr = JSON.stringify({ modules: modulesConfig, settings: settings }, null, 2);
-            const blob = new Blob([dataStr], { type: "application/json" });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `MDT_Backup_${new Date().toISOString().split('T')[0]}.json`;
-            a.click();
-            URL.revokeObjectURL(url);
-            logAction('تصدير نسخة احتياطية', 'النظام');
-            showToast('تم تصدير النسخة بنجاح', 'success');
-        }
-
-        function importBackup(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = function(evt) {
-                try {
-                    const parsed = JSON.parse(evt.target.result);
-                    if (parsed.modules && parsed.settings) {
-                        modulesConfig = parsed.modules;
-                        settings = parsed.settings;
-                        saveStorage();
-                        logAction('استيراد نسخة احتياطية', 'النظام');
-                        alert('تم استيراد البيانات بنجاح، سيتم تحديث الصفحة.');
-                        location.reload();
-                    } else { throw new Error("Invalid Format"); }
-                } catch (err) { showToast('الملف غير صالح', 'error'); }
-            };
-            reader.readAsText(file);
-        }
-
-        function exportExcel(modKey) {
-            try {
-                const config = modulesConfig[modKey];
-                const data = config.data.map(row => {
-                    let cleanRow = {};
-                    config.fields.forEach(f => { if(f.type !== 'image') cleanRow[f.label] = row[f.key]; });
-                    return cleanRow;
-                });
-                const ws = XLSX.utils.json_to_sheet(data);
-                const wb = XLSX.utils.book_new();
-                XLSX.utils.book_append_sheet(wb, ws, config.title);
-                XLSX.writeFile(wb, `${config.title}_Export.xlsx`);
-                logAction(`تصدير Excel`, modKey);
-                showToast('تم التصدير بنجاح', 'success');
-            } catch(e) { showToast('خطأ في التصدير', 'error'); }
-        }
-
-        function exportPDF(modKey) {
-            try {
-                const { jsPDF } = window.jspdf;
-                const doc = new jsPDF('l', 'pt', 'a4');
-                const config = modulesConfig[modKey];
-                
-                // Note: Standard jsPDF does not support Arabic text correctly without custom TTF fonts.
-                // Outputting as English keys or simple render to satisfy requirements without external TTF file.
-                doc.setFontSize(18);
-                doc.text(config.title + " Report", 40, 40);
-                
-                const head = [config.fields.filter(f=>f.type!=='image').map(f => f.label)];
-                const body = config.data.map(row => config.fields.filter(f=>f.type!=='image').map(f => row[f.key] || ''));
-
-                doc.autoTable({ head: head, body: body, startY: 50, theme: 'grid', styles: { font: 'helvetica', halign: 'right' } });
-                doc.save(`${config.title}_Export.pdf`);
-                logAction(`تصدير PDF`, modKey);
-                showToast('تم التصدير بنجاح', 'success');
-            } catch(e) { showToast('خطأ في تصدير PDF', 'error'); }
-        }
-
-        /* ================= Animated Backgrounds Engine ================= */
-        let bgAnimationId;
-        function setBgMode(mode, save = true) {
-            if(save) updateSetting('bgMode', mode);
-            document.querySelectorAll('.bg-btn').forEach(b => b.classList.remove('active'));
-            const btn = document.querySelector(`.bg-btn[onclick="setBgMode('${mode}')"]`);
-            if(btn) btn.classList.add('active');
-            
-            cancelAnimationFrame(bgAnimationId);
-            const canvas = document.getElementById('bg-canvas');
-            const ctx = canvas.getContext('2d');
-            let w = canvas.width = window.innerWidth;
-            let h = canvas.height = window.innerHeight;
-            window.addEventListener('resize', () => { w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; });
-
-            const getAccent = () => getComputedStyle(document.documentElement).getPropertyValue('--accent-color').trim() || '#00d2ff';
-
-            if (mode === 'rain') {
-                const drops = Array(100).fill().map(() => ({ x: Math.random()*w, y: Math.random()*h, l: Math.random()*20+10, v: Math.random()*5+5 }));
-                function draw() {
-                    ctx.clearRect(0,0,w,h);
-                    ctx.strokeStyle = getAccent();
-                    ctx.lineWidth = 2;
-                    ctx.beginPath();
-                    drops.forEach(d => {
-                        ctx.moveTo(d.x, d.y);
-                        ctx.lineTo(d.x, d.y + d.l);
-                        d.y += d.v;
-                        if(d.y > h) { d.y = -d.l; d.x = Math.random()*w; }
-                    });
-                    ctx.stroke();
-                    bgAnimationId = requestAnimationFrame(draw);
-                } draw();
-            } else if (mode === 'stars') {
-                const stars = Array(200).fill().map(() => ({ x: Math.random()*w, y: Math.random()*h, r: Math.random()*2, a: Math.random(), va: (Math.random()-0.5)*0.05 }));
-                function draw() {
-                    ctx.clearRect(0,0,w,h);
-                    stars.forEach(s => {
-                        ctx.beginPath();
-                        ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
-                        ctx.fillStyle = `rgba(255,255,255,${Math.abs(Math.sin(s.a))})`;
-                        ctx.fill();
-                        s.a += s.va;
-                        s.y -= 0.5;
-                        if(s.y < 0) s.y = h;
-                    });
-                    bgAnimationId = requestAnimationFrame(draw);
-                } draw();
-            } else if (mode === 'particles') {
-                const particles = Array(80).fill().map(() => ({ x: Math.random()*w, y: Math.random()*h, vx: (Math.random()-0.5)*1, vy: (Math.random()-0.5)*1, r: Math.random()*3+1 }));
-                function draw() {
-                    ctx.clearRect(0,0,w,h);
-                    ctx.fillStyle = getAccent();
-                    particles.forEach(p => {
-                        p.x += p.vx; p.y += p.vy;
-                        if(p.x<0||p.x>w) p.vx*=-1; if(p.y<0||p.y>h) p.vy*=-1;
-                        ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI*2); ctx.fill();
-                    });
-                    bgAnimationId = requestAnimationFrame(draw);
-                } draw();
-            } else if (mode === 'cyber') {
-                const nodes = Array(60).fill().map(() => ({ x: Math.random()*w, y: Math.random()*h, vx: (Math.random()-0.5)*2, vy: (Math.random()-0.5)*2 }));
-                function draw() {
-                    ctx.clearRect(0,0,w,h);
-                    const color = getAccent();
-                    ctx.fillStyle = color;
-                    nodes.forEach(n => {
-                        n.x += n.vx; n.y += n.vy;
-                        if(n.x<0||n.x>w) n.vx*=-1; if(n.y<0||n.y>h) n.vy*=-1;
-                        ctx.beginPath(); ctx.arc(n.x, n.y, 2, 0, Math.PI*2); ctx.fill();
-                    });
-                    ctx.strokeStyle = color;
-                    for(let i=0; i<nodes.length; i++) {
-                        for(let j=i+1; j<nodes.length; j++) {
-                            const d = Math.hypot(nodes[i].x-nodes[j].x, nodes[i].y-nodes[j].y);
-                            if(d < 150) {
-                                ctx.globalAlpha = 1 - (d/150);
-                                ctx.beginPath(); ctx.moveTo(nodes[i].x, nodes[i].y); ctx.lineTo(nodes[j].x, nodes[j].y); ctx.stroke();
-                            }
-                        }
-                    }
-                    ctx.globalAlpha = 1;
-                    bgAnimationId = requestAnimationFrame(draw);
-                } draw();
-            } else if (mode === 'matrix') {
-                const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*".split("");
-                const font = 16;
-                const cols = w/font;
-                const drops = Array(Math.floor(cols)).fill(1);
-                function draw() {
-                    ctx.fillStyle = "rgba(0,0,0,0.1)";
-                    ctx.fillRect(0,0,w,h);
-                    ctx.fillStyle = getAccent();
-                    ctx.font = font + "px monospace";
-                    for(let i=0; i<drops.length; i++) {
-                        const txt = chars[Math.floor(Math.random()*chars.length)];
-                        ctx.fillText(txt, i*font, drops[i]*font);
-                        if(drops[i]*font > h && Math.random() > 0.975) drops[i] = 0;
-                        drops[i]++;
-                    }
-                    bgAnimationId = requestAnimationFrame(draw);
-                } draw();
-            }
-        }
-        function initCanvas() { setBgMode(settings.bgMode, false); }
-    </script>
 </body>
 </html>
