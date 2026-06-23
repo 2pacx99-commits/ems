@@ -269,4 +269,2207 @@
             border-right: 4px solid var(--cyan);
             padding-right: 14px;
             box-shadow: inset 5px 0 15px rgba(0, 242, 254, 0.05);
-            text-shadow: 0 0 8px rgba(255,255,255
+            text-shadow: 0 0 8px rgba(255,255,255,0.5);
+        }
+
+        .nav-item.active i {
+            color: var(--cyan);
+            filter: drop-shadow(0 0 5px var(--cyan-glow));
+        }
+
+        .operator-profile-card {
+            padding: 15px;
+            border-top: 1px solid var(--border-glass);
+            background: rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .operator-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            border: 2px solid var(--cyan);
+            box-shadow: var(--neon-shadow);
+            object-fit: cover;
+            background: #111;
+        }
+
+        .operator-details-text {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .operator-rank {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--cyan);
+        }
+
+        .operator-name {
+            font-size: 0.85rem;
+            font-weight: 600;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+        }
+
+        /* مساحة العمل وهيكل العرض العالي الكفاءة */
+        main {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+            z-index: 15;
+        }
+
+        header {
+            height: var(--header-height);
+            background: var(--bg-glass);
+            border-bottom: 1px solid var(--border-glass);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            backdrop-filter: blur(15px);
+        }
+
+        .header-title-container h1 {
+            font-size: 1.4rem;
+            font-weight: 900;
+            text-shadow: 0 0 10px rgba(255,255,255,0.1);
+        }
+
+        .header-system-meta {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .meta-clock-block {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+
+        .live-time-ticker {
+            font-family: 'Changa', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--cyan);
+            text-shadow: var(--neon-shadow);
+            line-height: 1;
+        }
+
+        .live-date-ticker {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            margin-top: 4px;
+        }
+
+        .sys-status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0, 255, 135, 0.08);
+            padding: 6px 14px;
+            border-radius: 20px;
+            border: 1px solid rgba(0, 255, 135, 0.2);
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--success);
+            box-shadow: 0 0 10px rgba(0, 255, 135, 0.05);
+        }
+
+        .sys-status-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--success);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--success-glow);
+            animation: blink 1.5s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 1; }
+        }
+
+        /* حاوية التبويبات والمشاهد المتغيرة ديناميكياً */
+        .workspace-content-viewport {
+            flex-grow: 1;
+            padding: 30px;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .workspace-content-viewport::-webkit-scrollbar {
+            width: 6px;
+        }
+        .workspace-content-viewport::-webkit-scrollbar-thumb {
+            background: var(--border-glass);
+            border-radius: 10px;
+        }
+
+        .viewport-view-pane {
+            display: none;
+            animation: fadeInView 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        .viewport-view-pane.active-pane {
+            display: block;
+        }
+
+        @keyframes fadeInView {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* عناصر وبطاقات العرض المتقدمة Glassmorphism */
+        .glass-card-panel {
+            background: var(--bg-glass);
+            border: 1px solid var(--border-glass);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3), inset 0 1px 2px rgba(255,255,255,0.05);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            margin-bottom: 25px;
+        }
+
+        .glass-card-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 80px;
+            height: 2px;
+            background: linear-gradient(90deg, var(--cyan), transparent);
+        }
+
+        .panel-header-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border-glass);
+            padding-bottom: 12px;
+        }
+
+        .panel-header-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .panel-header-title i {
+            color: var(--cyan);
+            filter: drop-shadow(0 0 5px var(--cyan-glow));
+        }
+
+        /* شبكة الإحصائيات السريعة بـ Dashboard */
+        .analytics-counters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .stat-counter-card {
+            background: linear-gradient(135deg, rgba(13, 20, 38, 0.8), rgba(8, 14, 28, 0.5));
+            border: 1px solid var(--border-glass);
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+
+        .stat-counter-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--border-glow);
+        }
+
+        .stat-counter-value {
+            font-family: 'Changa', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-top: 5px;
+        }
+
+        .stat-counter-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .stat-counter-icon-box {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+        }
+
+        .color-cyan-box { background: rgba(0, 242, 254, 0.1); color: var(--cyan); }
+        .color-danger-box { background: rgba(255, 0, 85, 0.1); color: var(--danger); }
+        .color-warning-box { background: rgba(255, 179, 0, 0.1); color: var(--warning); }
+        .color-success-box { background: rgba(0, 255, 135, 0.1); color: var(--success); }
+
+        /* الرسوم البيانية هجينة التقنية */
+        .charts-flex-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+
+        .chart-box-frame {
+            min-height: 280px;
+        }
+
+        /* الجداول الذكية الاحترافية والتحكم المستمر */
+        .data-table-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .table-search-input-wrapper {
+            position: relative;
+            flex-grow: 1;
+            max-width: 400px;
+        }
+
+        .table-search-input-wrapper i {
+            position: absolute;
+            right: 15px;
+            top: 50% ;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+
+        .table-search-field {
+            width: 100%;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid var(--border-glass);
+            padding: 10px 45px 10px 15px;
+            border-radius: 8px;
+            color: #fff;
+            font-family: var(--font-main);
+            font-size: 0.85rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .table-search-field:focus {
+            border-color: var(--cyan);
+            box-shadow: 0 0 10px var(--cyan-glow);
+        }
+
+        .action-buttons-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-action-trigger {
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-family: var(--font-main);
+            font-weight: 600;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: none;
+            transition: all 0.3s ease;
+        }
+
+        .btn-action-trigger:hover {
+            background: linear-gradient(135deg, var(--primary), var(--cyan));
+            box-shadow: var(--neon-shadow);
+        }
+
+        .btn-danger-trigger {
+            background: rgba(255, 0, 85, 0.2);
+            border: 1px solid var(--danger);
+            color: var(--danger);
+        }
+        .btn-danger-trigger:hover {
+            background: var(--danger);
+            color: #fff;
+            box-shadow: 0 0 15px var(--danger-glow);
+        }
+
+        .table-responsive-scroller {
+            width: 100%;
+            overflow-x: auto;
+            border-radius: 8px;
+            border: 1px solid var(--border-glass);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: right;
+            font-size: 0.85rem;
+            background: rgba(5, 10, 20, 0.4);
+        }
+
+        th {
+            background: rgba(0,0,0,0.4);
+            padding: 14px 16px;
+            color: var(--cyan);
+            font-weight: 700;
+            border-bottom: 2px solid var(--border-glass);
+            white-space: nowrap;
+            cursor: none;
+        }
+
+        th i { margin-left: 5px; font-size: 0.75rem; }
+
+        td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-glass);
+            color: var(--text-main);
+            white-space: nowrap;
+        }
+
+        tr:hover td {
+            background: rgba(255,255,255,0.02);
+        }
+
+        /* نظام العناوين والشارات داخل الجداول */
+        .badge-status {
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .badge-success { background: rgba(0, 255, 135, 0.15); color: var(--success); border: 1px solid var(--success); }
+        .badge-danger { background: rgba(255, 0, 85, 0.15); color: var(--danger); border: 1px solid var(--danger); }
+        .badge-warning { background: rgba(255, 179, 0, 0.15); color: var(--warning); border: 1px solid var(--warning); }
+        .badge-primary { background: rgba(0, 114, 255, 0.15); color: var(--cyan); border: 1px solid var(--cyan); }
+
+        /* شريط الترقيم الحقيقي للصفحات */
+        .pagination-container-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .pagination-pages-links {
+            display: flex;
+            gap: 5px;
+        }
+
+        .page-link-node {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            background: rgba(0,0,0,0.2);
+            border: 1px solid var(--border-glass);
+            color: var(--text-main);
+            transition: all 0.3s ease;
+        }
+
+        .page-link-node.active-node, .page-link-node:hover {
+            background: var(--primary);
+            border-color: var(--cyan);
+            color: #fff;
+            box-shadow: var(--neon-shadow);
+        }
+
+        /* النوافذ العائمة المنبثقة الصارمة المتقدمة (Modals) */
+        .modal-overlay-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(3, 5, 10, 0.85);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay-backdrop.active-modal {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-window-box {
+            background: var(--bg-glass-heavy);
+            border: 2px solid var(--border-glow);
+            width: 100%;
+            max-width: 650px;
+            border-radius: 14px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6), var(--neon-shadow);
+            overflow: hidden;
+            animation: modalScaleUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        @keyframes modalScaleUp {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-header-section {
+            background: rgba(0,0,0,0.3);
+            padding: 18px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-glass);
+        }
+
+        .modal-header-section h3 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--cyan);
+            text-shadow: var(--neon-shadow);
+        }
+
+        .modal-close-trigger {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            cursor: none;
+            transition: color 0.3s ease;
+        }
+
+        .modal-close-trigger:hover {
+            color: var(--danger);
+        }
+
+        .modal-body-form {
+            padding: 24px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        .form-full-row {
+            grid-column: span 2;
+        }
+
+        .input-group-container {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .input-group-container label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .form-interactive-field {
+            background: rgba(0,0,0,0.4);
+            border: 1px solid var(--border-glass);
+            padding: 10px 14px;
+            border-radius: 8px;
+            color: #fff;
+            font-family: var(--font-main);
+            font-size: 0.85rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .form-interactive-field:focus {
+            border-color: var(--cyan);
+            box-shadow: inset 0 0 5px var(--cyan-glow), 0 0 10px var(--cyan-glow);
+        }
+
+        .modal-footer-controls {
+            background: rgba(0,0,0,0.2);
+            padding: 15px 24px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            border-top: 1px solid var(--border-glass);
+        }
+
+        /* نظام سجل النشاطات الفوري وسجل الـ Logs */
+        .logs-stream-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .log-entry-row {
+            background: rgba(0,0,0,0.2);
+            border-right: 4px solid var(--text-muted);
+            padding: 10px 15px;
+            border-radius: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+        }
+
+        .log-entry-row.log-create { border-right-color: var(--success); }
+        .log-entry-row.log-update { border-right-color: var(--warning); }
+        .log-entry-row.log-delete { border-right-color: var(--danger); }
+
+        /* كروت المطلوبين الجنائية AAA */
+        .wanted-profiles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .wanted-tactical-card {
+            background: var(--bg-glass-heavy);
+            border: 1px solid rgba(255, 0, 85, 0.2);
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+            transition: all 0.3s ease;
+        }
+
+        .wanted-tactical-card:hover {
+            transform: scale(1.02);
+            border-color: var(--danger);
+            box-shadow: 0 0 20px rgba(255, 0, 85, 0.2);
+        }
+
+        .wanted-danger-banner {
+            background: var(--danger);
+            color: #fff;
+            font-weight: 900;
+            font-size: 0.75rem;
+            text-align: center;
+            padding: 4px 0;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        .wanted-card-body {
+            padding: 20px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .wanted-card-img {
+            width: 80px;
+            height: 100px;
+            object-fit: cover;
+            border: 2px solid var(--border-glass);
+            border-radius: 6px;
+            background: #222;
+        }
+
+        .wanted-card-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .wanted-card-name {
+            font-size: 1rem;
+            font-weight: 700;
+        }
+
+        .wanted-card-bounty {
+            color: var(--warning);
+            font-weight: 700;
+            font-size: 0.85rem;
+            font-family: 'Changa', sans-serif;
+        }
+
+        /* نظام تفعيل الأزرار المخصصة والتأثيرات الصوتية/اللمسية */
+        .ripple-element {
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* شاشة إعدادات النظام وتخصيص المظهر */
+        .settings-control-block {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .theme-select-node {
+            border: 2px solid transparent;
+            padding: 15px;
+            border-radius: 8px;
+            background: rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .theme-select-node.selected-theme {
+            border-color: var(--cyan);
+            box-shadow: var(--neon-shadow);
+        }
+
+        .theme-color-preview {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+        }
+
+        /* تأثير الـ Grid الفضائي للخلفية */
+        .cyber-grid-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: linear-gradient(rgba(0, 242, 254, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 242, 254, 0.03) 1px, transparent 1px);
+            background-size: 30px 30px;
+            pointer-events: none;
+            z-index: 2;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="custom-cursor"></div>
+    <div id="custom-cursor-blur"></div>
+    <canvas id="canvas-bg"></canvas>
+    <div class="cyber-grid-overlay"></div>
+
+    <div id="app-wrapper">
+
+        <aside>
+            <div>
+                <div class="brand-zone">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <div>
+                        <div class="brand-title" id="sys-branding-title">نظام شرطة تورونتو</div>
+                        <div class="brand-sub">MDT TERMINAL v4.0</div>
+                    </div>
+                </div>
+                <nav>
+                    <ul class="navigation-links">
+                        <li><a href="#" class="nav-item ripple-element active" data-target="pane-dashboard"><i class="fa-solid fa-chart-network"></i>لوحة التحكم</a></li>
+                        <li><a href="#" class="nav-item ripple-element" data-target="pane-officers"><i class="fa-solid fa-user-shield"></i>إدارة الضباط</a></li>
+                        <li><a href="#" class="nav-item ripple-element" data-target="pane-ems"><i class="fa-solid fa-house-medical-heart"></i>إدارة المسعفين</a></li>
+                        <li><a href="#" class="nav-item ripple-element" data-target="pane-wanted"><i class="fa-solid fa-person-military-pointing"></i>قائمة المطلوبين</a></li>
+                        <li><a href="#" class="nav-item ripple-element" data-target="pane-cases"><i class="fa-solid fa-folder-open"></i>ملفات القضايا</a></li>
+                        <li><a href="#" class="nav-item ripple-element" data-target="pane-dispatches"><i class="fa-solid fa-headset"></i>نظام البلاغات</a></li>
+                        <li><a href="#" class="nav-item ripple-element" data-target="pane-vehicles"><i class="fa-solid fa-car-building"></i>سجل المركبات</a></li>
+                        <li><a href="#" class="nav-item ripple-element" data-target="pane-weapons"><i class="fa-solid fa-gun"></i>تراخيص الأسلحة</a></li>
+                        <li><a href="#" class="nav-item ripple-element" data-target="pane-prisons"><i class="fa-solid fa-dungeon"></i>إدارة السجون</a></li>
+                        <li><a href="#" class="nav-item ripple-element" data-target="pane-logs"><i class="fa-solid fa-clock-history"></i>النشاطات واللوقز</a></li>
+                        <li><a href="#" class="nav-item ripple-element" data-target="pane-settings"><i class="fa-solid fa-gears"></i>إعدادات النظام</a></li>
+                    </ul>
+                </nav>
+            </div>
+            
+            <div class="operator-profile-card">
+                <div class="operator-avatar" style="background: url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2245%22 height=%2245%22 viewBox=%220 0 45 45%22><circle cx=%2222.5%22 cy=%2218%22 r=%2210%22 fill=%22%2300f2fe%22/><path d=%22M5,38 C5,28 12,28 22.5,28 C33,28 40,28 40,38 Z%22 fill=%22%230055ff%22/></svg>') center/cover;"></div>
+                <div class="operator-details-text">
+                    <span class="operator-rank" id="active-user-rank">مفوض عام</span>
+                    <span class="operator-name" id="active-user-name">بو سلطان</span>
+                </div>
+            </div>
+        </aside>
+
+        <main>
+            <header>
+                <div class="header-title-container">
+                    <h1 id="current-view-title">لوحة التحكم المركزية</h1>
+                </div>
+                <div class="header-system-meta">
+                    <div class="sys-status-indicator">
+                        <div class="sys-status-dot"></div>
+                        <span>اتصال آمن ومستقر بالخادم الرئيسي</span>
+                    </div>
+                    <div class="meta-clock-block">
+                        <div class="live-time-ticker" id="time-display">00:00:00</div>
+                        <div class="live-date-ticker" id="date-display">--/--/----</div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="workspace-content-viewport">
+
+                <div id="pane-dashboard" class="viewport-view-pane active-pane">
+                    <div class="analytics-counters-grid">
+                        <div class="stat-counter-card">
+                            <div>
+                                <div class="stat-counter-label">إجمالي البلاغات النشطة</div>
+                                <div class="stat-counter-value" id="count-dispatches">0</div>
+                            </div>
+                            <div class="stat-counter-icon-box color-cyan-box"><i class="fa-solid fa-tower-broadcast"></i></div>
+                        </div>
+                        <div class="stat-counter-card">
+                            <div>
+                                <div class="stat-counter-label">المطلوبين الجنائيين</div>
+                                <div class="stat-counter-value" id="count-wanted">0</div>
+                            </div>
+                            <div class="stat-counter-icon-box color-danger-box"><i class="fa-solid fa-person-circle-exclamation"></i></div>
+                        </div>
+                        <div class="stat-counter-card">
+                            <div>
+                                <div class="stat-counter-label">الضباط في الخدمة</div>
+                                <div class="stat-counter-value" id="count-officers">0</div>
+                            </div>
+                            <div class="stat-counter-icon-box color-warning-box"><i class="fa-solid fa-user-shield"></i></div>
+                        </div>
+                        <div class="stat-counter-card">
+                            <div>
+                                <div class="stat-counter-label">السجناء الحاليين</div>
+                                <div class="stat-counter-value" id="count-inmates">0</div>
+                            </div>
+                            <div class="stat-counter-icon-box color-success-box"><i class="fa-solid fa-lock"></i></div>
+                        </div>
+                    </div>
+                    
+                    <div class="charts-flex-container">
+                        <div class="glass-card-panel chart-box-frame">
+                            <div class="panel-header-wrapper">
+                                <div class="panel-header-title"><i class="fa-solid fa-chart-line"></i>مخطط الجرائم الأسبوعي الفوري</div>
+                            </div>
+                            <canvas id="mainTrendsChart" style="max-height: 230px;"></canvas>
+                        </div>
+                        <div class="glass-card-panel chart-box-frame">
+                            <div class="panel-header-wrapper">
+                                <div class="panel-header-title"><i class="fa-solid fa-chart-pie"></i>تصنيف القضايا</div>
+                            </div>
+                            <canvas id="distributionChart" style="max-height: 230px;"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="pane-officers" class="viewport-view-pane">
+                    <div class="glass-card-panel">
+                        <div class="panel-header-wrapper">
+                            <div class="panel-header-title"><i class="fa-solid fa-user-shield"></i>قائمة ضباط المديرية المصرح لهم</div>
+                        </div>
+                        <div class="data-table-controls">
+                            <div class="table-search-input-wrapper">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                                <input type="text" class="table-search-field" placeholder="ابحث بالاسم، الرقم الوظيفي، أو الرتبة..." data-target="table-officers-body">
+                            </div>
+                            <button class="btn-action-trigger ripple-element" onclick="ui.openModal('modal-officer')"><i class="fa-solid fa-plus"></i>إضافة ضابط جديد</button>
+                        </div>
+                        <div class="table-responsive-scroller">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th onclick="ui.sortTable('officers', 0)">الرقم الوظيفي <i class="fa-solid fa-sort"></i></th>
+                                        <th onclick="ui.sortTable('officers', 1)">الاسم الكامل <i class="fa-solid fa-sort"></i></th>
+                                        <th onclick="ui.sortTable('officers', 2)">الرتبة العسكرية <i class="fa-solid fa-sort"></i></th>
+                                        <th onclick="ui.sortTable('officers', 3)">ساعات العمل الجارية <i class="fa-solid fa-sort"></i></th>
+                                        <th onclick="ui.sortTable('officers', 4)">الحالة الأمنية <i class="fa-solid fa-sort"></i></th>
+                                        <th>الإجراءات التفصيلية</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="table-officers-body"></tbody>
+                            </table>
+                        </div>
+                        <div class="pagination-container-bar" id="pagination-officers"></div>
+                    </div>
+                </div>
+
+                <div id="pane-ems" class="viewport-view-pane">
+                    <div class="glass-card-panel">
+                        <div class="panel-header-wrapper">
+                            <div class="panel-header-title"><i class="fa-solid fa-house-medical-heart"></i>وحدات الطوارئ والطبابة الفورية (EMS)</div>
+                        </div>
+                        <div class="data-table-controls">
+                            <div class="table-search-input-wrapper">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                                <input type="text" class="table-search-field" placeholder="ابحث بالاسم أو الكود الطبي..." data-target="table-ems-body">
+                            </div>
+                            <button class="btn-action-trigger ripple-element" onclick="ui.openModal('modal-ems')"><i class="fa-solid fa-plus"></i>تسجيل مسعف/وحدة</button>
+                        </div>
+                        <div class="table-responsive-scroller">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>كود الوحدة</th>
+                                        <th>اسم المسعف</th>
+                                        <th>الرتبة الطبية</th>
+                                        <th>التواجد الحالي</th>
+                                        <th>آخر بلاغ ملحق به</th>
+                                        <th>العمليات</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="table-ems-body"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="pane-wanted" class="viewport-view-pane">
+                    <div class="glass-card-panel">
+                        <div class="panel-header-wrapper">
+                            <div class="panel-header-title"><i class="fa-solid fa-person-military-pointing"></i>لوحة المطلوبين للعدالة ذوي الخطورة العالية</div>
+                            <button class="btn-action-trigger ripple-element" onclick="ui.openModal('modal-wanted')"><i class="fa-solid fa-user-plus"></i>إصدار مذكرة ملاحقة</button>
+                        </div>
+                        <div class="wanted-profiles-grid" id="wanted-cards-container"></div>
+                    </div>
+                </div>
+
+                <div id="pane-cases" class="viewport-view-pane">
+                    <div class="glass-card-panel">
+                        <div class="panel-header-wrapper">
+                            <div class="panel-header-title"><i class="fa-solid fa-folder-open"></i>سجل القضايا والملفات التحقيقية المتكاملة</div>
+                        </div>
+                        <div class="data-table-controls">
+                            <div class="table-search-input-wrapper">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                                <input type="text" class="table-search-field" placeholder="ابحث برقم القضية أو اسم المتهم الرئيسي..." data-target="table-cases-body">
+                            </div>
+                            <button class="btn-action-trigger ripple-element" onclick="ui.openModal('modal-case')"><i class="fa-solid fa-folder-plus"></i>إنشاء ملف قضية جديدة</button>
+                        </div>
+                        <div class="table-responsive-scroller">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>رقم القضية</th>
+                                        <th>عنوان القضية الرئيسي</th>
+                                        <th>المتهم الأساسي</th>
+                                        <th>الضباط المحققين</th>
+                                        <th>تاريخ التسجيل</th>
+                                        <th>تصنيف الخطورة</th>
+                                        <th>الإجراءات</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="table-cases-body"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="pane-dispatches" class="viewport-view-pane">
+                    <div class="glass-card-panel">
+                        <div class="panel-header-wrapper">
+                            <div class="panel-header-title"><i class="fa-solid fa-headset"></i>غرفة غرف العمليات وإدارة البلاغات النشطة (911)</div>
+                        </div>
+                        <div class="data-table-controls">
+                            <div class="table-search-input-wrapper">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                                <input type="text" class="table-search-field" placeholder="ابحث في البلاغات الجارية..." data-target="table-dispatches-body">
+                            </div>
+                            <button class="btn-action-trigger ripple-element" onclick="ui.openModal('modal-dispatch')"><i class="fa-solid fa-bullhorn"></i>استلام وإدراج بلاغ طارئ</button>
+                        </div>
+                        <div class="table-responsive-scroller">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>كود البلاغ</th>
+                                        <th>الموقع / الإحداثيات</th>
+                                        <th>تفاصيل الحدث والجريمة</th>
+                                        <th>مستوى التهديد</th>
+                                        <th>الوقت المنقضي</th>
+                                        <th>الحالة والعمليات</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="table-dispatches-body"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="pane-vehicles" class="viewport-view-pane">
+                    <div class="glass-card-panel">
+                        <div class="panel-header-wrapper">
+                            <div class="panel-header-title"><i class="fa-solid fa-car-building"></i>قاعدة بيانات المركبات الموثقة ولوحات المرور</div>
+                        </div>
+                        <div class="data-table-controls">
+                            <div class="table-search-input-wrapper">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                                <input type="text" class="table-search-field" placeholder="ابحث برقم اللوحة أو هوية المالك..." data-target="table-vehicles-body">
+                            </div>
+                            <button class="btn-action-trigger ripple-element" onclick="ui.openModal('modal-vehicle')"><i class="fa-solid fa-car"></i>تسجيل مركبة في النظام</button>
+                        </div>
+                        <div class="table-responsive-scroller">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>رقم اللوحة المرورية</th>
+                                        <th>نوع وطراز المركبة</th>
+                                        <th>المالك القانوني</th>
+                                        <th>لون المركبة</th>
+                                        <th>حالة الترخيص والمصادرة</th>
+                                        <th>التحكم ومذكرة الحجز</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="table-vehicles-body"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="pane-weapons" class="viewport-view-pane">
+                    <div class="glass-card-panel">
+                        <div class="panel-header-wrapper">
+                            <div class="panel-header-title"><i class="fa-solid fa-gun"></i>مراقبة وتسجيل الأسلحة النارية وتراخيصها الفيدرالية</div>
+                        </div>
+                        <div class="data-table-controls">
+                            <div class="table-search-input-wrapper">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                                <input type="text" class="table-search-field" placeholder="ابحث بالرقم التسلسلي للسلاح أو الحامل..." data-target="table-weapons-body">
+                            </div>
+                            <button class="btn-action-trigger ripple-element" onclick="ui.openModal('modal-weapon')"><i class="fa-solid fa-shield-plus"></i>تسجيل قطعة سلاح قانونية</button>
+                        </div>
+                        <div class="table-responsive-scroller">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>الرقم التسلسلي (S/N)</th>
+                                        <th>نوع السلاح والعيار</th>
+                                        <th>هوية حامل السلاح</th>
+                                        <th>حالة تصريح السلاح</th>
+                                        <th>تاريخ الفحص</th>
+                                        <th>الخيارات</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="table-weapons-body"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="pane-prisons" class="viewport-view-pane">
+                    <div class="glass-card-panel">
+                        <div class="panel-header-wrapper">
+                            <div class="panel-header-title"><i class="fa-solid fa-dungeon"></i>نظام تتبع المحكومين والعداد الزمني المباشر للخروج</div>
+                        </div>
+                        <div class="data-table-controls">
+                            <div class="table-search-input-wrapper">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                                <input type="text" class="table-search-field" placeholder="ابحث باسم النزيل أو كود السجن..." data-target="table-inmates-body">
+                            </div>
+                            <button class="btn-action-trigger ripple-element" onclick="ui.openModal('modal-inmate')"><i class="fa-solid fa-lock-open"></i>إيداع سجين جديد</button>
+                        </div>
+                        <div class="table-responsive-scroller">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>رقم النزيل الجنائي</th>
+                                        <th>اسم السجين الكامل</th>
+                                        <th>رقم الزنزانة / الجناح</th>
+                                        <th>الجريمة المنسوبة</th>
+                                        <th>المدة المتبقية بالدقائق</th>
+                                        <th>العداد التنازلي التلقائي</th>
+                                        <th>الإفراج الفوري</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="table-inmates-body"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="pane-logs" class="viewport-view-pane">
+                    <div class="glass-card-panel">
+                        <div class="panel-header-wrapper">
+                            <div class="panel-header-title"><i class="fa-solid fa-clock-history"></i>سجل التدقيق الأمني الفوري والعمليات الخلفية للمنصة (MDT Logs)</div>
+                            <button class="btn-action-trigger btn-danger-trigger ripple-element" onclick="db.clearLogs()"><i class="fa-solid fa-trash-can"></i>تصفير السجل كاملاً</button>
+                        </div>
+                        <div class="logs-stream-container" id="logs-render-viewport"></div>
+                    </div>
+                </div>
+
+                <div id="pane-settings" class="viewport-view-pane">
+                    <div class="glass-card-panel">
+                        <div class="panel-header-wrapper">
+                            <div class="panel-header-title"><i class="fa-solid fa-gears"></i>لوحة التحكم في تفضيلات ومظهر النظام العام</div>
+                        </div>
+                        
+                        <h4 style="margin-bottom:15px; color:var(--cyan);">اسم النظام وعناوين الشاشة الفيدرالية</h4>
+                        <div class="settings-control-block" style="margin-bottom: 30px;">
+                            <div class="input-group-container">
+                                <label>تغيير المسمى الرئيسي للمقاطعة والمديرية</label>
+                                <input type="text" class="form-interactive-field" id="settings-input-sysname" value="نظام شرطة تورونتو">
+                            </div>
+                            <div class="input-group-container" style="justify-content: flex-end;">
+                                <button class="btn-action-trigger ripple-element" onclick="ui.saveSystemName()"><i class="fa-solid fa-floppy-disk"></i>حفظ الاسم الجديد</button>
+                            </div>
+                        </div>
+
+                        <h4 style="margin-bottom:15px; color:var(--cyan);">أنظمة الخلفية الديناميكية المتقدمة المتاحة (Canvas Core)</h4>
+                        <div class="settings-control-block" style="margin-bottom:30px;">
+                            <div class="input-group-container">
+                                <label>نمط العرض الحالي للخلفية</label>
+                                <select class="form-interactive-field" id="settings-select-bg" onchange="canvasEngine.switchMode(this.value)">
+                                    <option value="rain">تأثير المطر الواقعي المحاكي السينمائي</option>
+                                    <option value="stars">حقل النجوم الفضائي العميق المتحرك</option>
+                                    <option value="particles">جزيئات النيون العائمة المتفاعلة بالجاذبية</option>
+                                    <option value="matrix">شفرات تدفق أكواد الماتريكس التكتيكية</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <h4 style="margin-bottom:15px; color:var(--cyan);">سمات الألوان والنظام المرئي النيوني (AAA Luxury Themes)</h4>
+                        <div class="settings-control-block" style="margin-bottom:30px;">
+                            <div class="theme-select-node ripple-element" onclick="ui.switchColorTheme('default')" id="theme-btn-default">
+                                <div class="theme-color-preview" style="background: #0072ff;"></div>
+                                <span>أزرق نيون الشرطة الافتراضي (Police Cyan)</span>
+                            </div>
+                            <div class="theme-select-node ripple-element" onclick="ui.switchColorTheme('red')" id="theme-btn-red">
+                                <div class="theme-color-preview" style="background: #ff0055;"></div>
+                                <span>أحمر التدخل السريع التكتيكي (Tactical Red)</span>
+                            </div>
+                            <div class="theme-select-node ripple-element" onclick="ui.switchColorTheme('gold')" id="theme-btn-gold">
+                                <div class="theme-color-preview" style="background: #d4af37;"></div>
+                                <span>ذهبي الفخامة القيادية المظلمة (Dark Luxury)</span>
+                            </div>
+                            <div class="theme-select-node ripple-element" onclick="ui.switchColorTheme('green')" id="theme-btn-green">
+                                <div class="theme-color-preview" style="background: #00ff87;"></div>
+                                <span>أخضر الاتصال العسكري الآمن (Secure Green)</span>
+                            </div>
+                        </div>
+
+                        <h4 style="margin-bottom:15px; color:var(--cyan);">النسخ الاحتياطي وحماية البيانات المحلية المتكاملة</h4>
+                        <div class="settings-control-block">
+                            <button class="btn-action-trigger ripple-element" onclick="db.exportBackup()"><i class="fa-solid fa-file-export"></i>تصدير قاعدة البيانات الحالية (JSON)</button>
+                            <button class="btn-action-trigger ripple-element btn-danger-trigger" onclick="db.resetToDefaults()"><i class="fa-solid fa-arrows-rotate"></i>تهيئة وتصفير النظام بالكامل للمصنع</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <div class="modal-overlay-backdrop" id="modal-officer">
+        <div class="modal-window-box">
+            <div class="modal-header-section">
+                <h3><i class="fa-solid fa-user-shield"></i> استمارة تسجيل ضابط جديد بالمنظومة</h3>
+                <button class="modal-close-trigger" onclick="ui.closeModal('modal-officer')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form id="form-officer" onsubmit="ui.handleFormSubmit(event, 'officers', 'modal-officer')">
+                <div class="modal-body-form">
+                    <div class="input-group-container">
+                        <label>الرقم الوظيفي الفريد العسكري</label>
+                        <input type="text" class="form-interactive-field" name="badge" required placeholder="مثال: #4921">
+                    </div>
+                    <div class="input-group-container">
+                        <label>الاسم الكامل للضابط</label>
+                        <input type="text" class="form-interactive-field" name="name" required placeholder="الاسم الرباعي">
+                    </div>
+                    <div class="input-group-container">
+                        <label>الرتبة العسكرية المسندة</label>
+                        <input type="text" class="form-interactive-field" name="rank" required placeholder="مثال: ملازم أول، نقيب، لواء">
+                    </div>
+                    <div class="input-group-container">
+                        <label>ساعات الخدمة المحتسبة البدئية</label>
+                        <input type="number" class="form-interactive-field" name="hours" value="0" required>
+                    </div>
+                    <div class="input-group-container form-full-row">
+                        <label>الحالة الأمنية الفورية في الميدان</label>
+                        <select class="form-interactive-field" name="status">
+                            <option value="active">في الخدمة والميدان جاري</option>
+                            <option value="inactive">خارج الخدمة (استراحة)</option>
+                            <option value="suspended">موقوف إدارياً وتحت التحقيق</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer-controls">
+                    <button type="button" class="btn-action-trigger btn-danger-trigger" onclick="ui.closeModal('modal-officer')">إلغاء</button>
+                    <button type="submit" class="btn-action-trigger">إعتماد وحفظ السجل</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal-overlay-backdrop" id="modal-ems">
+        <div class="modal-window-box">
+            <div class="modal-header-section">
+                <h3><i class="fa-solid fa-house-medical-heart"></i> إدراج وحدة مسعف طوارئ</h3>
+                <button class="modal-close-trigger" onclick="ui.closeModal('modal-ems')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form id="form-ems" onsubmit="ui.handleFormSubmit(event, 'ems', 'modal-ems')">
+                <div class="modal-body-form">
+                    <div class="input-group-container">
+                        <label>كود وحدة الإسعاف الفريد</label>
+                        <input type="text" class="form-interactive-field" name="code" required placeholder="مثال: EMS-09">
+                    </div>
+                    <div class="input-group-container">
+                        <label>اسم المسعف المسؤول</label>
+                        <input type="text" class="form-interactive-field" name="name" required placeholder="الاسم الكامل">
+                    </div>
+                    <div class="input-group-container">
+                        <label>الرتبة الطبية المعتمدة</label>
+                        <input type="text" class="form-interactive-field" name="rank" required placeholder="باراميدك / طبيب طوارئ">
+                    </div>
+                    <div class="input-group-container">
+                        <label>حالة التواجد الجارية</label>
+                        <select class="form-interactive-field" name="status">
+                            <option value="available">متاح ومستعد للاستدعاء</option>
+                            <option value="busy">مشغول بحالة حرجة جارية</option>
+                            <option value="offline">خارج نطاق العمل والخدمة</option>
+                        </select>
+                    </div>
+                    <div class="input-group-container form-full-row">
+                        <label>كود آخر بلاغ مرتبط بالمسعف</label>
+                        <input type="text" class="form-interactive-field" name="lastDispatch" value="لا يوجد حالياً">
+                    </div>
+                </div>
+                <div class="modal-footer-controls">
+                    <button type="button" class="btn-action-trigger btn-danger-trigger" onclick="ui.closeModal('modal-ems')">إلغاء</button>
+                    <button type="submit" class="btn-action-trigger">إرسال للبيانات</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal-overlay-backdrop" id="modal-wanted">
+        <div class="modal-window-box">
+            <div class="modal-header-section">
+                <h3><i class="fa-solid fa-person-military-pointing"></i> إصدار أمر ملاحقة جنائي عالي الخطورة</h3>
+                <button class="modal-close-trigger" onclick="ui.closeModal('modal-wanted')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form id="form-wanted" onsubmit="ui.handleFormSubmit(event, 'wanted', 'modal-wanted')">
+                <div class="modal-body-form">
+                    <div class="input-group-container">
+                        <label>اسم المشتبه به الكامل والمطلوب</label>
+                        <input type="text" class="form-interactive-field" name="name" required placeholder="الاسم">
+                    </div>
+                    <div class="input-group-container">
+                        <label>قيمة المكافأة المالية المرصودة للقبض عليه</label>
+                        <input type="text" class="form-interactive-field" name="bounty" required placeholder="مثال: $50,000">
+                    </div>
+                    <div class="input-group-container">
+                        <label>مستوى خطورته التكتيكية الميدانية</label>
+                        <select class="form-interactive-field" name="dangerLevel">
+                            <option value="CRITICAL">خطورة قصوى - إطلاق نار فوري (CRITICAL)</option>
+                            <option value="HIGH">خطورة عالية جداً ومسلح (HIGH)</option>
+                            <option value="MEDIUM">خطورة متوسطة ومطلوب للتحقيق (MEDIUM)</option>
+                        </select>
+                    </div>
+                    <div class="input-group-container">
+                        <label>الحالة الجارية لأمر الملاحقة</label>
+                        <select class="form-interactive-field" name="status">
+                            <option value="wanted">هارب وجاري تعقبه بنشاط</option>
+                            <option value="apprehended">تم إلقاء القبض عليه بنجاح</option>
+                        </select>
+                    </div>
+                    <div class="input-group-container form-full-row">
+                        <label>وصف الجريمة والتهم الموجهة إليه الموثقة</label>
+                        <textarea class="form-interactive-field" name="description" rows="3" required placeholder="اكتب التهم والملابسات الجنائية هنا بالتفصيل الموثق..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer-controls">
+                    <button type="button" class="btn-action-trigger btn-danger-trigger" onclick="ui.closeModal('modal-wanted')">إلغاء الأمر</button>
+                    <button type="submit" class="btn-action-trigger">تعميم أمر القبض فورا</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal-overlay-backdrop" id="modal-case">
+        <div class="modal-window-box">
+            <div class="modal-header-section">
+                <h3><i class="fa-solid fa-folder-plus"></i> فتح وتأسيس ملف قضية جنائية رسمية</h3>
+                <button class="modal-close-trigger" onclick="ui.closeModal('modal-case')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form id="form-case" onsubmit="ui.handleFormSubmit(event, 'cases', 'modal-case')">
+                <div class="modal-body-form">
+                    <div class="input-group-container">
+                        <label>رقم كود القضية القضائي</label>
+                        <input type="text" class="form-interactive-field" name="caseId" required placeholder="مثال: CR-9022">
+                    </div>
+                    <div class="input-group-container">
+                        <label>العنوان والوصف المختصر للقضية</label>
+                        <input type="text" class="form-interactive-field" name="title" required placeholder="مثال: سرقة مصرف تورونتو الكبرى">
+                    </div>
+                    <div class="input-group-container">
+                        <label>اسم المتهم أو الفاعل الرئيسي</label>
+                        <input type="text" class="form-interactive-field" name="suspect" required placeholder="اسم المتهم">
+                    </div>
+                    <div class="input-group-container">
+                        <label>الضباط المسؤولين والمشاركين بالتحقيق</label>
+                        <input type="text" class="form-interactive-field" name="officers" required placeholder="الرتب والأسماء">
+                    </div>
+                    <div class="input-group-container">
+                        <label>تاريخ ارتكاب وتسجيل المحضر الجنائي</label>
+                        <input type="date" class="form-interactive-field" name="date" required>
+                    </div>
+                    <div class="input-group-container">
+                        <label>تصنيف ومستوى خطورة القضية الفيدرالي</label>
+                        <select class="form-interactive-field" name="severity">
+                            <option value="high">قضية جنائية كبرى من فئة ج (High)</option>
+                            <option value="medium">قضية متوسطة ومخالفات صريحة (Medium)</option>
+                            <option value="low">مخالفات طفيفة وجنح عامة (Low)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer-controls">
+                    <button type="button" class="btn-action-trigger btn-danger-trigger" onclick="ui.closeModal('modal-case')">تجاهل</button>
+                    <button type="submit" class="btn-action-trigger">أرشفة وفتح القضية</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal-overlay-backdrop" id="modal-dispatch">
+        <div class="modal-window-box">
+            <div class="modal-header-section">
+                <h3><i class="fa-solid fa-bullhorn"></i> استقبال بلاغ عمليات عاجل وغرفة السيطرة</h3>
+                <button class="modal-close-trigger" onclick="ui.closeModal('modal-dispatch')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form id="form-dispatch" onsubmit="ui.handleFormSubmit(event, 'dispatches', 'modal-dispatch')">
+                <div class="modal-body-form">
+                    <div class="input-group-container">
+                        <label>كود أو معرف البلاغ العشوائي</label>
+                        <input type="text" class="form-interactive-field" name="code" required placeholder="مثال: DIS-402">
+                    </div>
+                    <div class="input-group-container">
+                        <label>موقع ومكان الحدث بالتفصيل (الإحداثيات)</label>
+                        <input type="text" class="form-interactive-field" name="location" required placeholder="مثال: شارع يانغ، وسط تورونتو">
+                    </div>
+                    <div class="input-group-container">
+                        <label>مستوى تهديد البلاغ وخطورته على الميدان</label>
+                        <select class="form-interactive-field" name="threat">
+                            <option value="critical">أحمر - طوارئ قصوى واشتباك مسلح (Critical)</option>
+                            <option value="medium">برتقالي - بلاغ متوسط وجارٍ الفحص (Medium)</option>
+                            <option value="low">أزرق - استدعاء روتيني أو دوري (Low)</option>
+                        </select>
+                    </div>
+                    <div class="input-group-container">
+                        <label>حالة البلاغ المباشرة وتوجيه الدورية</label>
+                        <select class="form-interactive-field" name="status">
+                            <option value="active">نشط وجاري الاستجابة له الآن</option>
+                            <option value="pending">في الانتظار لعدم توفر دوريات</option>
+                        </select>
+                    </div>
+                    <div class="input-group-container form-full-row">
+                        <label>شرح المحتوى التفصيلي والشكوى الواردة من المواطن</label>
+                        <textarea class="form-interactive-field" name="details" rows="3" required placeholder="تفاصيل الاتصال الموثقة بالكامل هنا..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer-controls">
+                    <button type="button" class="btn-action-trigger btn-danger-trigger" onclick="ui.closeModal('modal-dispatch')">إلغاء الاستلام</button>
+                    <button type="submit" class="btn-action-trigger">تعميم على الراديو والدوريات</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal-overlay-backdrop" id="modal-vehicle">
+        <div class="modal-window-box">
+            <div class="modal-header-section">
+                <h3><i class="fa-solid fa-car"></i> تسجيل وتوثيق مركبة في قاعدة البيانات المركزية</h3>
+                <button class="modal-close-trigger" onclick="ui.closeModal('modal-vehicle')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form id="form-vehicle" onsubmit="ui.handleFormSubmit(event, 'vehicles', 'modal-vehicle')">
+                <div class="modal-body-form">
+                    <div class="input-group-container">
+                        <label>رقم لوحة المركبة المرورية بدقة</label>
+                        <input type="text" class="form-interactive-field" name="plate" required placeholder="مثال: TND-892-ON">
+                    </div>
+                    <div class="input-group-container">
+                        <label>الشركة المصنعة وطراز الموديل</label>
+                        <input type="text" class="form-interactive-field" name="model" required placeholder="مثال: فورد كراون فكتوريا">
+                    </div>
+                    <div class="input-group-container">
+                        <label>اسم المالك القانوني المسجل للمركبة</label>
+                        <input type="text" class="form-interactive-field" name="owner" required placeholder="اسم المالك الكامل">
+                    </div>
+                    <div class="input-group-container">
+                        <label>اللون الخارجي الأساسي للمركبة</label>
+                        <input type="text" class="form-interactive-field" name="color" required placeholder="مثال: أسود ملكي / أبيض">
+                    </div>
+                    <div class="input-group-container form-full-row">
+                        <label>الحالة القانونية للمركبة وتراخيصها</label>
+                        <select class="form-interactive-field" name="status">
+                            <option value="clean">قانونية وسليمة بالكامل (Clean)</option>
+                            <option value="wanted">مركبة مطلوبة أمنياً ومعمم عنها (Wanted)</option>
+                            <option value="impounded">محجوزة ومصادرة داخل مرآب الشرطة (Impounded)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer-controls">
+                    <button type="button" class="btn-action-trigger btn-danger-trigger" onclick="ui.closeModal('modal-vehicle')">إلغاء التوثيق</button>
+                    <button type="submit" class="btn-action-trigger">إدراج المركبة</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal-overlay-backdrop" id="modal-weapon">
+        <div class="modal-window-box">
+            <div class="modal-header-section">
+                <h3><i class="fa-solid fa-shield-plus"></i> تسجيل وفحص ترخيص سلاح ناري فيدرالي</h3>
+                <button class="modal-close-trigger" onclick="ui.closeModal('modal-weapon')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form id="form-weapon" onsubmit="ui.handleFormSubmit(event, 'weapons', 'modal-weapon')">
+                <div class="modal-body-form">
+                    <div class="input-group-container">
+                        <label>الرقم التسلسلي الفريد المحفور بالسلاح (S/N)</label>
+                        <input type="text" class="form-interactive-field" name="serial" required placeholder="مثال: WPN-782190-TX">
+                    </div>
+                    <div class="input-group-container">
+                        <label>نوع السلاح وموديل القطعة النارية</label>
+                        <input type="text" class="form-interactive-field" name="type" required placeholder="مثال: مسدس جلاك 17 الجيل الخامس">
+                    </div>
+                    <div class="input-group-container">
+                        <label>هوية واسم حامل السلاح القانوني</label>
+                        <input type="text" class="form-interactive-field" name="owner" required placeholder="الاسم الكامل للحامل">
+                    </div>
+                    <div class="input-group-container">
+                        <label>حالة التصريح الفيدرالي للسلاح</label>
+                        <select class="form-interactive-field" name="status">
+                            <option value="licensed">مرخص ومصرح قانونياً بحمله (Licensed)</option>
+                            <option value="illegal">غير قانوني وسلاح مهرب ومصادر (Illegal)</option>
+                            <option value="expired">منتهي الصلاحية وجاري التجديد (Expired)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer-controls">
+                    <button type="button" class="btn-action-trigger btn-danger-trigger" onclick="ui.closeModal('modal-weapon')">إلغاء الإجراء</button>
+                    <button type="submit" class="btn-action-trigger">توثيق السلاح الناري</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal-overlay-backdrop" id="modal-inmate">
+        <div class="modal-window-box">
+            <div class="modal-header-section">
+                <h3><i class="fa-solid fa-lock"></i> مذكرة إيداع سجين وبدء مدة العقوبة</h3>
+                <button class="modal-close-trigger" onclick="ui.closeModal('modal-inmate')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form id="form-inmate" onsubmit="ui.handleFormSubmit(event, 'inmates', 'modal-inmate')">
+                <div class="modal-body-form">
+                    <div class="input-group-container">
+                        <label>رقم السجين الجنائي الفريد</label>
+                        <input type="text" class="form-interactive-field" name="inmateId" required placeholder="مثال: INM-8812">
+                    </div>
+                    <div class="input-group-container">
+                        <label>اسم السجين النزيل بالكامل</label>
+                        <input type="text" class="form-interactive-field" name="name" required placeholder="الاسم الكامل للمحكوم">
+                    </div>
+                    <div class="input-group-container">
+                        <label>رقم زنزانة الحجز المخصصة له</label>
+                        <input type="text" class="form-interactive-field" name="cell" required placeholder="مثال: الجناح أ - زنزانة 4">
+                    </div>
+                    <div class="input-group-container">
+                        <label>مدة المحكومية بالسجن (بالدقائق الحقيقية للنظام)</label>
+                        <input type="number" class="form-interactive-field" name="duration" required min="1" placeholder="اكتب المدة بالدقائق">
+                    </div>
+                    <div class="input-group-container form-full-row">
+                        <label>التهمة والسبب الرئيسي لإدانته وسجنه</label>
+                        <input type="text" class="form-interactive-field" name="crime" required placeholder="مثال: السطو المسلح والفرار من العدالة">
+                    </div>
+                </div>
+                <div class="modal-footer-controls">
+                    <button type="button" class="btn-action-trigger btn-danger-trigger" onclick="ui.closeModal('modal-inmate')">إلغاء الأمر</button>
+                    <button type="submit" class="btn-action-trigger">إغلاق الزنزانة وبدء العداد</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <script>
+        /**
+         * 1. نظام محرك الخلفية التفاعلية الرقمية (Advanced Canvas Overlay Engine)
+         * يقوم بتنفيذ ورسم الخلفيات الخمسة المختلفة المتبادلة بالكامل 60 إطاراً بالثانية بثبات تام.
+         */
+        class CyberCanvasBackgroundEngine {
+            constructor() {
+                this.canvas = document.getElementById('canvas-bg');
+                this.ctx = this.canvas.getContext('2d');
+                this.mode = 'rain'; // النمط البدئي المختار
+                this.elements = [];
+                this.animationFrameId = null;
+
+                window.addEventListener('resize', () => this.resizeCanvas());
+                this.resizeCanvas();
+                this.initModeData();
+                this.loop();
+            }
+
+            resizeCanvas() {
+                this.canvas.width = window.innerWidth;
+                this.canvas.height = window.innerHeight;
+                this.initModeData();
+            }
+
+            switchMode(newMode) {
+                this.mode = newMode;
+                this.initModeData();
+                db.saveSettingsOnly();
+            }
+
+            initModeData() {
+                this.elements = [];
+                const w = this.canvas.width;
+                const h = this.canvas.height;
+
+                if (this.mode === 'rain') {
+                    for (let i = 0; i < 120; i++) {
+                        this.elements.push({
+                            x: Math.random() * w,
+                            y: Math.random() * h,
+                            length: Math.random() * 25 + 10,
+                            speed: Math.random() * 15 + 10,
+                            opacity: Math.random() * 0.4 + 0.1
+                        });
+                    }
+                } else if (this.mode === 'stars') {
+                    for (let i = 0; i < 200; i++) {
+                        this.elements.push({
+                            x: Math.random() * w,
+                            y: Math.random() * h,
+                            size: Math.random() * 2,
+                            speed: Math.random() * 0.8 + 0.2,
+                            opacity: Math.random()
+                        });
+                    }
+                } else if (this.mode === 'particles') {
+                    for (let i = 0; i < 80; i++) {
+                        this.elements.push({
+                            x: Math.random() * w,
+                            y: Math.random() * h,
+                            radius: Math.random() * 4 + 1,
+                            vx: (Math.random() - 0.5) * 2,
+                            vy: (Math.random() - 0.5) * 2,
+                            alpha: Math.random() * 0.6 + 0.2
+                        });
+                    }
+                } else if (this.mode === 'matrix') {
+                    const columns = Math.floor(w / 20) + 1;
+                    for (let i = 0; i < columns; i++) {
+                        this.elements.push({
+                            x: i * 20,
+                            y: Math.random() * -1000,
+                            speed: Math.random() * 5 + 3,
+                            chars: "0123456789🧬POLICETORONTOMDTSYSTEM"
+                        });
+                    }
+                }
+            }
+
+            loop() {
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                const w = this.canvas.width;
+                const h = this.canvas.height;
+
+                if (this.mode === 'rain') {
+                    this.ctx.strokeStyle = 'rgba(0, 242, 254, 0.4)';
+                    this.ctx.lineWidth = 1.5;
+                    for (let p of this.elements) {
+                        this.ctx.beginPath();
+                        this.ctx.moveTo(p.x, p.y);
+                        this.ctx.lineTo(p.x - 2, p.y + p.length);
+                        this.ctx.stroke();
+                        p.y += p.speed;
+                        p.x -= 0.5;
+                        if (p.y > h) {
+                            p.y = -p.length;
+                            p.x = Math.random() * w;
+                        }
+                    }
+                } else if (this.mode === 'stars') {
+                    for (let s of this.elements) {
+                        this.ctx.fillStyle = `rgba(255, 255, 255, ${s.opacity})`;
+                        this.ctx.beginPath();
+                        this.ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+                        this.ctx.fill();
+                        s.y += s.speed;
+                        if (s.y > h) {
+                            s.y = 0;
+                            s.x = Math.random() * w;
+                        }
+                    }
+                } else if (this.mode === 'particles') {
+                    for (let p of this.elements) {
+                        this.ctx.fillStyle = `rgba(0, 242, 254, ${p.alpha})`;
+                        this.ctx.beginPath();
+                        this.ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                        this.ctx.fill();
+                        p.x += p.vx;
+                        p.y += p.vy;
+                        if (p.x < 0 || p.x > w) p.vx *= -1;
+                        if (p.y < 0 || p.y > h) p.vy *= -1;
+                    }
+                } else if (this.mode === 'matrix') {
+                    this.ctx.font = '14px monospace';
+                    for (let m of this.elements) {
+                        const char = m.chars[Math.floor(Math.random() * m.chars.length)];
+                        this.ctx.fillStyle = 'rgba(0, 242, 254, 0.7)';
+                        this.ctx.fillText(char, m.x, m.y);
+                        m.y += m.speed * 2;
+                        if (m.y > h && Math.random() > 0.975) {
+                            m.y = 0;
+                        }
+                    }
+                }
+
+                this.animationFrameId = requestAnimationFrame(() => this.loop());
+            }
+        }
+
+
+        /**
+         * 2. نظام محاكاة وتحكّم المؤشر والماوس المتقدم النيوني والتفجيري عند الكليك
+         */
+        class CyberMouseTrailCursorController {
+            constructor() {
+                this.cursor = document.getElementById('custom-cursor');
+                this.blur = document.getElementById('custom-cursor-blur');
+                
+                document.addEventListener('mousemove', (e) => {
+                    this.cursor.style.left = e.clientX + 'px';
+                    this.cursor.style.top = e.clientY + 'px';
+                    
+                    // تحريك الدائرة الخارجية المتتبعة مع تأخير انسيابي سينمائي
+                    setTimeout(() => {
+                        this.blur.style.left = e.clientX + 'px';
+                        this.blur.style.top = e.clientY + 'px';
+                    }, 30);
+                });
+
+                document.addEventListener('mousedown', (e) => {
+                    this.createBurst(e.clientX, e.clientY);
+                    this.cursor.style.transform = 'translate(-50%, -50%) scale(1.8)';
+                    this.blur.style.transform = 'translate(-50%, -50%) scale(0.6)';
+                });
+
+                document.addEventListener('mouseup', () => {
+                    this.cursor.style.transform = 'translate(-50%, -50%) scale(1)';
+                    this.blur.style.transform = 'translate(-50%, -50%) scale(1)';
+                });
+            }
+
+            createBurst(x, y) {
+                const burst = document.createElement('div');
+                burst.className = 'cursor-burst';
+                burst.style.left = x + 'px';
+                burst.style.top = y + 'px';
+                document.body.appendChild(burst);
+                burst.addEventListener('animationend', () => burst.remove());
+            }
+        }
+
+
+        /**
+         * 3. محرك تخزين واسترجاع البيانات الذاتي المتكامل (Database State Management System)
+         * يقوم بحفظ كل المدخلات والمصفوفات تلقائياً داخل LocalStorage مع بذر بيانات افتراضية عند التشغيل الأول.
+         */
+        class LocalStorageMDTDatabase {
+            constructor() {
+                this.storeKey = 'TORONTO_POLICE_MDT_DATA_v4';
+                this.data = {};
+                this.loadOrSeed();
+            }
+
+            loadOrSeed() {
+                const raw = localStorage.getItem(this.storeKey);
+                if (raw) {
+                    try {
+                        this.data = JSON.parse(raw);
+                    } catch(e) {
+                        this.seedDefaultData();
+                    }
+                } else {
+                    this.seedDefaultData();
+                }
+            }
+
+            seedDefaultData() {
+                this.data = {
+                    systemName: "نظام شرطة تورونتو الفيدرالي",
+                    activeTheme: "default",
+                    bgMode: "rain",
+                    officers: [
+                        {badge: "#1002", name: "بو سلطان", rank: "مفوض عام", hours: 450, status: "active"},
+                        {badge: "#2931", name: "خالد الزعيم", rank: "نقيب تكتيكي", hours: 182, status: "active"},
+                        {badge: "#8810", name: "محمد روفو", rank: "ملازم أول تحقيق", hours: 94, status: "inactive"}
+                    ],
+                    ems: [
+                        {code: "MED-01", name: "د. سعيد المسعف", rank: "بروفيسور طوارئ", status: "available", lastDispatch: "DIS-101"},
+                        {code: "MED-09", name: "الكابتن متعب", rank: "مستجيب أول صدمات", status: "busy", lastDispatch: "لا يوجد"}
+                    ],
+                    wanted: [
+                        {name: "راكان المكسيكي", bounty: "$120,000", dangerLevel: "CRITICAL", status: "wanted", description: "تزعم عصابة سطو مسلح دولية وتجارة أسلحة ثقيلة ممنوعة."},
+                        {name: "سامر بلاك", bounty: "$45,000", dangerLevel: "HIGH", status: "wanted", description: "تزوير مستندات فيدرالية واختراق خوادم البنك المركزي بقصد السرقة."}
+                    ],
+                    cases: [
+                        {caseId: "CASE-992", title: "السطو على الفيدرالي الكندي", suspect: "راكان المكسيكي", officers: "النقيب خالد", date: "2026-05-12", severity: "high"},
+                        {caseId: "CASE-104", title: "تهريب مركبات فارهة ومفككة", suspect: "مجهول", officers: "الملازم محمد", date: "2026-06-01", severity: "medium"}
+                    ],
+                    dispatches: [
+                        {code: "DIS-101", location: "تقاطع وسط المدينة - هانوفر", details: "إطلاق نار كثيف من مركبة مجهولة الهوية سوداء مظلمة تفر باتجاه الغرب.", threat: "critical", status: "active"},
+                        {code: "DIS-440", location: "المنطقة الصناعية الثالثة", details: "سرقة متجر إلكترونيات وأجهزة تتبع تكتيكية.", threat: "medium", status: "pending"}
+                    ],
+                    vehicles: [
+                        {plate: "B-SULTAN-1", model: "نيسان باترول سوبر سفاري", owner: "بو سلطان", color: "أسود ملكي نيون", status: "clean"},
+                        {plate: "Z3EM-88", model: "رولز رويس كولينان", owner: "خالد الزعيم", color: "فضي مطفي", status: "clean"},
+                        {plate: "WNT-99-X", model: "دوج تشارجر هيلكات", owner: "راكان المكسيكي", color: "أحمر دم الغزال", status: "wanted"}
+                    ],
+                    weapons: [
+                        {serial: "WPN-9011-GL", type: "Glock 19 Gen5", owner: "خالد الزعيم", status: "licensed"},
+                        {serial: "WPN-007-AK", type: "AK-47 بنادق هجومية", owner: "راكان المكسيكي", status: "illegal"}
+                    ],
+                    inmates: [
+                        {inmateId: "INM-007", name: "فهد المخرب", cell: "الزنزانة الانفرادية 1", crime: "التخريب المتعمد للممتلكات العامة والاعتداء", duration: 15, initialDuration: 15, timestamp: Date.now()}
+                    ],
+                    logs: [
+                        {time: new Date().toLocaleTimeString(), type: "create", desc: "تم تشغيل واقلاع محرك البيانات المركزي المحمي بنجاح."}
+                    ]
+                };
+                this.save();
+            }
+
+            save() {
+                localStorage.setItem(this.storeKey, JSON.stringify(this.data));
+            }
+
+            saveSettingsOnly() {
+                this.data.systemName = document.getElementById('settings-input-sysname').value;
+                this.data.bgMode = canvasEngine.mode;
+                this.save();
+            }
+
+            addLog(type, desc) {
+                this.data.logs.unshift({
+                    time: new Date().toLocaleTimeString(),
+                    type: type,
+                    desc: desc
+                });
+                if (this.data.logs.length > 50) this.data.logs.pop(); // حصر السجلات لسرعة المتصفح
+                this.save();
+                ui.renderLogs();
+            }
+
+            clearLogs() {
+                this.data.logs = [{time: new Date().toLocaleTimeString(), type: "delete", desc: "تم تفريغ وحذف مصفوفة النشاطات كليا."}];
+                this.save();
+                ui.renderLogs();
+            }
+
+            resetToDefaults() {
+                if (confirm("هل أنت متأكد من مسح جميع البيانات المخزنة والعودة لإعدادات المصنع الأولية؟ لا يمكن التراجع!")) {
+                    localStorage.removeItem(this.storeKey);
+                    this.seedDefaultData();
+                    window.location.reload();
+                }
+            }
+
+            exportBackup() {
+                const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(this.data, null, 4));
+                const downloadAnchor = document.createElement('a');
+                downloadAnchor.setAttribute("href", dataStr);
+                downloadAnchor.setAttribute("download", "TORONTO_POLICE_MDT_BACKUP.json");
+                document.body.appendChild(downloadAnchor);
+                downloadAnchor.click();
+                downloadAnchor.remove();
+            }
+        }
+
+
+        /**
+         * 4. نظام هندسة الواجهات التفاعلية والرندرة الشاملة (Full Dynamic Custom UI Engine)
+         * يتحكم في حلقة التنقل والراوتر وعرض البيانات الفورية وجداول البحث والفرز والعدادات التنازلية لزنزانات السجون.
+         */
+        class TorontoMDTVisualUserInterfaceEngine {
+            constructor() {
+                this.currentTheme = "default";
+                this.sortDirection = false;
+                this.initNavigation();
+                this.initSearchFilters();
+                this.startClock();
+                this.renderAllViews();
+                this.initCharts();
+                this.applySavedPreferences();
+                this.startPrisonCountdownLoop();
+                this.applyRippleEffects();
+            }
+
+            applySavedPreferences() {
+                document.getElementById('sys-branding-title').innerText = db.data.systemName;
+                document.getElementById('settings-input-sysname').value = db.data.systemName;
+                if (db.data.bgMode) {
+                    document.getElementById('settings-select-bg').value = db.data.bgMode;
+                    canvasEngine.mode = db.data.bgMode;
+                }
+                if (db.data.activeTheme) {
+                    this.switchColorTheme(db.data.activeTheme);
+                }
+            }
+
+            startClock() {
+                setInterval(() => {
+                    const now = new Date();
+                    document.getElementById('time-display').innerText = now.toLocaleTimeString('ar-EG');
+                    document.getElementById('date-display').innerText = now.toLocaleDateString('ar-EG', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+                }, 1000);
+            }
+
+            initNavigation() {
+                document.querySelectorAll('.nav-item').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+
+                        const targetPaneId = btn.getAttribute('data-target');
+                        document.querySelectorAll('.viewport-view-pane').forEach(pane => pane.classList.remove('active-pane'));
+                        document.getElementById(targetPaneId).classList.add('active-pane');
+
+                        document.getElementById('current-view-title').innerText = btn.innerText;
+                        this.renderAllViews(); // إعادة التحديث للبيانات الفورية عند التنقل
+                    });
+                });
+            }
+
+            initSearchFilters() {
+                document.querySelectorAll('.table-search-field').forEach(input => {
+                    input.addEventListener('input', () => {
+                        const targetBodyId = input.getAttribute('data-target');
+                        const term = input.value.toLowerCase();
+                        const rows = document.getElementById(targetBodyId).getElementsByTagName('tr');
+                        
+                        for (let row of rows) {
+                            const text = row.innerText.toLowerCase();
+                            row.style.display = text.includes(term) ? '' : 'none';
+                        }
+                    });
+                });
+            }
+
+            applyRippleEffects() {
+                document.querySelectorAll('.ripple-element').forEach(button => {
+                    button.addEventListener('click', function (e) {
+                        let ripple = document.createElement('span');
+                        ripple.style.position = 'absolute';
+                        ripple.style.background = 'rgba(255, 255, 255, 0.25)';
+                        ripple.style.borderRadius = '50%';
+                        ripple.style.pointerEvents = 'none';
+                        ripple.style.transform = 'translate(-50%, -50%)';
+                        
+                        let rect = this.getBoundingClientRect();
+                        ripple.style.left = (e.clientX - rect.left) + 'px';
+                        ripple.style.top = (e.clientY - rect.top) + 'px';
+                        
+                        let circleSize = Math.max(rect.width, rect.height);
+                        ripple.style.width = circleSize * 2 + 'px';
+                        ripple.style.height = circleSize * 2 + 'px';
+                        
+                        ripple.style.animation = 'ripple-effect-anim 0.6s linear';
+                        
+                        this.appendChild(ripple);
+                        ripple.addEventListener('animationend', () => ripple.remove());
+                    });
+                });
+
+                // ستايل الانيميشن الخاص بتأثير الكليك داخل الأزرار
+                const styleNode = document.createElement('style');
+                styleNode.innerHTML = `@keyframes ripple-effect-anim { from { opacity: 1; transform: translate(-50%, -50%) scale(0); } to { opacity: 0; transform: translate(-50%, -50%) scale(1); } }`;
+                document.head.appendChild(styleNode);
+            }
+
+            openModal(modalId) {
+                document.getElementById(modalId).classList.add('active-modal');
+            }
+
+            closeModal(modalId) {
+                document.getElementById(modalId).classList.remove('active-modal');
+                document.getElementById(modalId).querySelector('form').reset();
+            }
+
+            handleFormSubmit(event, dataType, modalId) {
+                event.preventDefault();
+                const formData = new FormData(event.target);
+                const obj = {};
+                formData.forEach((value, key) => obj[key] = value);
+
+                if (dataType === 'inmates') {
+                    obj.initialDuration = parseInt(obj.duration);
+                    obj.duration = parseInt(obj.duration);
+                    obj.timestamp = Date.now();
+                }
+
+                db.data[dataType].push(obj);
+                db.addLog('create', `تمت إضافة سجل جديد في مصفوفة [${dataType}] يحمل تفاصيل المعرف والاسم.`);
+                db.save();
+                this.closeModal(modalId);
+                this.renderAllViews();
+                this.updateCharts();
+            }
+
+            deleteRecord(dataType, index, msg) {
+                if (confirm(`هل أنت متأكد من حذف هذا السجل [${msg}] نهائياً من النظام؟`)) {
+                    db.data[dataType].splice(index, 1);
+                    db.addLog('delete', `تم حذف السجل رقم [${index}] بنجاح من مصفوفة ${dataType}.`);
+                    db.save();
+                    this.renderAllViews();
+                    this.updateCharts();
+                }
+            }
+
+            saveSystemName() {
+                db.saveSettingsOnly();
+                document.getElementById('sys-branding-title').innerText = db.data.systemName;
+                db.addLog('update', `تم تعديل وتحديث العنوان الرسمي للنظام الفيدرالي بالكامل لشرطة تورونتو.`);
+                alert("تم حفظ وتحديث مسمى النظام بنجاح!");
+            }
+
+            switchColorTheme(themeName) {
+                document.body.className = '';
+                document.querySelectorAll('.theme-select-node').forEach(n => n.classList.remove('selected-theme'));
+                
+                if (themeName !== 'default') {
+                    document.body.classList.add(`theme-${themeName}`);
+                }
+                document.getElementById(`theme-btn-${themeName}`).classList.add('selected-theme');
+                this.currentTheme = themeName;
+                db.data.activeTheme = themeName;
+                db.save();
+            }
+
+            sortTable(dataType, colIndex) {
+                this.sortDirection = !this.sortDirection;
+                db.data[dataType].sort((a, b) => {
+                    let valA = Object.values(a)[colIndex].toString();
+                    let valB = Object.values(b)[colIndex].toString();
+                    return this.sortDirection ? valA.localeCompare(valB) : valB.localeCompare(valA);
+                });
+                this.renderAllViews();
+            }
+
+            /**
+             * محرك بناء وتحديث جميع القوائم والجداول حيوياً بدون ريفريش للصفحة
+             */
+            renderAllViews() {
+                // تحديث العدادات الرقمية بالداشبورد
+                document.getElementById('count-dispatches').innerText = db.data.dispatches.length;
+                document.getElementById('count-wanted').innerText = db.data.wanted.filter(w => w.status==='wanted').length;
+                document.getElementById('count-officers').innerText = db.data.officers.filter(o => o.status==='active').length;
+                document.getElementById('count-inmates').innerText = db.data.inmates.length;
+
+                // رندرة جدول الضباط
+                const officersBody = document.getElementById('table-officers-body');
+                officersBody.innerHTML = '';
+                db.data.officers.forEach((o, i) => {
+                    officersBody.innerHTML += `
+                        <tr>
+                            <td><b style="color:var(--cyan);">${o.badge}</b></td>
+                            <td><b>${o.name}</b></td>
+                            <td>${o.rank}</td>
+                            <td>${o.hours} ساعة</td>
+                            <td><span class="badge-status ${o.status==='active'?'badge-success':o.status==='inactive'?'badge-warning':'badge-danger'}">${o.status==='active'?'ميداني نشط':'خارج الخدمة'}</span></td>
+                            <td>
+                                <button class="btn-action-trigger btn-danger-trigger" style="padding:4px 8px; font-size:0.75rem;" onclick="ui.deleteRecord('officers', ${i}, '${o.name}')"><i class="fa-solid fa-user-xmark"></i> شطب</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+
+                // رندرة جدول المسعفين
+                const emsBody = document.getElementById('table-ems-body');
+                emsBody.innerHTML = '';
+                db.data.ems.forEach((e, i) => {
+                    emsBody.innerHTML += `
+                        <tr>
+                            <td><b style="color:var(--warning);">${e.code}</b></td>
+                            <td><b>${e.name}</b></td>
+                            <td>${e.rank}</td>
+                            <td><span class="badge-status ${e.status==='available'?'badge-success':'badge-danger'}">${e.status==='available'?'متاح ومستعد':'مشغول بحالة'}</span></td>
+                            <td>${e.lastDispatch}</td>
+                            <td>
+                                <button class="btn-action-trigger btn-danger-trigger" style="padding:4px 8px; font-size:0.75rem;" onclick="ui.deleteRecord('ems', ${i}, '${e.name}')"><i class="fa-solid fa-trash"></i> شطب</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+
+                // رندرة بطاقات المطلوبين الجنائية الفاخرة
+                const wantedContainer = document.getElementById('wanted-cards-container');
+                wantedContainer.innerHTML = '';
+                db.data.wanted.forEach((w, i) => {
+                    wantedContainer.innerHTML += `
+                        <div class="wanted-tactical-card">
+                            <div class="wanted-danger-banner">درجة التهديد: ${w.dangerLevel}</div>
+                            <div class="wanted-card-body">
+                                <div class="wanted-card-img" style="background: url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2280%22 height=%22100%22 viewBox=%220 0 80 100%22><rect width=%2280%22 height=%22100%22 fill=%22%231a1a24%22/><circle cx=%2240%22 cy=%2240%22 r=%2220%22 fill=%22%23ff0055%22/><path d=%22M10,90 C10,65 30,65 40,65 C50,65 70,65 70,90 Z%22 fill=%22%23333%22/></svg>') center/cover;"></div>
+                                <div class="wanted-card-info">
+                                    <div class="wanted-card-name">${w.name}</div>
+                                    <div class="wanted-card-bounty">المكافأة: ${w.bounty}</div>
+                                    <div style="font-size:0.75rem; color:var(--text-muted); line-height:1.3; max-height:40px; overflow:hidden;">${w.description}</div>
+                                    <button class="btn-action-trigger btn-danger-trigger" style="padding:2px 6px; font-size:0.7rem; margin-top:5px; width:fit-content;" onclick="ui.deleteRecord('wanted', ${i}, '${w.name}')">إلغاء المذكرة</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                // رندرة جدول ملفات القضايا
+                const casesBody = document.getElementById('table-cases-body');
+                casesBody.innerHTML = '';
+                db.data.cases.forEach((c, i) => {
+                    casesBody.innerHTML += `
+                        <tr>
+                            <td><b style="color:var(--cyan);">${c.caseId}</b></td>
+                            <td><b>${c.title}</b></td>
+                            <td><span style="color:var(--danger); font-weight:700;">${c.suspect}</span></td>
+                            <td>${c.officers}</td>
+                            <td>${c.date}</td>
+                            <td><span class="badge-status ${c.severity==='high'?'badge-danger':'badge-warning'}">${c.severity.toUpperCase()}</span></td>
+                            <td>
+                                <button class="btn-action-trigger btn-danger-trigger" style="padding:4px 8px; font-size:0.75rem;" onclick="ui.deleteRecord('cases', ${i}, '${c.caseId}')"><i class="fa-solid fa-folder-minus"></i> حذف</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+
+                // رندرة جدول البلاغات
+                const dispatchesBody = document.getElementById('table-dispatches-body');
+                dispatchesBody.innerHTML = '';
+                db.data.dispatches.forEach((d, i) => {
+                    dispatchesBody.innerHTML += `
+                        <tr>
+                            <td><b style="color:var(--cyan);">${d.code}</b></td>
+                            <td><i class="fa-solid fa-location-dot" style="color:var(--danger);"></i> ${d.location}</td>
+                            <td style="white-space:normal; max-width:250px;">${d.details}</td>
+                            <td><span class="badge-status ${d.threat==='critical'?'badge-danger':'badge-warning'}">${d.threat.toUpperCase()}</span></td>
+                            <td><span style="font-family:Changa; color:var(--cyan);">نشط الآن</span></td>
+                            <td>
+                                <button class="btn-action-trigger btn-danger-trigger" style="padding:4px 8px; font-size:0.75rem;" onclick="ui.deleteRecord('dispatches', ${i}, '${d.code}')"><i class="fa-solid fa-circle-check"></i> إنهاء البلاغ</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+
+                // سجل المركبات
+                const vehiclesBody = document.getElementById('table-vehicles-body');
+                vehiclesBody.innerHTML = '';
+                db.data.vehicles.forEach((v, i) => {
+                    vehiclesBody.innerHTML += `
+                        <tr>
+                            <td><b style="background:rgba(255,255,255,0.1); padding:4px 8px; border-radius:4px; border:1px solid var(--border-glass); font-family:Changa;">${v.plate}</b></td>
+                            <td><b>${v.model}</b></td>
+                            <td>${v.owner}</td>
+                            <td>${v.color}</td>
+                            <td><span class="badge-status ${v.status==='clean'?'badge-success':v.status==='wanted'?'badge-danger':'badge-warning'}">${v.status==='clean'?'سليمة / مصرحة':'مطلوبة للحجز'}</span></td>
+                            <td>
+                                <button class="btn-action-trigger btn-danger-trigger" style="padding:4px 8px; font-size:0.75rem;" onclick="ui.deleteRecord('vehicles', ${i}, '${v.plate}')">حذف</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+
+                // تراخيص الأسلحة
+                const weaponsBody = document.getElementById('table-weapons-body');
+                weaponsBody.innerHTML = '';
+                db.data.weapons.forEach((w, i) => {
+                    weaponsBody.innerHTML += `
+                        <tr>
+                            <td><b style="color:var(--cyan); font-family:Changa;">${w.serial}</b></td>
+                            <td><b>${w.type}</b></td>
+                            <td>${w.owner}</td>
+                            <td><span class="badge-status ${w.status==='licensed'?'badge-success':'badge-danger'}">${w.status==='licensed'?'مرخص فيدرالياً':'غير قانوني/مصادرة'}</span></td>
+                            <td>2026-06-23</td>
+                            <td>
+                                <button class="btn-action-trigger btn-danger-trigger" style="padding:4px 8px; font-size:0.75rem;" onclick="ui.deleteRecord('weapons', ${i}, '${w.serial}')">سحب وإلغاء</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+
+                // رندرة السجلات واللوقز الفورية
+                this.renderLogs();
+                this.applyRippleEffects();
+            }
+
+            renderLogs() {
+                const logsWrapper = document.getElementById('logs-render-viewport');
+                if(!logsWrapper) return;
+                logsWrapper.innerHTML = '';
+                db.data.logs.forEach(l => {
+                    logsWrapper.innerHTML += `
+                        <div class="log-entry-row log-${l.type}">
+                            <div>
+                                <b style="color:var(--cyan); margin-left:10px;">[${l.time}]</b>
+                                <span>${l.desc}</span>
+                            </div>
+                            <span style="font-weight:700; text-transform:uppercase; font-size:0.7rem; color:var(--text-muted);">${l.type}</span>
+                        </div>
+                    `;
+                });
+            }
+
+            /**
+             * نظام العداد التنازلي التلقائي لزنزانات المحكومين في السجون (Real-Time Inmates Countdown Loop)
+             */
+            startPrisonCountdownLoop() {
+                setInterval(() => {
+                    const inmatesBody = document.getElementById('table-inmates-body');
+                    if (!inmatesBody || !document.getElementById('pane-prisons').classList.contains('active-pane')) {
+                        // تحديث الخلفية الحسابية فقط إذا لم يكن المستخدم يرى لوحة السجون لتوفير المعالجة
+                        db.data.inmates.forEach((inmate, idx) => {
+                            const elapsed = Math.floor((Date.now() - inmate.timestamp) / 60000);
+                            inmate.duration = inmate.initialDuration - elapsed;
+                            if (inmate.duration <= 0) {
+                                db.data.inmates.splice(idx, 1);
+                                db.addLog('delete', `انتهت محكومية السجين [${inmate.name}] وتم الإفراج التلقائي عنه من النظام.`);
+                                db.save();
+                            }
+                        });
+                        return;
+                    }
+
+                    inmatesBody.innerHTML = '';
+                    db.data.inmates.forEach((inmate, idx) => {
+                        const elapsed = Math.floor((Date.now() - inmate.timestamp) / 60000);
+                        inmate.duration = inmate.initialDuration - elapsed;
+
+                        if (inmate.duration <= 0) {
+                            db.data.inmates.splice(idx, 1);
+                            db.addLog('delete', `انتهت محكومية السجين [${inmate.name}] وتم الإفراج التلقائي عنه من النظام.`);
+                            db.save();
+                            this.renderAllViews();
+                            return;
+                        }
+
+                        // حساب النسبة المئوية للرسم البياني الصغير داخل الجدول
+                        const progressPercent = Math.max(0, Math.min(100, (inmate.duration / inmate.initialDuration) * 100));
+
+                        inmatesBody.innerHTML += `
+                            <tr>
+                                <td><b style="color:var(--danger); font-family:Changa;">${inmate.inmateId}</b></td>
+                                <td><b>${inmate.name}</b></td>
+                                <td><i class="fa-solid fa-door-closed"></i> ${inmate.cell}</td>
+                                <td>${inmate.crime}</td>
+                                <td><b style="color:var(--warning); font-family:Changa;">${inmate.duration} دقيقة</b></td>
+                                <td style="width:150px;">
+                                    <div style="width:100%; background:rgba(255,255,255,0.05); height:6px; border-radius:3px; overflow:hidden;">
+                                        <div style="width:${progressPercent}%; background:linear-gradient(90deg, var(--danger), var(--warning)); height:100%;"></div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <button class="btn-action-trigger ripple-element" style="padding:4px 8px; font-size:0.75rem; background:var(--success);" onclick="ui.releaseInmate(${idx})"><i class="fa-solid fa-key"></i> إفراج عفو</button>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                }, 1000);
+            }
+
+            releaseInmate(index) {
+                const inmate = db.data.inmates[index];
+                db.data.inmates.splice(index, 1);
+                db.addLog('delete', `تم إصدار عفو فوري وإفراج يدوي عن النزيل [${inmate.name}].`);
+                db.save();
+                this.renderAllViews();
+            }
+
+
+            /**
+             * 5. تفعيل مكتبة الرسوم البيانية المتطورة للشرطة الفيدرالية (Chart.js Injection)
+             */
+            initCharts() {
+                const ctxTrends = document.getElementById('mainTrendsChart').getContext('2d');
+                this.trendsChart = new Chart(ctxTrends, {
+                    type: 'line',
+                    data: {
+                        labels: ['السبت', 'الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة'],
+                        datasets: [{
+                            label: 'معدل الاستجابة للبلاغات والجرائم الميدانية المعالجة بالدقيقة',
+                            data: [12, 19, 3, 5, 2, 3, 10],
+                            borderColor: '#00f2fe',
+                            backgroundColor: 'rgba(0, 242, 254, 0.05)',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            x: { grid: { color: 'rgba(255,255,255,0.05)' }, doubts: { color: '#fff' } },
+                            y: { grid: { color: 'rgba(255,255,255,0.05)' } }
+                        }
+                    }
+                });
+
+                const ctxDist = document.getElementById('distributionChart').getContext('2d');
+                this.distChart = new Chart(ctxDist, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['جنايات كبرى', 'مخالفات سير', 'تعديات عامة'],
+                        datasets: [{
+                            data: [db.data.cases.length, db.data.vehicles.length, db.data.dispatches.length],
+                            backgroundColor: ['#ff0055', '#0072ff', '#ffb300'],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { position: 'bottom', labels: { color: '#e2e8f0', font: { family: 'Cairo' } } } }
+                    }
+                });
+            }
+
+            updateCharts() {
+                if(this.distChart) {
+                    this.distChart.data.datasets[0].data = [
+                        db.data.cases.length,
+                        db.data.vehicles.filter(v=>v.status==='wanted').length + 1,
+                        db.data.dispatches.length
+                    ];
+                    this.distChart.update();
+                }
+            }
+        }
+
+        // إقلاع وتشغيل الأنظمة المتشابكة بشكل موحد فوري عند تحميل الصفحة بالكامل
+        let db, canvasEngine, mouseCursor, ui;
+        window.addEventListener('DOMContentLoaded', () => {
+            db = new LocalStorageMDTDatabase();
+            canvasEngine = new CyberCanvasBackgroundEngine();
+            mouseCursor = new CyberMouseTrailCursorController();
+            ui = new TorontoMDTVisualUserInterfaceEngine();
+        });
+    </script>
+</body>
+</html>
