@@ -3,134 +3,270 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام MDT تورنتو الاحترافي</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700&family=Tajawal:wght@300;400;700&family=Changa:wght@300;400;700&family=IBM+Plex+Sans+Arabic:wght@300;400;700&display=swap" rel="stylesheet">
+    <title>نظام MDT لشرطة تورونتو | TORONTO POLICE SERVICE</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Changa:wght@400;600;700&family=IBM+Plex+Arabic:wght@300;400;600;700&family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
-            --bg-deep: #050b14;
-            --police-blue: #0a2540;
-            --neon-cyan: #00f2ff;
-            --danger: #ff3e3e;
-            --success: #00ff9d;
-            --warning: #ffcc00;
-            --glass: rgba(10, 37, 64, 0.7);
             --font-main: 'Cairo', sans-serif;
+            --bg-deep: #0a0c14;
+            --bg-glass: rgba(13, 20, 38, 0.6);
+            --bg-glass-heavy: rgba(8, 14, 28, 0.85);
+            --border-glass: rgba(0, 242, 254, 0.15);
+            --border-glow: rgba(0, 242, 254, 0.4);
+            
+            --primary: #0072ff;
+            --primary-glow: rgba(0, 114, 255, 0.5);
+            --cyan: #00f2fe;
+            --cyan-glow: rgba(0, 242, 254, 0.6);
+            --warning: #ffb300;
+            --warning-glow: rgba(255, 179, 0, 0.5);
+            --danger: #ff0055;
+            --danger-glow: rgba(255, 0, 85, 0.6);
+            --success: #00ff87;
+            --success-glow: rgba(0, 255, 135, 0.5);
+            --text-main: #e2e8f0;
+            --text-muted: #718096;
+            --sidebar-width: 280px;
+            --header-height: 80px;
+            --neon-shadow: 0 0 15px var(--cyan-glow);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; cursor: none; }
-        body { font-family: var(--font-main); background: var(--bg-deep); color: white; overflow: hidden; height: 100vh; }
+        .theme-red {
+            --primary: #ff0055;
+            --primary-glow: rgba(255, 0, 85, 0.5);
+            --cyan: #ff5500;
+            --cyan-glow: rgba(255, 85, 0, 0.6);
+            --border-glass: rgba(255, 0, 85, 0.15);
+            --border-glow: rgba(255, 0, 85, 0.4);
+            --neon-shadow: 0 0 15px rgba(255, 0, 85, 0.5);
+        }
 
-        /* Custom Cursor */
-        #cursor { width: 20px; height: 20px; border: 2px solid var(--neon-cyan); border-radius: 50%; position: fixed; pointer-events: none; z-index: 9999; transition: transform 0.1s; box-shadow: 0 0 10px var(--neon-cyan); }
-        
-        /* Background Canvas */
-        #bgCanvas { position: fixed; top: 0; left: 0; z-index: -1; }
+        .theme-gold {
+            --primary: #d4af37;
+            --primary-glow: rgba(212, 175, 55, 0.5);
+            --cyan: #ffaa00;
+            --cyan-glow: rgba(255, 170, 0, 0.6);
+            --border-glass: rgba(212, 175, 55, 0.15);
+            --border-glow: rgba(212, 175, 55, 0.4);
+            --neon-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
+        }
 
-        /* Layout */
-        .app-container { display: flex; height: 100vh; width: 100vw; overflow: hidden; background: radial-gradient(circle at center, rgba(0,242,255,0.05) 0%, transparent 70%); }
-        
-        /* Sidebar */
-        .sidebar { width: 260px; background: var(--glass); backdrop-filter: blur(20px); border-left: 1px solid var(--neon-cyan); display: flex; flex-direction: column; padding: 20px; }
-        .nav-item { padding: 15px; margin: 5px 0; border-radius: 8px; background: rgba(255,255,255,0.05); transition: 0.3s; border-right: 3px solid transparent; cursor: pointer; }
-        .nav-item:hover { background: rgba(0,242,255,0.1); border-right: 3px solid var(--neon-cyan); }
+        .theme-green {
+            --primary: #00ff87;
+            --primary-glow: rgba(0, 255, 135, 0.5);
+            --cyan: #00ffcc;
+            --cyan-glow: rgba(0, 255, 204, 0.6);
+            --border-glass: rgba(0, 255, 135, 0.15);
+            --border-glow: rgba(0, 255, 135, 0.4);
+            --neon-shadow: 0 0 15px rgba(0, 255, 135, 0.5);
+        }
 
-        /* Content */
-        .main-content { flex: 1; padding: 30px; overflow-y: auto; }
-        .card { background: var(--glass); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; padding: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.5); }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-user-drag: none;
+        }
 
-        /* Charts */
-        .chart-container { width: 100%; height: 300px; }
+        body {
+            background-color: var(--bg-deep);
+            color: var(--text-main);
+            font-family: var(--font-main);
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+            direction: rtl;
+            cursor: none;
+        }
 
-        /* Animations */
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-        .neon-text { text-shadow: 0 0 10px var(--neon-cyan); }
-    </style>
-</head>
-<body>
+        /* نظام الخلفيات المتحركة */
+        #canvas-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
 
-<div id="cursor"></div>
-<canvas id="bgCanvas"></canvas>
+        /* نظام المؤشر المخصص */
+        #custom-cursor {
+            width: 10px;
+            height: 10px;
+            background: var(--cyan);
+            border-radius: 50%;
+            position: fixed;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 10000;
+            box-shadow: 0 0 10px var(--cyan), 0 0 20px var(--cyan);
+            transition: width 0.2s, height 0.2s;
+        }
 
-<div class="app-container">
-    <div class="sidebar">
-        <h2 class="neon-text" style="margin-bottom: 30px;">شرطة تورنتو</h2>
-        <div class="nav-item" onclick="showSection('dashboard')">لوحة التحكم</div>
-        <div class="nav-item" onclick="showSection('wanted')">المطلوبون</div>
-        <div class="nav-item" onclick="showSection('reports')">البلاغات</div>
-        <div class="nav-item" onclick="showSection('settings')">الإعدادات</div>
-    </div>
+        #custom-cursor-blur {
+            width: 30px;
+            height: 30px;
+            border: 2px solid var(--primary);
+            border-radius: 50%;
+            position: fixed;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 9999;
+            box-shadow: 0 0 15px var(--primary-glow);
+            transition: transform 0.08s cubic-bezier(0.25, 1, 0.5, 1);
+        }
 
-    <div class="main-content" id="main-view">
-        <div id="dashboard" class="view">
-            <h1>لوحة التحكم</h1>
-            <div class="card">
-                <canvas id="mainChart"></canvas>
-            </div>
-        </div>
-        <div id="wanted" class="view" style="display:none;">
-            <h1>سجل المطلوبين</h1>
-            <button onclick="addWanted()">إضافة مطلوب</button>
-            <table id="wantedTable" style="width:100%; margin-top:20px;">
-                <thead><tr><th>الاسم</th><th>المستوى</th><th>الحالة</th></tr></thead>
-                <tbody></tbody>
-            </table>
-        </div>
-    </div>
-</div>
+        .cursor-burst {
+            position: fixed;
+            border: 2px solid var(--cyan);
+            border-radius: 50%;
+            background: transparent;
+            pointer-events: none;
+            z-index: 9998;
+            transform: translate(-50%, -50%);
+            animation: burst-animation 0.4s ease-out forwards;
+        }
 
-<script>
-    // State Management
-    let state = JSON.parse(localStorage.getItem('mdt_data')) || {
-        wanted: [{name: 'أحمد علي', level: 'عالي', status: 'مطلوب'}],
-        settings: { theme: 'dark' }
-    };
+        @keyframes burst-animation {
+            0% { width: 0; height: 0; opacity: 1; border-color: var(--cyan); }
+            100% { width: 80px; height: 80px; opacity: 0; border-color: var(--danger); }
+        }
 
-    function save() { localStorage.setItem('mdt_data', JSON.stringify(state)); }
+        /* الهيكل الرئيسي وتنسيق الترتيب */
+        #app-wrapper {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            width: 100vw;
+            height: 100vh;
+            backdrop-filter: blur(5px);
+        }
 
-    // Canvas Background
-    const canvas = document.getElementById('bgCanvas');
-    const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+        /* القائمة الجانبية السينمائية */
+        aside {
+            width: var(--sidebar-width);
+            background: var(--bg-glass-heavy);
+            border-left: 2px solid var(--border-glass);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: -5px 0 25px rgba(0,0,0,0.5);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            z-index: 20;
+        }
 
-    function draw() {
-        ctx.fillStyle = 'rgba(5, 11, 20, 0.1)';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        // Add random grid/particle logic here
-        requestAnimationFrame(draw);
-    }
-    draw();
+        aside::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 3px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--cyan), var(--primary), transparent);
+            box-shadow: var(--neon-shadow);
+        }
 
-    // Mouse System
-    const cursor = document.getElementById('cursor');
-    window.addEventListener('mousemove', e => {
-        cursor.style.left = e.clientX + 'px';
-        cursor.style.top = e.clientY + 'px';
-    });
+        .brand-zone {
+            height: var(--header-height);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            border-bottom: 1px solid var(--border-glass);
+            gap: 12px;
+            background: rgba(0,0,0,0.2);
+        }
 
-    // UI Logic
-    function showSection(id) {
-        document.querySelectorAll('.view').forEach(v => v.style.display = 'none');
-        document.getElementById(id).style.display = 'block';
-    }
+        .brand-zone i {
+            font-size: 2rem;
+            color: var(--cyan);
+            filter: drop-shadow(0 0 8px var(--cyan-glow));
+            animation: pulse-glow 2s infinite ease-in-out;
+        }
 
-    // Chart Init
-    const ctxChart = document.getElementById('mainChart').getContext('2d');
-    new Chart(ctxChart, {
-        type: 'line',
-        data: {
-            labels: ['يناير', 'فبراير', 'مارس'],
-            datasets: [{ label: 'البلاغات', data: [12, 19, 3], borderColor: '#00f2ff' }]
-        },
-        options: { responsive: true, maintainAspectRatio: false }
-    });
+        @keyframes pulse-glow {
+            0%, 100% { filter: drop-shadow(0 0 5px var(--cyan-glow)); }
+            50% { filter: drop-shadow(0 0 15px var(--cyan-glow)); }
+        }
 
-    function addWanted() {
-        state.wanted.push({name: 'مشتبه جديد', level: 'متوسط', status: 'نشط'});
-        save();
-        alert('تمت الإضافة');
-    }
-</script>
-</body>
-</html>
+        .brand-title {
+            font-size: 1.15rem;
+            font-weight: 900;
+            letter-spacing: 0.5px;
+            text-shadow: 0 0 10px rgba(255,255,255,0.2);
+        }
+
+        .brand-sub {
+            font-size: 0.65rem;
+            color: var(--cyan);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .navigation-links {
+            list-style: none;
+            padding: 15px 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            overflow-y: auto;
+            flex-grow: 1;
+        }
+
+        .navigation-links::-webkit-scrollbar {
+            width: 4px;
+        }
+        .navigation-links::-webkit-scrollbar-thumb {
+            background: var(--border-glass);
+            border-radius: 4px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 18px;
+            color: var(--text-muted);
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            gap: 15px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-item i {
+            font-size: 1.1rem;
+            transition: transform 0.3s ease;
+            width: 20px;
+            text-align: center;
+        }
+
+        .nav-item:hover {
+            color: var(--text-main);
+            background: rgba(255,255,255,0.03);
+            border-right: 4px solid var(--primary);
+            padding-right: 14px;
+        }
+
+        .nav-item:hover i {
+            transform: scale(1.1) cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            color: var(--cyan);
+        }
+
+        .nav-item.active {
+            color: #fff;
+            background: linear-gradient(90deg, var(--primary-glow), transparent);
+            border-right: 4px solid var(--cyan);
+            padding-right: 14px;
+            box-shadow: inset 5px 0 15px rgba(0, 242, 254, 0.05);
+            text-shadow: 0 0 8px rgba(255,255,255
