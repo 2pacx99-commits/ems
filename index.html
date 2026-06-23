@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>جدول الهلال الأحمر - TORONTO RP</title>
+    
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap');
 
@@ -483,6 +487,22 @@
     </div>
 
     <script>
+        // إعدادات اتصال السيرفر بقاعدة البيانات المستخرجة من شاشتك
+        const firebaseConfig = {
+            apiKey: "AIzaSyDdgaD2rzQ1eQWDQZp2dlfsZfl8CMz9UW4",
+            authDomain: "toronto-45374.firebaseapp.com",
+            databaseURL: "https://toronto-45374-default-rtdb.firebaseio.com",
+            projectId: "toronto-45374",
+            storageBucket: "toronto-45374.appspot.com",
+            messagingSenderId: "895878429326",
+            appId: "1:895878429326:web:526d25948751604e8967df",
+            measurementId: "G-F3LKRGQ7DR"
+        };
+
+        // تهيئة اتصال فايربيس
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
         // نظام توليد تأثير الوهج عند النقر Click Glow Effect
         document.addEventListener('click', function(e) {
             let ripple = document.createElement('div');
@@ -503,7 +523,7 @@
             setTimeout(() => { toast.remove(); }, 2000);
         }
 
-        // كائن البيانات المحدث والافتراضي المدمج مباشرةً بدون تخريب
+        // كائن البيانات الشامل والمحدث الافتراضي للموقع المطور بسيرفر تورنتو
         const defaultData = {
             adminPin: "torento911", 
             siteTitle: "جدول الهلال الأحمر",
@@ -523,7 +543,7 @@
             ],
             rules: [
                 "الالتزام الكامل بالحصص المقررة والتواجد الفعال داخل المقاطعة الرسمية.",
-                "عدم تجاوز الإنذارات المسموحة في السجل لتستحق الترقية الميدانية المعتمدة."
+                "عدم تجاوز الإنذارات المسموحة in السجل لتستحق الترقية الميدانية المعتمدة."
             ],
             employees: [
                 { id: "582165572888433162", name: "عدي", code: "E-001", rank: "قيادة", spec: "إدارة وتدريب", pos: "إسعاف متقدم", status: "active", attendance: [1,1,1,1,1,1,1], repPresence: 0, repOps: 0, warn: "0/3", upgrade: "مستقر", badge: "🏅 وسام الخدمة", date: "2026/01/15" },
@@ -531,16 +551,34 @@
             ]
         };
 
-        let appData = JSON.parse(localStorage.getItem('toronto_ems_data')) || defaultData;
+        let appData = defaultData;
         let activeTab = 'active';
         let isAdmin = false;
 
-        function saveToStorageDirect(showNotification = true) {
-            localStorage.setItem('toronto_ems_data', JSON.stringify(appData));
-            calculateStats();
-            if(showNotification && isAdmin) {
-                showToast("تم الحفظ التلقائي للسجلات والمزامنة بنجاح !");
+        // الاستماع الحي لقاعدة البيانات السحابية (Realtime Synchronization)
+        db.ref('toronto_ems_live_data').on('value', (snapshot) => {
+            const cloudData = snapshot.val();
+            if (cloudData) {
+                appData = cloudData;
+                renderApp();
+            } else {
+                // دفع البيانات الأولية إن كانت القاعدة فارغة تماماً
+                appData = defaultData;
+                db.ref('toronto_ems_live_data').set(appData);
             }
+        });
+
+        // ميكانيكية الرفع السحابي الفوري فور التعديل
+        function saveToStorageDirect(showNotification = true) {
+            db.ref('toronto_ems_live_data').set(appData).then(() => {
+                calculateStats();
+                if(showNotification && isAdmin) {
+                    showToast("تم المزامنة مع السحابة وحفظ التعديلات لايف! ☁️✔️");
+                }
+            }).catch((err) => {
+                showToast("فشل الاتصال بقاعدة البيانات!", true);
+                console.error(err);
+            });
         }
 
         function handleAuthToggle() {
@@ -771,6 +809,7 @@
 
         function populateSettingsLists() {
             const rankList = document.getElementById('manage-ranks-list');
+            if (!rankList) return;
             rankList.innerHTML = '';
             appData.ranks.forEach((r, idx) => {
                 rankList.innerHTML += `
@@ -781,6 +820,7 @@
             });
 
             const badgeList = document.getElementById('manage-badges-list');
+            if (!badgeList) return;
             badgeList.innerHTML = '';
             appData.badges.forEach((b, idx) => {
                 badgeList.innerHTML += `
@@ -878,7 +918,7 @@
         function downloadUpdatedCode() {
             const currentDataStr = JSON.stringify(appData);
             let fullHtml = document.documentElement.outerHTML;
-            fullHtml = fullHtml.replace(/let appData = JSON\.parse\(localStorage\.getItem\('toronto_ems_data'\)\) \|\| defaultData;/, `let appData = ${currentDataStr};`);
+            fullHtml = fullHtml.replace(/let appData = defaultData;/, `let appData = ${currentDataStr};`);
             const blob = new Blob([`<!DOCTYPE html>\n` + fullHtml], { type: 'text/html' });
             const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'index.html'; a.click();
             showToast("تم تصدير وتحميل الملف بنجاح!");
@@ -888,7 +928,6 @@
         document.getElementById('cfg-title').value = appData.siteTitle;
         document.getElementById('cfg-subtitle').value = appData.siteSubtitle;
         document.getElementById('cfg-wm').value = appData.watermark;
-        renderApp();
     </script>
 </body>
 </html>
