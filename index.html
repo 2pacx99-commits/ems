@@ -1,930 +1,974 @@
-<!DOCTYPE html>
+DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>جدول الهلال الأحمر - TORONTO RP</title>
+    <title>MDT - Police System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=Changa:wght@400;600;800&family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap');
-
+        /* ================= Theme Variables ================= */
         :root {
-            --bg-color: #060609;
-            --panel-bg: rgba(13, 13, 18, 0.75);
-            --table-th: #0f1016;
-            --text-color: #e2e8f0;
-            --accent-color: #ff2a2a;
-            --accent-glow: #ff0000;
-            --border-color: rgba(255, 255, 255, 0.05);
-            --card-glow: rgba(255, 42, 42, 0.15);
+            --primary-color: #0a192f;
+            --secondary-color: #112240;
+            --accent-color: #00d2ff;
+            --accent-glow: rgba(0, 210, 255, 0.6);
+            --text-main: #e6f1ff;
+            --text-muted: #8892b0;
+            --danger: #ff4d4d;
+            --success: #00e676;
+            --warning: #ffea00;
+            --glass-bg: rgba(17, 34, 64, 0.4);
+            --glass-border: rgba(0, 210, 255, 0.2);
+            --font-main: 'Tajawal', sans-serif;
+            --font-header: 'Changa', sans-serif;
+            --font-number: 'Cairo', sans-serif;
         }
 
+        [data-theme="swat"] {
+            --primary-color: #0d0d0d;
+            --secondary-color: #1a1a1a;
+            --accent-color: #ff3333;
+            --accent-glow: rgba(255, 51, 51, 0.6);
+            --glass-border: rgba(255, 51, 51, 0.2);
+        }
+
+        [data-theme="cyber"] {
+            --primary-color: #050510;
+            --secondary-color: #0a0a20;
+            --accent-color: #ff00ff;
+            --accent-glow: rgba(255, 0, 255, 0.6);
+            --glass-border: rgba(255, 0, 255, 0.3);
+        }
+
+        /* ================= Global & Reset ================= */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 25px;
-            min-height: 100vh;
-            position: relative;
-            overflow-x: hidden;
+            font-family: var(--font-main);
+            background-color: var(--primary-color);
+            color: var(--text-main);
+            overflow: hidden; /* App-like feel */
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
-        body::before {
-            content: "";
-            position: fixed;
-            top: -50%; left: -50%; right: -50%; bottom: -50%;
-            width: 200%; height: 200%;
-            background: radial-gradient(circle at 30% 30%, rgba(255, 0, 0, 0.04) 0%, transparent 40%),
-                        radial-gradient(circle at 80% 70%, rgba(0, 229, 255, 0.02) 0%, transparent 45%);
-            animation: bgMovement 25s linear infinite;
-            z-index: -2;
-            pointer-events: none;
+        /* ================= Canvas Background ================= */
+        #bg-canvas {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            background: radial-gradient(circle at center, var(--secondary-color) 0%, var(--primary-color) 100%);
         }
 
-        @keyframes bgMovement {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        /* ================= Glassmorphism & Effects ================= */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+        .neon-text {
+            color: var(--accent-color);
+            text-shadow: 0 0 10px var(--accent-glow), 0 0 20px var(--accent-glow);
+        }
+        .neon-border {
+            border: 1px solid var(--accent-color);
+            box-shadow: 0 0 10px var(--accent-glow) inset, 0 0 10px var(--accent-glow);
         }
 
-        .click-ripple {
-            position: fixed;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(255,42,42,0.4) 0%, transparent 70%);
-            width: 150px;
-            height: 150px;
-            transform: translate(-50%, -50%) scale(0);
-            animation: rippleEffect 0.6s ease-out;
-            pointer-events: none;
-            z-index: 9999;
+        /* ================= Layout ================= */
+        .app-container {
+            display: flex;
+            flex: 1;
+            height: calc(100vh - 80px);
+            overflow: hidden;
         }
 
-        @keyframes rippleEffect {
-            to { transform: translate(-50%, -50%) scale(1.5); opacity: 0; }
+        /* ================= Header ================= */
+        header {
+            height: 80px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 30px;
+            z-index: 10;
+            border-bottom: 1px solid var(--glass-border);
         }
-
-        .watermark-bg {
-            position: fixed;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%) rotate(-15deg);
-            font-size: 8rem; font-weight: 900;
-            color: rgba(255, 255, 255, 0.008);
-            white-space: nowrap; pointer-events: none; z-index: -1; user-select: none;
+        .header-logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-family: var(--font-header);
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: 2px;
         }
-
-        .container { max-width: 100%; margin: 0 auto; position: relative; z-index: 1; }
-
-        .header-wrapper {
-            display: flex; flex-direction: column; align-items: center; margin-bottom: 35px; position: relative;
-            padding: 20px; border-radius: 16px; background: rgba(255, 255, 255, 0.01);
-            backdrop-filter: blur(5px); border: 1px solid rgba(255,255,255,0.02);
-            user-select: none; -webkit-user-select: none;
-        }
-        
-        .logo-glow {
-            width: 100px; height: 100px;
-            background: radial-gradient(circle, var(--accent-color) 10%, rgba(0,0,0,0.4) 80%);
-            border: 2px solid rgba(255, 42, 42, 0.5); border-radius: 50%;
-            box-shadow: 0 0 30px var(--card-glow), inset 0 0 15px rgba(255, 42, 42, 0.3);
-            display: flex; align-items: center; justify-content: center; font-size: 42px;
-            margin-bottom: 20px; animation: pulseGlow 3s infinite ease-in-out;
-            cursor: not-allowed;
-        }
-
-        .header-wrapper h1 {
-            font-size: 54px; 
-            font-weight: 900; 
-            margin: 0; 
-            color: #ff2a2a;
-            letter-spacing: 1px;
-            display: inline-block;
-            position: relative;
-            cursor: not-allowed;
-            padding: 5px 15px;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-            background-size: 200% 100%;
-            background-position: 120% 0;
-            -webkit-background-clip: text;
-            text-shadow: 0 0 10px rgba(255, 42, 42, 0.65),
-                         0 0 20px rgba(255, 42, 42, 0.45),
-                         0 0 45px rgba(255, 42, 42, 0.3);
-            transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275), text-shadow 0.3s ease;
-            animation: textShine 6s infinite linear;
-        }
-
-        .header-wrapper h1:hover {
-            transform: translateY(-6px) scale(1.02);
-            text-shadow: 0 0 15px rgba(255, 42, 42, 0.95),
-                         0 0 30px rgba(255, 42, 42, 0.75),
-                         0 0 65px rgba(255, 42, 42, 0.5);
-        }
-
-        @keyframes textShine {
-            0% { background-position: 160% 0; }
-            50% { background-position: -60% 0; }
-            100% { background-position: -60% 0; }
-        }
-
-        .header-wrapper h1::after {
-            content: "🔒"; position: absolute; top: -5px; left: -35px; font-size: 18px; opacity: 0.6;
-        }
-
-        .header-wrapper p {
-            color: #00e5ff; margin: 10px 0 0 0; font-size: 15px; font-weight: 800; letter-spacing: 2px;
-            text-shadow: 0 0 10px rgba(0, 229, 255, 0.4);
-            cursor: not-allowed;
-        }
-
-        .system-status {
-            background: rgba(13, 13, 18, 0.6); border: 1px solid rgba(255, 255, 255, 0.05);
-            padding: 6px 18px; border-radius: 20px; font-size: 12px; color: #a0aec0; margin-top: 15px;
-            display: flex; align-items: center; gap: 8px; font-weight: bold; backdrop-filter: blur(10px);
-            cursor: not-allowed;
-        }
-        .status-dot { width: 8px; height: 8px; background-color: #e53e3e; border-radius: 50%; display: inline-block; box-shadow: 0 0 8px #e53e3e; }
-        .status-dot.authenticated { background-color: #00ff87; box-shadow: 0 0 12px #00ff87; }
-
-        .stats-grid {
-            display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 30px;
-        }
-
-        .stat-card {
-            background: var(--panel-bg); border: 1px solid var(--border-color);
-            padding: 22px 15px; border-radius: 14px; text-align: center;
-            backdrop-filter: blur(15px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.6), inset 0 1px 1px rgba(255,255,255,0.05); 
-            border-bottom: 3px solid rgba(255,255,255,0.1);
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-        .stat-card:hover { transform: translateY(-4px); }
-        .stat-card.active-card { border-bottom-color: #00ff87; box-shadow: 0 5px 20px rgba(0, 255, 135, 0.05), inset 0 1px 1px rgba(255,255,255,0.05); }
-        .stat-card.upgrade-card { border-bottom-color: #00bfff; box-shadow: 0 5px 20px rgba(0, 191, 255, 0.05), inset 0 1px 1px rgba(255,255,255,0.05); }
-        .stat-card.total-card { border-bottom-color: var(--accent-color); box-shadow: 0 5px 20px rgba(255, 42, 42, 0.05), inset 0 1px 1px rgba(255,255,255,0.05); }
-        .stat-card.retired-card { border-bottom-color: #718096; }
-        
-        .stat-card h3 { margin: 0 0 10px 0; font-size: 13px; color: #8a8a9a; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
-        .stat-card .number { font-size: 36px; font-weight: 900; font-family: 'Impact', sans-serif; }
-
-        .toolbar {
-            display: flex; gap: 12px; margin-bottom: 25px; flex-wrap: wrap; align-items: center;
-            background: rgba(15, 16, 22, 0.6); padding: 16px; border-radius: 12px; 
-            border: 1px solid var(--border-color); backdrop-filter: blur(10px);
-        }
-
-        .search-box {
-            background-color: rgba(10, 10, 14, 0.8); border: 1px solid rgba(255,255,255,0.06);
-            padding: 12px 18px; border-radius: 8px; color: white; width: 280px; font-size: 13px; outline: none;
-            transition: 0.3s; box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
-        }
-        .search-box:focus { border-color: var(--accent-color); box-shadow: 0 0 15px rgba(255,42,42,0.2); }
-
-        .btn {
-            background-color: rgba(255,255,255,0.02); color: #b4b4c4; border: 1px solid rgba(255,255,255,0.07);
-            padding: 11px 18px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 700;
-            transition: all 0.2s ease; display: flex; align-items: center; gap: 6px;
-        }
-        .btn:hover { background-color: rgba(255,255,255,0.06); color: #fff; border-color: rgba(255,255,255,0.15); }
-        .btn.active { background-color: rgba(255, 42, 42, 0.1); border-color: var(--accent-color); color: #fff; text-shadow: 0 0 8px var(--accent-color); }
-        
-        .btn-excel { border-color: #ffaa00; color: #ffaa00; }
-        .btn-excel:hover { background: rgba(255,170,0,0.1); }
-        .btn-clear { border-color: #ecc94b; color: #ecc94b; }
-        .btn-clear:hover { background: rgba(236,201,75,0.1); }
-        .btn-auth { border-color: #00bfff; color: #00bfff; font-weight: bold; box-shadow: 0 0 10px rgba(0,191,255,0.05); }
-        .btn-auth:hover { background: rgba(0,191,255,0.1); }
-        .btn-settings { border-color: #718096; color: #a0aec0; margin-right: auto; }
-        .btn-add { background-color: var(--accent-color); border-color: var(--accent-color); color: white; box-shadow: 0 4px 15px rgba(255,42,42,0.3); }
-        .btn-add:hover { background-color: #e21e1e; transform: translateY(-1px); }
-
-        .table-container {
-            background: var(--panel-bg); border: 1px solid var(--border-color);
-            border-radius: 14px; overflow-x: auto; box-shadow: 0 15px 40px rgba(0,0,0,0.7);
-            backdrop-filter: blur(15px);
-        }
-
-        table { width: 100%; border-collapse: collapse; text-align: center; font-size: 13px; min-width: 1750px; }
-        th, td { padding: 14px 12px; border-bottom: 1px solid rgba(255,255,255,0.03); border-left: 1px solid rgba(255,255,255,0.03); }
-        th { background-color: var(--table-th); color: #8e8e9e; font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid rgba(255,255,255,0.05); }
-        
-        tr.hidden { display: none !important; }
-        tr:hover td { background-color: rgba(255,255,255,0.015); }
-
-        .editable-cell { outline: none; transition: 0.2s; }
-        body:not(.is-admin) .editable-cell { pointer-events: none; }
-        body.is-admin .editable-cell { cursor: text; }
-        body.is-admin .editable-cell:focus { background-color: rgba(255,42,42,0.05) !important; box-shadow: inset 0 0 6px var(--accent-color); color: #fff; }
-
-        .check-cell { font-size: 16px; font-weight: bold; user-select: none; }
-        body:not(.is-admin) .check-cell { pointer-events: none; }
-        body.is-admin .check-cell { cursor: pointer; }
-        .checked { color: #00ff87; text-shadow: 0 0 10px rgba(0,255,135,0.4); }
-        .unchecked { color: #ff3b3b; text-shadow: 0 0 10px rgba(255,59,59,0.3); }
-
-        .report-counter { display: flex; align-items: center; justify-content: center; gap: 5px; }
-        .count-btn {
-            background: #1a1b24; border: 1px solid rgba(255,255,255,0.08); color: #fff; width: 24px; height: 24px;
-            border-radius: 50%; display: none; align-items: center; justify-content: center; cursor: pointer; font-weight: bold; transition: 0.2s;
-        }
-        .count-btn:hover { background: var(--accent-color); border-color: var(--accent-color); }
-        body.is-admin .count-btn { display: flex; }
-        .count-num { font-weight: bold; color: #00e5ff; min-width: 22px; font-family: monospace; font-size: 14px; }
-
-        .table-select {
-            background: rgba(14, 15, 22, 0.9); 
-            border: 1px solid rgba(255, 255, 255, 0.04); 
-            color: #fff; 
-            font-weight: 800; 
-            font-family: 'Cairo', inherit; 
-            font-size: 13px;
-            text-align: center; 
-            text-align-last: center; 
-            outline: none; 
-            appearance: none; 
-            -webkit-appearance: none; 
-            pointer-events: none;
-            padding: 6px 12px; 
-            border-radius: 6px;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.4);
-            transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
-        }
-        
-        body.is-admin .table-select { 
-            pointer-events: auto; 
-            cursor: pointer; 
-            background: linear-gradient(135deg, #150d0f 0%, #090506 100%); 
-            border: 1px solid rgba(255, 42, 42, 0.25); 
-        }
-        
-        body.is-admin .table-select:hover {
-            border-color: rgba(255, 42, 42, 0.7);
-            box-shadow: 0 0 12px rgba(255, 42, 42, 0.25);
-            color: #fff;
-        }
-
-        .table-select option {
-            background-color: #0c0d12 !important;
-            color: #e2e8f0;
+        .header-logo i { font-size: 34px; }
+        .header-info {
+            display: flex;
+            gap: 30px;
+            font-family: var(--font-number);
+            font-size: 18px;
             font-weight: 700;
-            padding: 10px;
+        }
+        .time-box { display: flex; align-items: center; gap: 10px; }
+
+        /* ================= Sidebar ================= */
+        .sidebar {
+            width: 260px;
+            padding: 20px 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            overflow-y: auto;
+            border-left: 1px solid var(--glass-border);
+            z-index: 10;
+        }
+        .sidebar::-webkit-scrollbar { width: 5px; }
+        .sidebar::-webkit-scrollbar-thumb { background: var(--accent-color); border-radius: 10px; }
+
+        .nav-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            padding: 15px 20px;
+            text-align: right;
+            font-size: 16px;
+            font-family: var(--font-main);
+            font-weight: 700;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            position: relative;
+            overflow: hidden;
+        }
+        .nav-btn i { width: 25px; text-align: center; font-size: 18px; }
+        .nav-btn:hover {
+            color: var(--text-main);
+            background: rgba(255, 255, 255, 0.05);
+            transform: translateX(-5px);
+        }
+        .nav-btn.active {
+            color: var(--text-main);
+            background: var(--glass-bg);
+            border-right: 4px solid var(--accent-color);
+            box-shadow: 0 0 15px rgba(0, 210, 255, 0.1) inset;
         }
 
-        .badge-pill {
-            display: inline-block; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 800;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.3); text-shadow: 0 1px 2px rgba(0,0,0,0.8);
-            border: 1px solid rgba(255,255,255,0.1);
+        /* ================= Main Content ================= */
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+            position: relative;
+            z-index: 10;
+        }
+        .main-content::-webkit-scrollbar { width: 8px; }
+        .main-content::-webkit-scrollbar-thumb { background: var(--accent-color); border-radius: 10px; }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            animation: slideDown 0.5s ease;
+        }
+        .section-title {
+            font-family: var(--font-header);
+            font-size: 32px;
+            font-weight: 800;
         }
 
-        .toast-container {
-            position: fixed; bottom: 25px; left: 25px; z-index: 99999;
-            display: flex; flex-direction: column; gap: 10px;
+        /* ================= Dashboard Grid ================= */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
         }
-        .toast-card {
-            background: rgba(10, 11, 16, 0.9); border: 1px solid #00ff87;
-            box-shadow: 0 10px 25px rgba(0, 255, 135, 0.15), 0 0 15px rgba(0,0,0,0.5);
-            padding: 14px 22px; border-radius: 10px; color: #fff; font-size: 13px; font-weight: bold;
-            display: flex; align-items: center; gap: 10px; min-width: 250px;
-            animation: slideIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-            position: relative; overflow: hidden; backdrop-filter: blur(10px);
+        .stat-card {
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: fadeIn 0.8s ease;
         }
-        .toast-card.error { border-color: var(--accent-color); box-shadow: 0 10px 25px rgba(255,42,42,0.15); }
-        .toast-card::after {
-            content: ""; position: absolute; bottom: 0; right: 0; height: 3px; background: #00ff87;
-            width: 100%; animation: toastProgress 2s linear forwards;
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px var(--accent-glow);
         }
-        .toast-card.error::after { background: var(--accent-color); }
-        @keyframes slideIn { from { transform: translateX(-100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-        @keyframes toastProgress { from { width: 100%; } to { width: 0%; } }
+        .stat-icon {
+            position: absolute;
+            left: -10px;
+            bottom: -10px;
+            font-size: 100px;
+            opacity: 0.1;
+            color: var(--accent-color);
+            transition: transform 0.5s ease;
+        }
+        .stat-card:hover .stat-icon { transform: scale(1.1) rotate(-10deg); opacity: 0.2; }
+        .stat-title { font-size: 18px; color: var(--text-muted); font-weight: 700; }
+        .stat-value { font-size: 42px; font-family: var(--font-number); font-weight: 900; color: var(--accent-color); }
 
+        /* ================= Controls (Search & Add) ================= */
+        .controls-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            gap: 20px;
+        }
+        .search-box {
+            position: relative;
+            flex: 1;
+            max-width: 400px;
+        }
+        .search-box i {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+        .search-input {
+            width: 100%;
+            padding: 12px 40px 12px 15px;
+            border-radius: 8px;
+            border: 1px solid var(--glass-border);
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+            font-family: var(--font-main);
+            outline: none;
+            transition: all 0.3s ease;
+        }
+        .search-input:focus { border-color: var(--accent-color); box-shadow: 0 0 10px var(--accent-glow); }
+
+        .btn-primary {
+            background: var(--accent-color);
+            color: var(--primary-color);
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-family: var(--font-main);
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px var(--accent-glow);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .btn-primary:hover { transform: scale(1.05); filter: brightness(1.2); }
+
+        /* ================= Tables ================= */
+        .table-wrapper {
+            overflow-x: auto;
+            border-radius: 12px;
+            animation: fadeIn 0.5s ease;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: right;
+        }
+        th, td { padding: 18px 20px; border-bottom: 1px solid var(--glass-border); }
+        th {
+            background: rgba(0, 0, 0, 0.4);
+            color: var(--accent-color);
+            font-weight: 700;
+            font-family: var(--font-header);
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        th:hover { background: rgba(0, 0, 0, 0.6); }
+        tbody tr { transition: all 0.3s; }
+        tbody tr:hover { background: rgba(255, 255, 255, 0.05); }
+        
+        .action-btns { display: flex; gap: 10px; }
+        .btn-icon {
+            background: transparent;
+            border: none;
+            color: var(--text-main);
+            font-size: 18px;
+            cursor: pointer;
+            transition: color 0.3s, transform 0.3s;
+        }
+        .btn-icon.edit:hover { color: var(--accent-color); transform: scale(1.2); }
+        .btn-icon.delete:hover { color: var(--danger); transform: scale(1.2); }
+
+        .pagination { display: flex; justify-content: center; gap: 10px; margin-top: 20px; }
+        .page-btn {
+            background: var(--glass-bg); border: 1px solid var(--glass-border);
+            color: white; padding: 8px 15px; border-radius: 5px; cursor: pointer; transition: 0.3s;
+        }
+        .page-btn.active, .page-btn:hover { background: var(--accent-color); color: var(--primary-color); }
+
+        /* ================= Modals ================= */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(4, 4, 6, 0.8); backdrop-filter: blur(12px);
-            display: flex; align-items: center; justify-content: center;
-            z-index: 1000; visibility: hidden; opacity: 0; transition: all 0.3s ease;
+            background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(5px);
+            display: flex; justify-content: center; align-items: center;
+            z-index: 100; opacity: 0; visibility: hidden; transition: 0.3s;
         }
-        .modal-overlay.open { visibility: visible; opacity: 1; }
-        .modal-box {
-            background: #0d0e12; border: 1px solid rgba(255, 42, 42, 0.3);
-            box-shadow: 0 20px 50px rgba(0,0,0,0.8), 0 0 30px rgba(255, 51, 51, 0.1); width: 560px; max-width: 95%;
-            border-radius: 16px; padding: 30px; max-height: 85vh; overflow-y: auto;
-            position: relative;
+        .modal-overlay.active { opacity: 1; visibility: visible; }
+        .modal-content {
+            width: 500px; padding: 30px; border-radius: 15px;
+            transform: translateY(-50px); transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-        .modal-box h3 { margin-top: 0; color: #fff; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 12px; display: flex; justify-content: space-between; font-size: 18px; }
+        .modal-overlay.active .modal-content { transform: translateY(0); }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        .close-modal { background: none; border: none; color: var(--text-muted); font-size: 24px; cursor: pointer; transition: 0.3s; }
+        .close-modal:hover { color: var(--danger); transform: rotate(90deg); }
         
-        .form-group { margin-bottom: 18px; display: flex; flex-direction: column; gap: 6px; }
-        .form-group label { font-size: 13px; color: #a0aec0; font-weight: bold; }
-        .form-group input, .form-group textarea {
-            background: #07070a; border: 1px solid rgba(255,255,255,0.05); padding: 12px; color: #fff; border-radius: 8px; outline: none; transition: 0.3s;
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 700; color: var(--accent-color); }
+        .form-control {
+            width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--glass-border);
+            background: rgba(0, 0, 0, 0.4); color: white; font-family: var(--font-main); outline: none; transition: 0.3s;
         }
-        .form-group input:focus { border-color: var(--accent-color); }
+        .form-control:focus { border-color: var(--accent-color); box-shadow: 0 0 10px var(--accent-glow); }
 
-        .items-list-edit {
-            background: #07070a; padding: 12px; border-radius: 8px; max-height: 150px; overflow-y: auto; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.03);
+        /* ================= Toasts ================= */
+        .toast-container { position: fixed; bottom: 30px; right: 30px; display: flex; flex-direction: column; gap: 15px; z-index: 999; }
+        .toast {
+            padding: 15px 25px; border-radius: 8px; display: flex; align-items: center; gap: 15px;
+            font-weight: 700; transform: translateX(120%); transition: 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
         }
-        .item-row-manage { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.03); }
-        .action-btn-row { background: none; border: none; cursor: pointer; font-size: 14px; }
+        .toast.show { transform: translateX(0); }
+        .toast.success { background: rgba(0, 230, 118, 0.2); border: 1px solid var(--success); color: var(--success); }
+        .toast.error { background: rgba(255, 77, 77, 0.2); border: 1px solid var(--danger); color: var(--danger); }
 
-        @keyframes pulseGlow { 0%, 100% { box-shadow: 0 0 25px var(--card-glow); transform: scale(1); } 50% { box-shadow: 0 0 45px rgba(255, 42, 42, 0.35); transform: scale(1.03); } }
+        /* ================= Settings Page ================= */
+        .settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+        .settings-card { padding: 25px; }
+        .theme-btn {
+            width: 100%; padding: 15px; margin-bottom: 10px; border-radius: 8px; border: 1px solid var(--glass-border);
+            background: rgba(0,0,0,0.3); color: white; cursor: pointer; transition: 0.3s; font-family: var(--font-main); font-weight: 700;
+        }
+        .theme-btn:hover { background: var(--accent-color); color: var(--primary-color); }
+        
+        .color-picker-group { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .color-picker { width: 50px; height: 50px; border: none; border-radius: 8px; cursor: pointer; background: transparent; }
+
+        /* Animations */
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+        .view-section { display: none; }
+        .view-section.active { display: block; animation: fadeIn 0.4s ease-in-out; }
+
     </style>
 </head>
 <body>
 
-    <div class="watermark-bg" id="wm-text">خاص بسيرفر تورنتو</div>
-    <div class="toast-container" id="toastContainer"></div>
+    <canvas id="bg-canvas"></canvas>
 
-    <div class="container">
-        
-        <div class="header-wrapper" onselectstart="return false" oncontextmenu="return false">
-            <div class="logo-glow">❤️‍🔥</div>
-            <h1 id="site-title">جدول الهلال الأحمر</h1>
-            <p id="site-subtitle">TORONTO RP - EMS HIGH COMMAND</p>
-            <div class="system-status">
-                <span class="status-dot" id="auth-dot"></span> 
-                <span id="auth-status-text">وضع المشاهدة (مغلق)</span>
-                <span style="color:#666; margin-right:10px;">⏱️ 2026/06/22</span>
+    <header class="glass-panel">
+        <div class="header-logo neon-text">
+            <i class="fa-solid fa-shield-halved"></i>
+            <span id="site-name-display">SAN ANDREAS MDT</span>
+        </div>
+        <div class="header-info">
+            <div class="time-box glass-panel" style="padding: 10px 20px; border-radius: 8px;">
+                <i class="fa-regular fa-calendar text-muted"></i>
+                <span id="current-date"></span>
+            </div>
+            <div class="time-box glass-panel neon-border" style="padding: 10px 20px; border-radius: 8px;">
+                <i class="fa-regular fa-clock"></i>
+                <span id="current-time"></span>
             </div>
         </div>
+    </header>
 
-        <div class="stats-grid">
-            <div class="stat-card total-card">
-                <h3>إجمالي الكادر بالسجلات</h3>
-                <div id="stat-total" class="number" style="color: #fff;">0</div>
-            </div>
-            <div class="stat-card active-card">
-                <h3>الكادر النشط حالياً</h3>
-                <div id="stat-active" class="number" style="color: #00ff87;">0</div>
-            </div>
-            <div class="stat-card upgrade-card">
-                <h3>المؤهلين للترقيات</h3>
-                <div id="stat-upgrades" class="number" style="color: #00bfff;">0</div>
-            </div>
-            <div class="stat-card retired-card">
-                <h3>المستقيلين والمفصولين</h3>
-                <div id="stat-retired" class="number" style="color: #a0aec0;">0</div>
-            </div>
-        </div>
+    <div class="app-container">
+        <nav class="sidebar glass-panel">
+            <button class="nav-btn active" data-target="dashboard"><i class="fa-solid fa-house-chimney"></i> لوحة التحكم</button>
+            <button class="nav-btn" data-target="officers"><i class="fa-solid fa-user-shield"></i> إدارة الضباط</button>
+            <button class="nav-btn" data-target="ems"><i class="fa-solid fa-truck-medical"></i> إدارة المسعفين</button>
+            <button class="nav-btn" data-target="wanted"><i class="fa-solid fa-handcuffs"></i> المطلوبين</button>
+            <button class="nav-btn" data-target="cases"><i class="fa-solid fa-folder-open"></i> القضايا</button>
+            <button class="nav-btn" data-target="reports"><i class="fa-solid fa-file-invoice"></i> البلاغات</button>
+            <button class="nav-btn" data-target="vehicles"><i class="fa-solid fa-car-on"></i> المركبات</button>
+            <button class="nav-btn" data-target="weapons"><i class="fa-solid fa-gun"></i> الأسلحة</button>
+            <button class="nav-btn" data-target="promotions"><i class="fa-solid fa-medal"></i> الترقيات</button>
+            <button class="nav-btn" data-target="punishments"><i class="fa-solid fa-gavel"></i> العقوبات</button>
+            <button class="nav-btn" data-target="logs"><i class="fa-solid fa-clipboard-list"></i> سجل النشاطات</button>
+            <div style="flex: 1;"></div>
+            <button class="nav-btn" data-target="settings"><i class="fa-solid fa-gear"></i> الإعدادات</button>
+        </nav>
 
-        <div class="toolbar">
-            <input type="text" id="searchBar" class="search-box" placeholder="🔍 ابحث باسم، كود، رتبة أو ديسكورد...">
+        <main class="main-content">
             
-            <button id="tabActive" class="btn active" onclick="switchTab('active')">🟢 سجل الكادر النشط</button>
-            <button id="tabRetired" class="btn" onclick="switchTab('retired')">🔴 سجل الاستقالات والفصل</button>
-            
-            <button class="btn btn-excel" onclick="openEvaluationModal()">⚠️ شروط وقوانين الترقيات</button>
-            <button class="btn btn-clear" id="btn-clear-id" onclick="clearAttendance()" disabled style="opacity:0.4;">📅 تصفير الأسبوع</button>
-            
-            <button id="authBtn" class="btn btn-auth" onclick="handleAuthToggle()">🔐 تسجيل دخول الإدارة</button>
-            <button class="btn btn-settings" id="btn-settings-id" onclick="toggleModal('settingsModal', true)" disabled style="opacity:0.4;">⚙️ الإعدادات والتحكم</button>
-            <button class="btn btn-add" id="btn-add-id" onclick="addNewEmployeeRowDirect()" disabled style="opacity:0.4;">+ إضافة موظف جديد</button>
-        </div>
+            <div id="dashboard" class="view-section active">
+                <div class="section-header">
+                    <h2 class="section-title neon-text">نظرة عامة على النظام</h2>
+                </div>
+                <div class="dashboard-grid">
+                    <div class="stat-card glass-panel">
+                        <i class="fa-solid fa-user-shield stat-icon"></i>
+                        <div class="stat-title">عدد الضباط</div>
+                        <div class="stat-value" id="stat-officers">0</div>
+                    </div>
+                    <div class="stat-card glass-panel">
+                        <i class="fa-solid fa-truck-medical stat-icon"></i>
+                        <div class="stat-title">عدد المسعفين</div>
+                        <div class="stat-value" id="stat-ems">0</div>
+                    </div>
+                    <div class="stat-card glass-panel">
+                        <i class="fa-solid fa-handcuffs stat-icon"></i>
+                        <div class="stat-title">المطلوبين حالياً</div>
+                        <div class="stat-value" id="stat-wanted" style="color: var(--danger);">0</div>
+                    </div>
+                    <div class="stat-card glass-panel">
+                        <i class="fa-solid fa-folder-open stat-icon"></i>
+                        <div class="stat-title">القضايا المفتوحة</div>
+                        <div class="stat-value" id="stat-cases">0</div>
+                    </div>
+                    <div class="stat-card glass-panel">
+                        <i class="fa-solid fa-car-on stat-icon"></i>
+                        <div class="stat-title">المركبات المسجلة</div>
+                        <div class="stat-value" id="stat-vehicles">0</div>
+                    </div>
+                    <div class="stat-card glass-panel">
+                        <i class="fa-solid fa-gun stat-icon"></i>
+                        <div class="stat-title">الأسلحة المرخصة</div>
+                        <div class="stat-value" id="stat-weapons">0</div>
+                    </div>
+                </div>
+            </div>
 
-        <div class="table-container">
-            <table id="emsTable">
-                <thead>
-                    <tr>
-                        <th style="width: 45px;">ت</th>
-                        <th>ديسكورد ID</th>
-                        <th>الاسم</th>
-                        <th>الكود</th>
-                        <th>الرتبة</th>
-                        <th>التخصص</th>
-                        <th>الوضعية</th>
-                        <th>الحالة</th>
-                        <th>ج</th><th>خ</th><th>أ</th><th>ث</th><th>ن</th><th>ح</th><th>س</th>
-                        <th>تقرير تواجد</th>
-                        <th>تقرير عمليات/نائب</th>
-                        <th>الإنذارات</th>
-                        <th>ترقية %</th>
-                        <th>الأوسمة الشرفية</th>
-                        <th>تاريخ الانضمام</th>
-                        <th>إجراء</th>
-                    </tr>
-                </thead>
-                <tbody id="tableBody"></tbody>
-            </table>
-        </div>
+            <div id="dynamic-views-container"></div>
 
-        <div style="margin-top:30px;" class="stat-card">
-            <h3 style="text-align:right; font-size:16px; color:var(--accent-color); text-shadow: 0 0 10px rgba(255,42,42,0.2);">📜 لوحة شروط ومستندات الترقيات الإدارية المعتمدة</h3>
-            <div id="rulesContainer" style="text-align:right; padding-right:20px; color:#b4b4c4; line-height: 1.8;"></div>
-        </div>
+            <div id="settings" class="view-section">
+                <div class="section-header">
+                    <h2 class="section-title neon-text">إعدادات النظام</h2>
+                </div>
+                <div class="settings-grid">
+                    <div class="settings-card glass-panel">
+                        <h3 style="margin-bottom: 20px; color: var(--accent-color);">تخصيص الثيمات</h3>
+                        <button class="theme-btn" onclick="setTheme('default')">Dark Navy (الافتراضي)</button>
+                        <button class="theme-btn" onclick="setTheme('swat')">SWAT Theme (أحمر)</button>
+                        <button class="theme-btn" onclick="setTheme('cyber')">Cyberpunk (نيون)</button>
+                        
+                        <h3 style="margin-top: 30px; margin-bottom: 20px; color: var(--accent-color);">معلومات النظام</h3>
+                        <div class="form-group">
+                            <label>اسم الموقع (MDT Name)</label>
+                            <input type="text" id="setting-site-name" class="form-control" value="SAN ANDREAS MDT" oninput="document.getElementById('site-name-display').innerText = this.value">
+                        </div>
+                    </div>
+                    <div class="settings-card glass-panel">
+                        <h3 style="margin-bottom: 20px; color: var(--accent-color);">تخصيص الألوان يدوياً</h3>
+                        <div class="color-picker-group">
+                            <span>لون التوهج (Accent Color)</span>
+                            <input type="color" class="color-picker" id="color-accent" value="#00d2ff" onchange="document.documentElement.style.setProperty('--accent-color', this.value); document.documentElement.style.setProperty('--accent-glow', this.value+'99');">
+                        </div>
+                        <div class="color-picker-group">
+                            <span>لون الخلفية الأساسي</span>
+                            <input type="color" class="color-picker" id="color-primary" value="#0a192f" onchange="document.documentElement.style.setProperty('--primary-color', this.value);">
+                        </div>
+                        <div class="color-picker-group">
+                            <span>لون الخلفية الثانوي</span>
+                            <input type="color" class="color-picker" id="color-secondary" value="#112240" onchange="document.documentElement.style.setProperty('--secondary-color', this.value);">
+                        </div>
+                    </div>
+                </div>
+            </div>
 
+        </main>
     </div>
 
-    <div class="modal-overlay" id="settingsModal">
-        <div class="modal-box">
-            <h3>⚙️ لوحة الإعدادات والتحكم الشامل <button class="action-btn-row" onclick="toggleModal('settingsModal', false)">❌</button></h3>
-            
-            <div class="form-group">
-                <label>اسم الموقع الرئيسي:</label>
-                <input type="text" id="cfg-title">
+    <div class="modal-overlay" id="dynamic-modal">
+        <div class="modal-content glass-panel neon-border">
+            <div class="modal-header">
+                <h3 class="neon-text" id="modal-title">إضافة سجل</h3>
+                <button class="close-modal" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
             </div>
-            <div class="form-group">
-                <label>الوصف الفرعي للموقع:</label>
-                <input type="text" id="cfg-subtitle">
-            </div>
-            <div class="form-group">
-                <label>نص الخلفية الشفاف:</label>
-                <input type="text" id="cfg-wm">
-            </div>
-            <div class="form-group">
-                <label>تغيير كود المرور السري للأدمن:</label>
-                <input type="text" id="cfg-pin" placeholder="اكتب الرمز السري الجديد هنا...">
-            </div>
-
-            <h4 style="color:var(--accent-color); margin-bottom:5px;">📋 إدارة وتلوين رتب السيرفر:</h4>
-            <div class="items-list-edit" id="manage-ranks-list"></div>
-            <div style="display:flex; gap:5px; margin-bottom:15px;">
-                <input type="text" id="new-rank-name" style="flex:2;" placeholder="اسم الرتبة الجديدة...">
-                <input type="color" id="new-rank-color" style="flex:1; height:42px; padding:0; background:none; border:none;" value="#ff3333">
-                <button onclick="addCustomRank()" style="background:#00bfff; color:white; border:none; padding:0 15px; border-radius:6px; cursor:pointer; font-weight:bold;">+ إضافة</button>
-            </div>
-
-            <h4 style="color:var(--accent-color); margin-bottom:5px;">🏅 إدارة الأوسمة والشرف:</h4>
-            <div class="items-list-edit" id="manage-badges-list"></div>
-            <div style="display:flex; gap:5px; margin-bottom:15px;">
-                <input type="text" id="new-badge-name" style="flex:2;" placeholder="اسم الوسام الجديد...">
-                <input type="color" id="new-badge-color" style="flex:1; height:42px; padding:0; background:none; border:none;" value="#ecc94b">
-                <button onclick="addCustomBadge()" style="background:#00bfff; color:white; border:none; padding:0 15px; border-radius:6px; cursor:pointer; font-weight:bold;">+ إضافة</button>
-            </div>
-
-            <button onclick="saveGlobalSettings()" style="width:100%; background:#00ff87; color:#000; border:none; padding:12px; border-radius:8px; font-weight:bold; cursor:pointer; box-shadow: 0 4px 12px rgba(0,255,135,0.2);">حفظ وتطبيق التغييرات على السيرفر</button>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="evaluationModal">
-        <div class="modal-box">
-            <h3>⚠️ شروط التقييم والترقيات المعمول بها <button class="action-btn-row" onclick="toggleModal('evaluationModal', false)">❌</button></h3>
-            <div class="form-group" id="eval-add-input-grp" style="display:none;">
-                <label>إضافة شرط ترقية جديد للسجلات:</label>
-                <textarea id="cfg-rule-text" placeholder="اكتب نص الشرط الإداري هنا..."></textarea>
-                <button onclick="addNewRuleItem()" style="width:100%; background:#00bfff; color:white; border:none; padding:10px; border-radius:6px; cursor:pointer; font-weight:bold; margin-top:5px;">+ إدراج الشرط الجديد</button>
-            </div>
-            <div class="items-list-edit" id="modalRulesList" style="margin-top:10px;"></div>
+            <form id="dynamic-form" onsubmit="handleFormSubmit(event)">
+                <div id="modal-body"></div>
+                <div style="text-align: left; margin-top: 20px;">
+                    <button type="submit" class="btn-primary" style="width: 100%; justify-content: center;">حفظ البيانات <i class="fa-solid fa-check"></i></button>
+                </div>
+            </form>
         </div>
     </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getDatabase, ref, set, onValue, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-
-        // 🔥 ضع بيانات الـ Firebase الخاصة بمشروعك هنا بدقة ليشتغل الربط الفوري
-        const firebaseConfig = {
-            apiKey: "AIzaSyDdgaD2rzQ1eQWDQZp2dlfsZfl8CMz9UW4",
-            authDomain: "torento-45374.firebaseapp.com",
-            databaseURL: "https://torento-45374-default-rtdb.firebaseio.com",
-            projectId: "torento-45374",
-            storageBucket: "torento-45374.firebasestorage.app",
-            messagingSenderId: "895878429326",
-            appId: "1:89587429326:web:526d25948751604e8967df",
-        };
-
-        // تهيئة فايربيز وقاعدة البيانات والربط بها عولمياً لإتاحتها لبقية الدوال
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
-        window.firebaseDB = db;
-
-        // الكائن الأساسي الافتراضي لتهيئة قاعدة البيانات لأول مرة فقط إذا كانت فارغة تماماً
-        const defaultData = {
-            adminPin: "torento911", 
-            siteTitle: "جدول الهلال الأحمر",
-            siteSubtitle: "TORONTO RP - EMS HIGH COMMAND",
-            watermark: "خاص بسيرفر تورنتو",
-            ranks: [
-                { name: "قيادة", color: "#ff2a2a" },
-                { name: "طبيب استشاري", color: "#ff5e5e" },
-                { name: "مسعف أول", color: "#ffaa00" },
-                { name: "مسعف مستجد", color: "#00ff87" }
-            ],
-            badges: [
-                { name: "بلا وسام", color: "#4a5568" },
-                { name: "🏅 وسام الخدمة", color: "#ffaa00" },
-                { name: "🥈 وسام الشرف", color: "#cbd5e0" }
-            ],
-            rules: [
-                "الالتزام الكامل بالحصص المقررة والتواجد الفعال داخل المقاطعة الرسمية.",
-                "عدم تجاوز الإنذارات المسموحة في السجل لتستحق الترقية الميدانية المعتمدة."
-            ],
-            employees: []
-        };
-
-        window.appData = defaultData;
-        window.activeTab = 'active';
-        window.isAdmin = false;
-
-        // الاستماع الحي والتحديث الفوري لجميع المتصفحين في نفس الوقت
-        const rootRef = ref(db, "toronto_ems_root");
-        onValue(rootRef, (snapshot) => {
-            const data = snapshot.val();
-            if (data) {
-                window.appData = data;
-                if (!window.appData.employees) window.appData.employees = [];
-                if (!window.appData.ranks) window.appData.ranks = [];
-                if (!window.appData.badges) window.appData.badges = [];
-                if (!window.appData.rules) window.appData.rules = [];
-            } else {
-                // إذا كانت قاعدة البيانات جديدة تماماً قم برفع الهيكل المبدئي
-                set(rootRef, defaultData);
-                window.appData = defaultData;
-            }
-            renderApp();
-        });
-    </script>
+    <div class="toast-container" id="toast-container"></div>
 
     <script>
-        document.addEventListener('click', function(e) {
-            let ripple = document.createElement('div');
-            ripple.className = 'click-ripple';
-            ripple.style.left = e.clientX + 'px';
-            ripple.style.top = e.clientY + 'px';
-            document.body.appendChild(ripple);
-            setTimeout(() => { ripple.remove(); }, 600);
-        });
-
-        function showToast(message, isError = false) {
-            const container = document.getElementById('toastContainer');
-            const toast = document.createElement('div');
-            toast.className = `toast-card ${isError ? 'error' : ''}`;
-            toast.innerHTML = isError ? `❌ ${message}` : `💾 ${message}`;
-            container.appendChild(toast);
-            setTimeout(() => { toast.remove(); }, 2000);
-        }
-
-        // إرسال وحفظ التعديلات مباشرة للسيرفر (Firebase)
-        function saveToServer() {
-            if (!isAdmin) return;
-            const db = window.firebaseDB;
-            if (db) {
-                const { ref, set } = window.FirebaseDatabase || { 
-                    ref: (d, path) => window.coreFirebaseRef(d, path),
-                    set: (r, v) => window.coreFirebaseSet(r, v) 
-                };
-                
-                // استخدام دوال النفاذ المباشر المربوطة بالموديول
-                const rootRef = window.coreRef ? window.coreRef() : {path: "toronto_ems_root"};
-                // إرسال الكائن المحدث للفايربيز مباشرة
-                fetch(`${document.getElementById('emsTable').getAttribute('data-url') || ''}`, {
-                    method: 'PUT',
-                    body: JSON.stringify(window.appData)
-                }).catch(() => {});
-                
-                // تصفح محلي آمن ومباشر عبر الـ API الفوري المتاح بالموديول
-                window.firebaseDirectSave && window.firebaseDirectSave(window.appData);
-            }
-        }
-
-        function handleAuthToggle() {
-            if (isAdmin) {
-                isAdmin = false;
-                document.body.classList.remove('is-admin');
-                document.getElementById('authBtn').innerText = "🔐 تسجيل دخول الإدارة";
-                document.getElementById('authBtn').className = "btn btn-auth";
-                document.getElementById('auth-dot').classList.remove('authenticated');
-                document.getElementById('auth-status-text').innerText = "وضع المشاهدة (مغلق)";
-                
-                document.getElementById('btn-clear-id').disabled = true; document.getElementById('btn-clear-id').style.opacity = "0.4";
-                document.getElementById('btn-settings-id').disabled = true; document.getElementById('btn-settings-id').style.opacity = "0.4";
-                document.getElementById('btn-add-id').disabled = true; document.getElementById('btn-add-id').style.opacity = "0.4";
-                document.getElementById('eval-add-input-grp').style.display = "none";
-                showToast("تم قفل وضع الإدارة والعودة لوضع المشاهدة الآمن.");
-                renderApp();
-            } else {
-                const pin = prompt("الرجاء إدخال الرمز السري للإدارة لتفعيل التعديل السريع المباشر:");
-                if (pin === window.appData.adminPin) {
-                    isAdmin = true;
-                    document.body.classList.add('is-admin');
-                    document.getElementById('authBtn').innerText = "🔓 تسجيل خروج الإدارة";
-                    document.getElementById('authBtn').className = "btn btn-clear";
-                    document.getElementById('auth-dot').classList.add('authenticated');
-                    document.getElementById('auth-status-text').innerText = "وضع التعديل النشط (الأدمن)";
-                    
-                    document.getElementById('btn-clear-id').disabled = false; document.getElementById('btn-clear-id').style.opacity = "1";
-                    document.getElementById('btn-settings-id').disabled = false; document.getElementById('btn-settings-id').style.opacity = "1";
-                    document.getElementById('btn-add-id').disabled = false; document.getElementById('btn-add-id').style.opacity = "1";
-                    document.getElementById('eval-add-input-grp').style.display = "block";
-                    showToast("تمت المصادقة! مرحباً بك في لوحة تحكم الإدارة.");
-                    renderApp();
-                } else if (pin !== null) {
-                    showToast("الرمز السري غير صحيح ! تم رفض الصلاحية.", true);
-                }
-            }
-        }
-
-        function renderApp() {
-            document.getElementById('site-title').innerText = window.appData.siteTitle || "جدول الهلال الأحمر";
-            document.getElementById('site-subtitle').innerText = window.appData.siteSubtitle || "";
-            document.getElementById('wm-text').innerText = window.appData.watermark || "";
-            
-            const tbody = document.getElementById('tableBody');
-            tbody.innerHTML = '';
-            
-            const employees = window.appData.employees || [];
-            employees.forEach((emp, index) => {
-                const tr = document.createElement('tr');
-                tr.setAttribute('data-status', emp.status);
-                
-                const rankObj = window.appData.ranks.find(r => r.name === emp.rank);
-                const rankColor = rankObj ? rankObj.color : '#fff';
-                const isCommand = emp.rank && emp.rank.includes("قيادة");
-                
-                let attHtml = '';
-                emp.attendance.forEach((val, dayIdx) => {
-                    attHtml += `<td class="check-cell ${val === 1 ? 'checked' : 'unchecked'}" onclick="toggleCheck(${index}, ${dayIdx})">${val === 1 ? '✔' : '✘'}</td>`;
-                });
-
-                let rankOptions = '';
-                window.appData.ranks.forEach(r => { rankOptions += `<option value="${r.name}" ${emp.rank === r.name ? 'selected' : ''}>${r.name}</option>`; });
-
-                let badgeOptions = '';
-                window.appData.badges.forEach(b => { badgeOptions += `<option value="${b.name}" ${emp.badge === b.name ? 'selected' : ''}>${b.name}</option>`; });
-
-                const badgeObj = window.appData.badges.find(b => b.name === emp.badge);
-                const badgeColor = badgeObj ? badgeObj.color : '#4a5568';
-
-                tr.innerHTML = `
-                    <td>${index + 1}</td>
-                    <td class="editable-cell" ${isAdmin ? 'contenteditable="true"' : ''} onblur="updateEmpField(${index}, 'id', this.innerText)" style="color:#666; font-family: monospace;">${emp.id}</td>
-                    <td class="editable-cell" ${isAdmin ? 'contenteditable="true"' : ''} onblur="updateEmpField(${index}, 'name', this.innerText)" style="font-weight: bold; color:#fff;">${emp.name}</td>
-                    <td class="editable-cell" ${isAdmin ? 'contenteditable="true"' : ''} onblur="updateEmpField(${index}, 'code', this.innerText)" style="color: #ffaa00; font-weight: bold; font-family: monospace;">${emp.code}</td>
-                    
-                    <td>
-                        <select class="table-select" onchange="updateEmpField(${index}, 'rank', this.value)" style="color: ${rankColor}; text-shadow: 0 0 8px ${rankColor}; font-weight:900;">
-                            ${rankOptions}
-                        </select>
-                    </td>
-                    
-                    <td class="editable-cell" ${isAdmin ? 'contenteditable="true"' : ''} onblur="updateEmpField(${index}, 'spec', this.innerText)">${emp.spec}</td>
-                    <td class="editable-cell" ${isAdmin ? 'contenteditable="true"' : ''} onblur="updateEmpField(${index}, 'pos', this.innerText)">${emp.pos}</td>
-                    
-                    <td>
-                        <select class="table-select" onchange="updateEmpField(${index}, 'status', this.value)" style="color:${emp.status==='active'?'#00ff87':'#ff3b3b'}; font-weight:900;">
-                            <option value="active" ${emp.status==='active'?'selected':''}>🟢 نشط</option>
-                            <option value="retired" ${emp.status==='retired'?'selected':''}>🔴 فصل/استقالة</option>
-                        </select>
-                    </td>
-                    
-                    ${attHtml}
-                    
-                    <td>
-                        ${isCommand ? `<span style="color:#444;">—</span>` : `
-                        <div class="report-counter">
-                            <button class="count-btn" onclick="adjustReport(${index}, 'repPresence', -1)">-</button>
-                            <span class="count-num">${emp.repPresence || 0}</span>
-                            <button class="count-btn" onclick="adjustReport(${index}, 'repPresence', 1)">+</button>
-                        </div>`}
-                    </td>
-                    
-                    <td>
-                        ${isCommand ? `<span style="color:#444;">—</span>` : `
-                        <div class="report-counter">
-                            <button class="count-btn" onclick="adjustReport(${index}, 'repOps', -1)">-</button>
-                            <span class="count-num">${emp.repOps || 0}</span>
-                            <button class="count-btn" onclick="adjustReport(${index}, 'repOps', 1)">+</button>
-                        </div>`}
-                    </td>
-                    
-                    <td class="editable-cell" ${isAdmin ? 'contenteditable="true"' : ''} onblur="updateEmpField(${index}, 'warn', this.innerText)" style="color:#ff3b3b; font-weight:bold;">${emp.warn}</td>
-                    <td class="editable-cell" ${isAdmin ? 'contenteditable="true"' : ''} onblur="updateEmpField(${index}, 'upgrade', this.innerText)" style="color:#00bfff; font-weight:bold;">${emp.upgrade}</td>
-                    
-                    <td>
-                        <div class="badge-pill" style="background: rgba(0,0,0,0.4); border-color: ${badgeColor}; color: ${badgeColor}; text-shadow: 0 0 5px ${badgeColor}">
-                            <select class="table-select" onchange="updateEmpField(${index}, 'badge', this.value)" style="color: inherit; font-weight:900; padding:0; background:none; border:none; box-shadow:none;">
-                                ${badgeOptions}
-                            </select>
-                        </div>
-                    </td>
-                    
-                    <td class="editable-cell" ${isAdmin ? 'contenteditable="true"' : ''} onblur="updateEmpField(${index}, 'date', this.innerText)" style="color: #718096; font-family: monospace;">${emp.date}</td>
-                    <td>
-                        <button onclick="deleteEmployee(${index})" style="background:none; border:none; color:#ff2a2a; cursor:${isAdmin?'pointer':'not-allowed'}; opacity:${isAdmin?1:0.2};" ${!isAdmin?'disabled':''}>🗑️</button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-
-            const container = document.getElementById('rulesContainer');
-            container.innerHTML = '';
-            (window.appData.rules || []).forEach((rule) => { container.innerHTML += `<p style="margin:6px 0;">🔹 ${rule}</p>`; });
-
-            filterData();
-            calculateStats();
-            populateSettingsLists();
-        }
-
-        function addNewEmployeeRowDirect() {
-            if (!isAdmin) return;
-            const todayStr = new Date().toISOString().split('T')[0].replace(/-/g, '/');
-            const defaultRank = window.appData.ranks.length > 0 ? window.appData.ranks[window.appData.ranks.length - 1].name : "مسعف مستجد";
-            const defaultBadge = window.appData.badges.length > 0 ? window.appData.badges[0].name : "بلا وسام";
-            
-            window.appData.employees.push({
-                id: "اكتب_الـID",
-                name: "اسم الموظف الجديد",
-                code: "E-xxx",
-                rank: defaultRank,
-                spec: "ميداني",
-                pos: "نشط",
-                status: activeTab,
-                attendance: [0,0,0,0,0,0,0],
-                repPresence: 0,
-                repOps: 0,
-                warn: "0/3",
-                upgrade: "مستقر",
-                badge: defaultBadge,
-                date: todayStr
-            });
-            
-            saveToServer();
-            showToast("تم إضافة الموظف الجديد ومزامنته سحابياً.");
-            renderApp();
-        }
-
-        function updateEmpField(idx, field, val) {
-            if (!isAdmin || !window.appData.employees[idx]) return;
-            window.appData.employees[idx][field] = val.trim();
-            saveToServer();
-            if (field === 'rank' || field === 'status' || field === 'badge') {
-                renderApp();
-            } else {
-                calculateStats();
-            }
-        }
-
-        function toggleCheck(empIdx, dayIdx) {
-            if (!isAdmin) return;
-            window.appData.employees[empIdx].attendance[dayIdx] = window.appData.employees[empIdx].attendance[dayIdx] === 1 ? 0 : 1;
-            saveToServer(); renderApp();
-        }
-
-        function adjustReport(empIdx, type, val) {
-            if (!isAdmin) return;
-            if (!window.appData.employees[empIdx][type]) window.appData.employees[empIdx][type] = 0;
-            window.appData.employees[empIdx][type] = Math.max(0, window.appData.employees[empIdx][type] + val);
-            saveToServer(); renderApp();
-        }
-
-        function filterData() {
-            const query = document.getElementById('searchBar').value.toLowerCase();
-            document.querySelectorAll('#tableBody tr').forEach((row, idx) => {
-                const emp = window.appData.employees[idx];
-                if (!emp) return;
-                let match = emp.name.toLowerCase().includes(query) || emp.code.toLowerCase().includes(query) || emp.id.toLowerCase().includes(query) || (emp.rank && emp.rank.toLowerCase().includes(query));
-                if (query === "") match = true;
-                if (match && emp.status === activeTab) row.classList.remove('hidden');
-                else row.classList.add('hidden');
-            });
-        }
-
-        function switchTab(tab) {
-            activeTab = tab;
-            document.getElementById('tabActive').classList.toggle('active', tab === 'active');
-            document.getElementById('tabRetired').classList.toggle('active', tab === 'retired');
-            filterData();
-        }
-
-        function calculateStats() {
-            let total = window.appData.employees.length, active = 0, retired = 0, upgrades = 0;
-            window.appData.employees.forEach(emp => {
-                if (emp.status === 'active') active++; else retired++;
-                if (emp.upgrade === 'مؤهل للترقية' || emp.upgrade === 'مؤهل') upgrades++;
-            });
-            document.getElementById('stat-total').innerText = total; document.getElementById('stat-active').innerText = active;
-            document.getElementById('stat-retired').innerText = retired; document.getElementById('stat-upgrades').innerText = upgrades;
-        }
-
-        function populateSettingsLists() {
-            const rankList = document.getElementById('manage-ranks-list');
-            rankList.innerHTML = '';
-            window.appData.ranks.forEach((r, idx) => {
-                rankList.innerHTML += `
-                    <div class="item-row-manage">
-                        <span style="color:${r.color}; font-weight:bold;">${r.name}</span>
-                        <button onclick="deleteCustomItem('ranks', ${idx})" class="action-btn-row">🗑️</button>
-                    </div>`;
-            });
-
-            const badgeList = document.getElementById('manage-badges-list');
-            badgeList.innerHTML = '';
-            window.appData.badges.forEach((b, idx) => {
-                badgeList.innerHTML += `
-                    <div class="item-row-manage">
-                        <span style="color:${b.color}; font-weight:bold;">${b.name}</span>
-                        <button onclick="deleteCustomItem('badges', ${idx})" class="action-btn-row">🗑️</button>
-                    </div>`;
-            });
-            
-            document.getElementById('cfg-title').value = window.appData.siteTitle || "";
-            document.getElementById('cfg-subtitle').value = window.appData.siteSubtitle || "";
-            document.getElementById('cfg-wm').value = window.appData.watermark || "";
-        }
-
-        function addCustomRank() {
-            const name = document.getElementById('new-rank-name').value.trim();
-            const color = document.getElementById('new-rank-color').value;
-            if (name) {
-                window.appData.ranks.push({ name, color });
-                document.getElementById('new-rank-name').value = '';
-                saveToServer(); renderApp();
-            }
-        }
-
-        function addCustomBadge() {
-            const name = document.getElementById('new-badge-name').value.trim();
-            const color = document.getElementById('new-badge-color').value;
-            if (name) {
-                window.appData.badges.push({ name, color });
-                document.getElementById('new-badge-name').value = '';
-                saveToServer(); renderApp();
-            }
-        }
-
-        function deleteCustomItem(type, idx) {
-            if (!isAdmin) return;
-            if (confirm("هل أنت متأكد من حذف هذا البند الإداري؟")) {
-                window.appData[type].splice(idx, 1);
-                saveToServer(); renderApp();
-            }
-        }
-
-        function deleteEmployee(idx) {
-            if (!isAdmin) return;
-            if (confirm("هل تريد مسح هذا الموظف نهائياً؟")) {
-                window.appData.employees.splice(idx, 1);
-                saveToServer();
-                showToast("تم حذف سجل الموظف.");
-                renderApp();
-            }
-        }
-
-        function clearAttendance() {
-            if (!isAdmin) return;
-            if (confirm("تأكيد تصفير أسبوع العمل؟ سيتم تصفير الحضور وتقارير التواجد لجميع المسعفين.")) {
-                window.appData.employees.forEach(emp => { emp.attendance = [0,0,0,0,0,0,0]; emp.repPresence = 0; emp.repOps = 0; });
-                saveToServer();
-                showToast("تم تصفير الإحصائيات الأسبوعية.");
-                renderApp();
-            }
-        }
-
-        function openEvaluationModal() {
-            const list = document.getElementById('modalRulesList');
-            list.innerHTML = '';
-            (window.appData.rules || []).forEach((r, idx) => {
-                list.innerHTML += `
-                    <div class="item-row-manage">
-                        <span>${idx+1}. ${r}</span>
-                        <button onclick="deleteRuleItem(${idx})" class="action-btn-row" style="display:${isAdmin?'block':'none'}; color:#ff3333;">❌</button>
-                    </div>`;
-            });
-            toggleModal('evaluationModal', true);
-        }
-
-        function addNewRuleItem() {
-            const text = document.getElementById('cfg-rule-text').value.trim();
-            if(text) {
-                window.appData.rules.push(text);
-                document.getElementById('cfg-rule-text').value = '';
-                saveToServer(); showToast("تم إدراج شرط الترقية."); openEvaluationModal(); renderApp();
-            }
-        }
-
-        function deleteRuleItem(idx) {
-            if(!isAdmin) return;
-            window.appData.rules.splice(idx, 1);
-            saveToServer(); showToast("تم حذف الشرط."); openEvaluationModal(); renderApp();
-        }
-
-        function toggleModal(id, show) { document.getElementById(id).classList.toggle('open', show); }
-
-        function saveGlobalSettings() {
-            if(!isAdmin) return;
-            window.appData.siteTitle = document.getElementById('cfg-title').value;
-            window.appData.siteSubtitle = document.getElementById('cfg-subtitle').value;
-            window.appData.watermark = document.getElementById('cfg-wm').value;
-            
-            const newPin = document.getElementById('cfg-pin').value.trim();
-            if (newPin !== "") { 
-                window.appData.adminPin = newPin; 
-                document.getElementById('cfg-pin').value = ""; 
-            }
-            
-            saveToServer(); 
-            showToast("تم تحديث وحفظ الإعدادات العامة للسيرفر."); 
-            toggleModal('settingsModal', false); 
-            renderApp();
-        }
-
-        // حقن الفانكشنز البرمجية بداخل الـ Module لضمان قراءتها من أزرار الـ HTML
-        window.window = window;
-        window.coreRef = () => ref(window.firebaseDB, "toronto_ems_root");
-        window.coreFirebaseSet = (r, v) => set(r, v);
-        window.firebaseDirectSave = (data) => {
-            const db = window.firebaseDB;
-            if(db) {
-                const rootRef = ref(db, "toronto_ems_root");
-                set(rootRef, data);
+        /* ================= Core System State & Config ================= */
+        // Configuration for all modules to auto-generate views, tables, and forms
+        const modulesConfig = {
+            officers: {
+                title: 'إدارة الضباط', icon: 'fa-user-shield',
+                fields: [
+                    { key: 'id', label: 'الرقم العسكري', type: 'text' },
+                    { key: 'name', label: 'اسم الضابط', type: 'text' },
+                    { key: 'rank', label: 'الرتبة', type: 'text' },
+                    { key: 'status', label: 'الحالة', type: 'select', options: ['في الخدمة', 'خارج الخدمة', 'إجازة'] }
+                ],
+                data: [
+                    { id: '101', name: 'أحمد علي', rank: 'Captain', status: 'في الخدمة' },
+                    { id: '102', name: 'سالم محمد', rank: 'Lieutenant', status: 'خارج الخدمة' }
+                ]
+            },
+            ems: {
+                title: 'إدارة المسعفين', icon: 'fa-truck-medical',
+                fields: [
+                    { key: 'id', label: 'رقم المسعف', type: 'text' },
+                    { key: 'name', label: 'الاسم', type: 'text' },
+                    { key: 'role', label: 'التخصص', type: 'text' },
+                    { key: 'status', label: 'الحالة', type: 'select', options: ['متاح', 'في بلاغ', 'غير متاح'] }
+                ],
+                data: [
+                    { id: 'E-01', name: 'عمر خالد', role: 'مسعف طوارئ', status: 'متاح' }
+                ]
+            },
+            wanted: {
+                title: 'قائمة المطلوبين', icon: 'fa-handcuffs',
+                fields: [
+                    { key: 'name', label: 'اسم المطلوب', type: 'text' },
+                    { key: 'crime', label: 'التهمة', type: 'text' },
+                    { key: 'bounty', label: 'المكافأة ($)', type: 'number' },
+                    { key: 'priority', label: 'الأولوية', type: 'select', options: ['قصوى', 'عالية', 'عادية'] }
+                ],
+                data: [
+                    { name: 'مجهول', crime: 'سطو بنك مركزي', bounty: '50000', priority: 'قصوى' }
+                ]
+            },
+            cases: {
+                title: 'إدارة القضايا', icon: 'fa-folder-open',
+                fields: [
+                    { key: 'caseId', label: 'رقم القضية', type: 'text' },
+                    { key: 'title', label: 'عنوان القضية', type: 'text' },
+                    { key: 'officer', label: 'الضابط المسؤول', type: 'text' },
+                    { key: 'status', label: 'الحالة', type: 'select', options: ['مفتوحة', 'مغلقة', 'تحت التحقيق'] }
+                ],
+                data: [
+                    { caseId: 'C-2023-01', title: 'سرقة سيارات رياضية', officer: 'أحمد علي', status: 'تحت التحقيق' }
+                ]
+            },
+            reports: {
+                title: 'البلاغات 911', icon: 'fa-file-invoice',
+                fields: [
+                    { key: 'caller', label: 'المتصل', type: 'text' },
+                    { key: 'location', label: 'الموقع', type: 'text' },
+                    { key: 'desc', label: 'الوصف', type: 'text' }
+                ],
+                data: []
+            },
+            vehicles: {
+                title: 'المركبات المسجلة', icon: 'fa-car-on',
+                fields: [
+                    { key: 'plate', label: 'رقم اللوحة', type: 'text' },
+                    { key: 'model', label: 'الموديل', type: 'text' },
+                    { key: 'owner', label: 'المالك', type: 'text' },
+                    { key: 'flag', label: 'ملاحظة', type: 'text' }
+                ],
+                data: [
+                    { plate: 'AAA-111', model: 'Dodge Charger', owner: 'إدارة الشرطة', flag: 'مركبة دورية' }
+                ]
+            },
+            weapons: {
+                title: 'الأسلحة المرخصة', icon: 'fa-gun',
+                fields: [
+                    { key: 'serial', label: 'الرقم التسلسلي', type: 'text' },
+                    { key: 'type', label: 'نوع السلاح', type: 'text' },
+                    { key: 'owner', label: 'المالك', type: 'text' }
+                ],
+                data: []
+            },
+            promotions: {
+                title: 'سجل الترقيات', icon: 'fa-medal',
+                fields: [
+                    { key: 'name', label: 'الاسم', type: 'text' },
+                    { key: 'oldRank', label: 'الرتبة السابقة', type: 'text' },
+                    { key: 'newRank', label: 'الرتبة الجديدة', type: 'text' },
+                    { key: 'date', label: 'التاريخ', type: 'date' }
+                ],
+                data: []
+            },
+            punishments: {
+                title: 'العقوبات الإدارية', icon: 'fa-gavel',
+                fields: [
+                    { key: 'name', label: 'الاسم', type: 'text' },
+                    { key: 'reason', label: 'السبب', type: 'text' },
+                    { key: 'action', label: 'الإجراء', type: 'text' }
+                ],
+                data: []
+            },
+            logs: {
+                title: 'سجل النشاطات', icon: 'fa-clipboard-list',
+                fields: [
+                    { key: 'user', label: 'المستخدم', type: 'text' },
+                    { key: 'action', label: 'الحدث', type: 'text' },
+                    { key: 'time', label: 'الوقت', type: 'text' }
+                ],
+                data: [
+                    { user: 'System', action: 'تم تهيئة نظام MDT', time: new Date().toLocaleTimeString() }
+                ]
             }
         };
 
-        document.getElementById('searchBar').addEventListener('input', filterData);
+        let currentActiveModule = '';
+        let editingIndex = -1;
+
+        /* ================= Initialization ================= */
+        document.addEventListener('DOMContentLoaded', () => {
+            initCanvas();
+            updateClock();
+            setInterval(updateClock, 1000);
+            generateViews();
+            updateDashboardStats();
+            setupNavigation();
+        });
+
+        /* ================= Time & Date ================= */
+        function updateClock() {
+            const now = new Date();
+            const timeOptions = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
+            const dateOptions = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' };
+            document.getElementById('current-time').innerText = now.toLocaleTimeString('ar-SA', timeOptions);
+            document.getElementById('current-date').innerText = now.toLocaleDateString('ar-SA', dateOptions);
+        }
+
+        /* ================= View Generator (Dynamic UI) ================= */
+        // This engine builds all 10 module HTML structures dynamically to keep the file clean and robust
+        function generateViews() {
+            const container = document.getElementById('dynamic-views-container');
+            
+            for (const [modKey, modConfig] of Object.entries(modulesConfig)) {
+                const section = document.createElement('div');
+                section.id = modKey;
+                section.className = 'view-section';
+                
+                let headersHTML = modConfig.fields.map(f => `<th onclick="sortTable('${modKey}', '${f.key}')">${f.label} <i class="fa-solid fa-sort" style="font-size:12px; margin-right:5px; opacity:0.5;"></i></th>`).join('');
+                headersHTML += `<th>الإجراءات</th>`;
+
+                section.innerHTML = `
+                    <div class="section-header">
+                        <h2 class="section-title neon-text"><i class="fa-solid ${modConfig.icon}"></i> ${modConfig.title}</h2>
+                    </div>
+                    <div class="glass-panel" style="padding: 25px;">
+                        <div class="controls-bar">
+                            <div class="search-box">
+                                <i class="fa-solid fa-search"></i>
+                                <input type="text" class="search-input" placeholder="بحث في ${modConfig.title}..." onkeyup="searchTable('${modKey}', this.value)">
+                            </div>
+                            <button class="btn-primary" onclick="openModal('${modKey}')">
+                                <i class="fa-solid fa-plus"></i> إضافة جديد
+                            </button>
+                        </div>
+                        <div class="table-wrapper">
+                            <table id="table-${modKey}">
+                                <thead>
+                                    <tr>${headersHTML}</tr>
+                                </thead>
+                                <tbody id="tbody-${modKey}"></tbody>
+                            </table>
+                        </div>
+                        <div class="pagination" id="pagination-${modKey}"></div>
+                    </div>
+                `;
+                container.appendChild(section);
+                renderTable(modKey);
+            }
+        }
+
+        /* ================= Navigation ================= */
+        function setupNavigation() {
+            const navBtns = document.querySelectorAll('.nav-btn');
+            navBtns.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    navBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    
+                    document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
+                    const targetId = btn.getAttribute('data-target');
+                    document.getElementById(targetId).classList.add('active');
+                    
+                    if (targetId === 'dashboard') updateDashboardStats();
+                });
+            });
+        }
+
+        /* ================= Table Logic (CRUD, Search, Sort) ================= */
+        function renderTable(modKey, filteredData = null) {
+            const tbody = document.getElementById(`tbody-${modKey}`);
+            if (!tbody) return;
+            
+            const config = modulesConfig[modKey];
+            const dataToRender = filteredData || config.data;
+            
+            tbody.innerHTML = '';
+            
+            if (dataToRender.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="${config.fields.length + 1}" style="text-align:center; color:var(--text-muted);">لا توجد بيانات متاحة</td></tr>`;
+                return;
+            }
+
+            dataToRender.forEach((row, index) => {
+                let tr = document.createElement('tr');
+                let tdHtml = '';
+                
+                config.fields.forEach(field => {
+                    let val = row[field.key] || '-';
+                    // Special coloring for statuses/priorities
+                    if (val === 'قصوى' || val === 'خارج الخدمة' || val === 'غير متاح') val = `<span style="color: var(--danger); font-weight:bold;">${val}</span>`;
+                    if (val === 'في الخدمة' || val === 'متاح') val = `<span style="color: var(--success); font-weight:bold;">${val}</span>`;
+                    if (val === 'تحت التحقيق') val = `<span style="color: var(--warning); font-weight:bold;">${val}</span>`;
+                    
+                    tdHtml += `<td>${val}</td>`;
+                });
+
+                // Action buttons
+                tdHtml += `
+                    <td class="action-btns">
+                        <button class="btn-icon edit" onclick="openModal('${modKey}', ${index})" title="تعديل"><i class="fa-solid fa-pen-to-square"></i></button>
+                        <button class="btn-icon delete" onclick="deleteRecord('${modKey}', ${index})" title="حذف"><i class="fa-solid fa-trash"></i></button>
+                    </td>
+                `;
+                tr.innerHTML = tdHtml;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function searchTable(modKey, query) {
+            const data = modulesConfig[modKey].data;
+            const q = query.toLowerCase();
+            const filtered = data.filter(row => {
+                return Object.values(row).some(val => String(val).toLowerCase().includes(q));
+            });
+            renderTable(modKey, filtered);
+        }
+
+        let sortDirection = {};
+        function sortTable(modKey, key) {
+            sortDirection[key] = !sortDirection[key];
+            const data = modulesConfig[modKey].data;
+            
+            data.sort((a, b) => {
+                let valA = a[key] || '';
+                let valB = b[key] || '';
+                if (typeof valA === 'string') valA = valA.toLowerCase();
+                if (typeof valB === 'string') valB = valB.toLowerCase();
+                
+                if (valA < valB) return sortDirection[key] ? -1 : 1;
+                if (valA > valB) return sortDirection[key] ? 1 : -1;
+                return 0;
+            });
+            renderTable(modKey);
+            showToast('تم فرز البيانات', 'success');
+        }
+
+        function deleteRecord(modKey, index) {
+            if (confirm('هل أنت متأكد من حذف هذا السجل نهائياً؟')) {
+                modulesConfig[modKey].data.splice(index, 1);
+                renderTable(modKey);
+                updateDashboardStats();
+                logAction(`حذف سجل من قسم ${modulesConfig[modKey].title}`);
+                showToast('تم حذف السجل بنجاح', 'success');
+            }
+        }
+
+        /* ================= Modals & Forms ================= */
+        function openModal(modKey, index = -1) {
+            currentActiveModule = modKey;
+            editingIndex = index;
+            const config = modulesConfig[modKey];
+            const modal = document.getElementById('dynamic-modal');
+            const formBody = document.getElementById('modal-body');
+            
+            document.getElementById('modal-title').innerText = index === -1 ? `إضافة إلى ${config.title}` : `تعديل سجل في ${config.title}`;
+            formBody.innerHTML = '';
+
+            let rowData = index === -1 ? {} : config.data[index];
+
+            config.fields.forEach(field => {
+                const group = document.createElement('div');
+                group.className = 'form-group';
+                let inputHtml = '';
+                let val = rowData[field.key] || '';
+
+                if (field.type === 'select') {
+                    let options = field.options.map(opt => `<option value="${opt}" ${val === opt ? 'selected' : ''}>${opt}</option>`).join('');
+                    inputHtml = `<select id="field-${field.key}" class="form-control" required>${options}</select>`;
+                } else {
+                    inputHtml = `<input type="${field.type}" id="field-${field.key}" class="form-control" value="${val}" required>`;
+                }
+
+                group.innerHTML = `<label>${field.label}</label>${inputHtml}`;
+                formBody.appendChild(group);
+            });
+
+            modal.classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('dynamic-modal').classList.remove('active');
+        }
+
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            const config = modulesConfig[currentActiveModule];
+            const newRecord = {};
+            
+            config.fields.forEach(field => {
+                newRecord[field.key] = document.getElementById(`field-${field.key}`).value;
+            });
+
+            if (editingIndex === -1) {
+                config.data.push(newRecord);
+                logAction(`إضافة سجل جديد في ${config.title}`);
+                showToast('تمت الإضافة بنجاح', 'success');
+            } else {
+                config.data[editingIndex] = newRecord;
+                logAction(`تعديل سجل في ${config.title}`);
+                showToast('تم التعديل بنجاح', 'success');
+            }
+
+            renderTable(currentActiveModule);
+            updateDashboardStats();
+            closeModal();
+        }
+
+        /* ================= Dashboard Updates & Logs ================= */
+        function updateDashboardStats() {
+            document.getElementById('stat-officers').innerText = modulesConfig.officers.data.length;
+            document.getElementById('stat-ems').innerText = modulesConfig.ems.data.length;
+            document.getElementById('stat-wanted').innerText = modulesConfig.wanted.data.length;
+            document.getElementById('stat-cases').innerText = modulesConfig.cases.data.length;
+            document.getElementById('stat-vehicles').innerText = modulesConfig.vehicles.data.length;
+            document.getElementById('stat-weapons').innerText = modulesConfig.weapons.data.length;
+        }
+
+        function logAction(actionTxt) {
+            modulesConfig.logs.data.unshift({
+                user: 'Admin',
+                action: actionTxt,
+                time: new Date().toLocaleTimeString('ar-SA')
+            });
+            renderTable('logs');
+        }
+
+        /* ================= Toasts ================= */
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type} glass-panel`;
+            
+            const icon = type === 'success' ? '<i class="fa-solid fa-circle-check"></i>' : '<i class="fa-solid fa-circle-exclamation"></i>';
+            toast.innerHTML = `${icon} <span>${message}</span>`;
+            
+            container.appendChild(toast);
+            
+            setTimeout(() => toast.classList.add('show'), 10);
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 500);
+            }, 3000);
+        }
+
+        /* ================= Themes ================= */
+        function setTheme(themeName) {
+            if (themeName === 'default') {
+                document.body.removeAttribute('data-theme');
+            } else {
+                document.body.setAttribute('data-theme', themeName);
+            }
+            showToast('تم تغيير الثيم بنجاح', 'success');
+        }
+
+        /* ================= Cyber Particles Canvas ================= */
+        function initCanvas() {
+            const canvas = document.getElementById('bg-canvas');
+            const ctx = canvas.getContext('2d');
+            let width, height, particles;
+
+            function resize() {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = window.innerHeight;
+            }
+
+            class Particle {
+                constructor() {
+                    this.x = Math.random() * width;
+                    this.y = Math.random() * height;
+                    this.vx = (Math.random() - 0.5) * 0.5;
+                    this.vy = (Math.random() - 0.5) * 0.5;
+                    this.radius = Math.random() * 2;
+                }
+                update() {
+                    this.x += this.vx;
+                    this.y += this.vy;
+                    if (this.x < 0 || this.x > width) this.vx *= -1;
+                    if (this.y < 0 || this.y > height) this.vy *= -1;
+                }
+                draw() {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--accent-color').trim() || '#00d2ff';
+                    ctx.globalAlpha = 0.5;
+                    ctx.fill();
+                }
+            }
+
+            function initParticles() {
+                particles = [];
+                let numParticles = Math.floor((width * height) / 15000); 
+                for (let i = 0; i < numParticles; i++) {
+                    particles.push(new Particle());
+                }
+            }
+
+            function animate() {
+                ctx.clearRect(0, 0, width, height);
+                // The radial gradient is handled by CSS, canvas is transparent.
+                
+                const connectionColor = getComputedStyle(document.documentElement).getPropertyValue('--accent-color').trim() || '#00d2ff';
+                
+                particles.forEach(p => {
+                    p.update();
+                    p.draw();
+                });
+
+                // Draw lines between close particles (Cyber grid effect)
+                for (let i = 0; i < particles.length; i++) {
+                    for (let j = i + 1; j < particles.length; j++) {
+                        const dx = particles[i].x - particles[j].x;
+                        const dy = particles[i].y - particles[j].y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+
+                        if (dist < 120) {
+                            ctx.beginPath();
+                            ctx.moveTo(particles[i].x, particles[i].y);
+                            ctx.lineTo(particles[j].x, particles[j].y);
+                            ctx.strokeStyle = connectionColor;
+                            ctx.globalAlpha = 1 - (dist / 120);
+                            ctx.lineWidth = 0.5;
+                            ctx.stroke();
+                        }
+                    }
+                }
+                requestAnimationFrame(animate);
+            }
+
+            window.addEventListener('resize', () => { resize(); initParticles(); });
+            resize();
+            initParticles();
+            animate();
+        }
     </script>
 </body>
 </html>
