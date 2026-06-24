@@ -3,32 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modern Government MDT - Police Terminal</title>
+    <title>محطة البيانات المتنقلة | MDT System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
         :root {
-            --bg-base: #0a0a0c;
-            --bg-surface: rgba(18, 18, 22, 0.75);
-            --border-glow: rgba(212, 175, 55, 0.25);
-            --primary: #d4af37;
-            --secondary: #ffcc00;
+            --bg-primary: #0a0b0e;
+            --bg-secondary: #12141a;
+            --bg-card: rgba(24, 27, 35, 0.85);
+            --accent-gold: #ffcb05;
+            --accent-glow: rgba(255, 203, 5, 0.35);
             --text-main: #ffffff;
-            --text-muted: #a0a0a8;
-            --danger: #e74c3c;
-            --success: #2ecc71;
-            --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            --text-muted: #8e95a5;
+            --border-color: rgba(255, 255, 255, 0.05);
+            --success-color: #2ecc71;
+            --danger-color: #e74c3c;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
+            font-family: 'Cairo', sans-serif;
             user-select: none;
         }
 
         body {
-            background-color: var(--bg-base);
+            background-color: #050608;
             color: var(--text-main);
-            font-family: var(--font-family);
             overflow: hidden;
             height: 100vh;
             width: 100vw;
@@ -37,1289 +40,1213 @@
             align-items: center;
         }
 
-        #canvas-particles {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-            pointer-events: none;
-        }
-
-        .mdt-container {
-            position: relative;
-            z-index: 2;
-            width: 96vw;
-            height: 92vh;
-            background: var(--bg-surface);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            border: 1px solid var(--border-glow);
+        /* حاوية النظام الرئيسية - جودة AAA */
+        #mdt-wrapper {
+            width: 1366px;
+            height: 768px;
+            background: linear-gradient(135deg, var(--bg-primary) 0%, #151821 100%);
+            border: 1px solid rgba(255, 255, 255, 0.03);
             border-radius: 16px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), inset 0 0 40px rgba(212, 175, 55, 0.05);
-            display: grid;
-            grid-template-rows: 90px 1fr;
-            grid-template-columns: 260px 1fr;
-            grid-template-areas: 
-                "header header"
-                "sidebar main";
-            overflow: hidden;
-            animation: terminalGlow 4s infinite alternate;
-        }
-
-        @keyframes terminalGlow {
-            0% { box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), inset 0 0 30px rgba(212, 175, 55, 0.02); }
-            100% { box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9), inset 0 0 50px rgba(212, 175, 55, 0.08); }
-        }
-
-        header {
-            grid-area: header;
-            background: rgba(10, 10, 12, 0.85);
-            border-bottom: 1px solid var(--border-glow);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 30px;
-        }
-
-        .header-brand {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .header-brand img {
-            width: 55px;
-            height: 55px;
-            filter: drop-shadow(0 0 8px var(--primary));
-        }
-
-        .header-title h1 {
-            font-size: 22px;
-            font-weight: 700;
-            letter-spacing: 1px;
-            color: var(--primary);
-            text-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
-        }
-
-        .header-title p {
-            font-size: 11px;
-            color: var(--text-muted);
-        }
-
-        .header-meta {
-            display: flex;
-            align-items: center;
-            gap: 40px;
-        }
-
-        .meta-item {
-            text-align: center;
-        }
-
-        .meta-item .label {
-            font-size: 10px;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            margin-bottom: 4px;
-        }
-
-        .meta-item .value {
-            font-size: 15px;
-            font-weight: 600;
-            color: var(--secondary);
-        }
-
-        .status-online {
-            color: var(--success) !important;
-            text-shadow: 0 0 8px rgba(46, 204, 113, 0.4);
-        }
-
-        sidebar {
-            grid-area: sidebar;
-            background: rgba(14, 14, 18, 0.6);
-            border-left: 1px solid var(--border-glow);
-            padding: 25px 15px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        .nav-links {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .nav-item {
-            padding: 14px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 14px;
-            color: var(--text-muted);
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border: 1px solid transparent;
-        }
-
-        .nav-item:hover {
-            color: var(--text-main);
-            background: rgba(212, 175, 55, 0.04);
-            border-color: rgba(212, 175, 55, 0.1);
-            padding-right: 25px;
-        }
-
-        .nav-item.active {
-            color: var(--bg-base);
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
-            font-weight: 700;
-        }
-
-        .sidebar-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 5px 0 5px;
-            border-top: 1px solid rgba(212, 175, 55, 0.1);
-        }
-
-        .admin-trigger {
-            font-size: 20px;
-            cursor: pointer;
-            color: var(--text-muted);
-            transition: color 0.3s, transform 0.3s;
-        }
-
-        .admin-trigger:hover {
-            color: var(--secondary);
-            transform: rotate(45deg);
-        }
-
-        main {
-            grid-area: main;
-            padding: 30px;
-            overflow-y: auto;
-            background: rgba(10, 10, 12, 0.3);
-        }
-
-        .page-panel {
-            display: none;
-            animation: fadeIn 0.4s ease-out forwards;
-        }
-
-        .page-panel.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .stat-card {
-            background: rgba(25, 25, 30, 0.6);
-            border: 1px solid rgba(212, 175, 55, 0.1);
-            border-radius: 12px;
-            padding: 20px;
             position: relative;
-            overflow: hidden;
-            transition: transform 0.3s, border-color 0.3s;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-4px);
-            border-color: var(--primary);
-        }
-
-        .stat-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 4px;
-            height: 100%;
-            background: var(--primary);
-        }
-
-        .stat-card .title {
-            font-size: 12px;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            margin-bottom: 8px;
-        }
-
-        .stat-card .counter {
-            font-size: 28px;
-            font-weight: 700;
-            color: var(--text-main);
-        }
-
-        .search-box {
             display: flex;
-            gap: 15px;
-            margin-bottom: 25px;
-        }
-
-        .input-ctrl {
-            flex: 1;
-            background: rgba(14, 14, 18, 0.8);
-            border: 1px solid rgba(212, 175, 55, 0.2);
-            padding: 14px 20px;
-            border-radius: 8px;
-            color: var(--text-main);
-            font-family: var(--font-family);
-            font-size: 15px;
-            outline: none;
-            transition: border-color 0.3s, box-shadow 0.3s;
-        }
-
-        .input-ctrl:focus {
-            border-color: var(--secondary);
-            box-shadow: 0 0 10px rgba(255, 204, 0, 0.2);
-        }
-
-        .btn-ctrl {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: var(--bg-base);
-            border: none;
-            padding: 0 30px;
-            border-radius: 8px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: opacity 0.3s, transform 0.2s;
-        }
-
-        .btn-ctrl:hover {
-            opacity: 0.9;
-            transform: scale(1.02);
-        }
-
-        .data-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-            background: rgba(20, 20, 25, 0.4);
-            border-radius: 10px;
+            flex-direction: row-reverse; /* لضمان وجود القائمة الجانبية على اليمين تماماً */
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
             overflow: hidden;
+            backdrop-filter: blur(20px);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        .data-table th, .data-table td {
-            padding: 16px 20px;
-            text-align: right;
-            border-bottom: 1px solid rgba(212, 175, 55, 0.05);
-        }
-
-        .data-table th {
-            background: rgba(14, 14, 18, 0.9);
-            color: var(--primary);
-            font-weight: 600;
-            font-size: 13px;
-            text-transform: uppercase;
-        }
-
-        .data-table tr:hover td {
-            background: rgba(212, 175, 55, 0.03);
-            color: var(--secondary);
-            cursor: pointer;
-        }
-
-        .profile-container {
-            display: grid;
-            grid-template-columns: 280px 1fr;
-            gap: 30px;
-        }
-
-        .profile-aside {
-            background: rgba(18, 18, 22, 0.8);
-            border: 1px solid rgba(212, 175, 55, 0.15);
-            border-radius: 12px;
-            padding: 25px;
-            text-align: center;
-        }
-
-        .profile-avatar {
-            width: 130px;
-            height: 130px;
-            border-radius: 50%;
-            border: 3px solid var(--primary);
-            object-fit: cover;
-            margin-bottom: 15px;
-            box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
-        }
-
-        .profile-name {
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 5px;
-        }
-
-        .profile-id {
-            font-size: 13px;
-            color: var(--text-muted);
-            margin-bottom: 20px;
-        }
-
-        .profile-meta-list {
-            text-align: right;
+        /* القائمة الجانبية اليمنى */
+        .sidebar {
+            width: 85px;
+            background-color: var(--bg-secondary);
+            border-left: 1px solid var(--border-color);
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            align-items: center;
+            padding: 20px 0;
+            z-index: 10;
         }
 
-        .profile-meta-item {
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            padding-bottom: 6px;
+        .sidebar-brand {
+            width: 50px;
+            height: 50px;
+            margin-bottom: 35px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        .profile-meta-item .meta-lbl {
-            font-size: 11px;
-            color: var(--text-muted);
+        .sidebar-brand img {
+            width: 32px;
+            height: 32px;
+            filter: drop-shadow(0 0 4px var(--accent-glow));
         }
 
-        .profile-meta-item .meta-val {
-            font-size: 14px;
-            font-weight: 600;
-            margin-top: 2px;
-        }
-
-        .modal-layer {
-            display: none;
-            position: absolute;
-            top: 0;
-            left: 0;
+        .sidebar-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
             width: 100%;
+            align-items: center;
+        }
+
+        .menu-item {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background-color: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--text-muted);
+            cursor: pointer;
+            position: relative;
+            transition: all 0.25s ease;
+        }
+
+        .menu-item i {
+            font-size: 18px;
+            transition: transform 0.2s ease;
+        }
+
+        .menu-item:hover {
+            color: var(--text-main);
+            border-color: rgba(255, 203, 5, 0.4);
+            box-shadow: 0 0 12px rgba(255, 203, 5, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .menu-item.active {
+            background-color: var(--accent-gold);
+            color: #000000;
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        .menu-item.active:hover {
+            transform: none;
+        }
+
+        /*منطقة المحتوى الرئيسي اليسرى */
+        .main-container {
+            flex: 1;
             height: 100%;
-            background: rgba(5, 5, 5, 0.85);
-            backdrop-filter: blur(10px);
-            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            padding: 24px;
+            overflow-y: auto;
+        }
+
+        /* الهيدر العلوي المتطابق */
+        .mdt-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .header-logo-badge {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, rgba(255,203,5,0.1) 0%, rgba(0,0,0,0) 100%);
+            border: 1px solid var(--accent-gold);
+            border-radius: 10px;
+            display: flex;
             justify-content: center;
             align-items: center;
         }
 
-        .modal-box {
-            background: var(--bg-surface);
-            border: 1px solid var(--primary);
-            border-radius: 12px;
-            width: 500px;
-            padding: 35px;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.5);
-            position: relative;
-        }
-
-        .modal-title {
-            font-size: 20px;
-            color: var(--primary);
-            margin-bottom: 25px;
+        .header-title-block h1 {
+            font-size: 18px;
             font-weight: 700;
-            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
-            padding-bottom: 10px;
+            color: var(--text-main);
+            letter-spacing: 0.5px;
         }
 
-        .modal-close {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            cursor: pointer;
+        .header-title-block span {
+            font-size: 13px;
+            color: var(--accent-gold);
+            font-weight: 600;
+            display: block;
+            margin-top: -2px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .status-pill {
+            background: rgba(46, 204, 113, 0.1);
+            border: 1px solid var(--success-color);
+            color: var(--success-color);
+            padding: 4px 14px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .status-pill::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background-color: var(--success-color);
+            border-radius: 50%;
+            display: inline-block;
+            box-shadow: 0 0 8px var(--success-color);
+        }
+
+        /* تبويبات الأقسام المختلفة */
+        .tab-content {
+            display: none;
+            flex-direction: column;
+            gap: 20px;
+            height: calc(100% - 80px);
+        }
+
+        .tab-content.active-tab {
+            display: flex;
+        }
+
+        /* بطاقات التصميم الزجاجي والممتاز */
+        .glass-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 20px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        /* لوحة التحكم الرئيسية - محاكاة تفصيلية للصورة المرفقة */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 20px;
+        }
+
+        .countdown-section {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .countdown-title {
+            font-size: 14px;
             color: var(--text-muted);
-            font-size: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        .modal-close:hover {
-            color: var(--danger);
+        .countdown-title i {
+            color: var(--accent-gold);
         }
 
+        .timer-row {
+            display: flex;
+            gap: 12px;
+            direction: ltr; /* لعرض العداد الرقمي بشكل صحيح من اليسار لليمين */
+            justify-content: flex-end;
+        }
+
+        .timer-box {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            padding: 10px;
+            min-width: 65px;
+            text-align: center;
+        }
+
+        .timer-num {
+            font-size: 24px;
+            font-weight: 900;
+            color: var(--text-main);
+            font-family: monospace;
+        }
+
+        .timer-label {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+
+        .progress-bar-fill {
+            width: 50%;
+            height: 100%;
+            background: var(--accent-gold);
+            box-shadow: 0 0 10px var(--accent-gold);
+        }
+
+        .progress-text {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 5px;
+        }
+
+        .hours-badge {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(255, 203, 5, 0.03);
+            border: 1px solid rgba(255, 203, 5, 0.1);
+        }
+
+        .hours-val {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--accent-gold);
+        }
+
+        /* الجوائز المالية الأسبوعية المطابقة للصورة */
+        .rewards-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        .reward-tier {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 15px 10px;
+            text-align: center;
+            transition: border-color 0.3s;
+        }
+
+        .reward-tier.rank-1 { border-color: rgba(255, 203, 5, 0.3); }
+        .reward-tier.rank-2 { border-color: rgba(255, 255, 255, 0.1); }
+        .reward-tier.rank-3 { border-color: rgba(230, 126, 34, 0.2); }
+
+        .reward-title {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 5px;
+        }
+
+        .reward-amount {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--accent-gold);
+        }
+
+        /* واجهة البحث الجنائي المتقدم والتقسيم الاحترافي ثنائي النوافذ */
+        .search-layout {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 20px;
+            height: 100%;
+        }
+
+        .search-bar-wrapper {
+            position: relative;
+            margin-bottom: 16px;
+        }
+
+        .search-bar-wrapper input {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--border-color);
+            padding: 12px 45px 12px 15px;
+            border-radius: 10px;
+            color: var(--text-main);
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .search-bar-wrapper input:focus {
+            outline: none;
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 15px rgba(255, 203, 5, 0.1);
+        }
+
+        .search-bar-wrapper i {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+
+        /* الجداول الذكية والنظيفة */
+        .table-responsive {
+            overflow-x: auto;
+            width: 100%;
+        }
+
+        .custom-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: right;
+        }
+
+        .custom-table th {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 12px;
+            font-size: 13px;
+            color: var(--text-muted);
+            font-weight: 600;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .custom-table td {
+            padding: 12px;
+            font-size: 13.5px;
+            border-bottom: 1px solid rgba(255,255,255,0.02);
+            color: #e2e8f0;
+        }
+
+        .custom-table tr:hover td {
+            background: rgba(255, 255, 255, 0.01);
+            color: var(--text-main);
+        }
+
+        /* الأزرار الاحترافية بالتوهج الأصفر */
+        .btn-gold {
+            background: var(--accent-gold);
+            color: #000000;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 13.5px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn-gold:hover {
+            box-shadow: 0 0 18px var(--accent-glow);
+            transform: translateY(-1px);
+        }
+
+        .btn-gold:active {
+            transform: translateY(1px);
+        }
+
+        .btn-danger {
+            background: rgba(231, 76, 60, 0.15);
+            color: var(--danger-color);
+            border: 1px solid var(--danger-color);
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-danger:hover {
+            background: var(--danger-color);
+            color: white;
+            box-shadow: 0 0 12px rgba(231, 76, 60, 0.3);
+        }
+
+        /* الحقول والنوافذ المنبثقة التفاعلية */
         .form-group {
-            margin-bottom: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 15px;
         }
 
         .form-group label {
-            display: block;
-            font-size: 12px;
+            font-size: 13px;
             color: var(--text-muted);
-            margin-bottom: 6px;
+            font-weight: 600;
         }
 
-        .badge {
-            padding: 4px 10px;
-            border-radius: 4px;
-            font-size: 11px;
-            font-weight: 700;
+        .form-group input, .form-group textarea, .form-group select {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border-color);
+            padding: 10px;
+            border-radius: 8px;
+            color: white;
+            font-size: 13.5px;
         }
 
-        .badge-danger { background: rgba(231, 76, 60, 0.2); color: var(--danger); border: 1px solid var(--danger); }
-        .badge-success { background: rgba(46, 204, 113, 0.2); color: var(--success); border: 1px solid var(--success); }
+        .form-group input:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: var(--accent-gold);
+        }
 
-        .flex-tabs {
+        /* تصميم المودال / النافذة العائمة التفاعلية */
+        .modal-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(6px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .modal-content {
+            width: 480px;
+            background: #161922;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            animation: modalFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes modalFadeIn {
+            from { transform: scale(0.95); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-header {
             display: flex;
-            gap: 10px;
-            border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 20px;
         }
 
-        .sub-tab {
-            padding: 10px 20px;
-            cursor: pointer;
-            color: var(--text-muted);
-            font-weight: 600;
-            font-size: 14px;
+        .modal-header h3 {
+            font-size: 16px;
+            font-weight: 700;
         }
 
-        .sub-tab.active {
-            color: var(--secondary);
-            border-bottom: 2px solid var(--secondary);
+        .close-modal {
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 18px;
+            transition: color 0.2s;
+        }
+
+        .close-modal:hover {
+            color: white;
+        }
+
+        /* تفاصيل الملف الشخصي للمواطن */
+        .profile-header {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+        }
+
+        .profile-avatar {
+            width: 70px;
+            height: 70px;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 32px;
+            color: var(--text-muted);
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .info-item {
+            background: rgba(0,0,0,0.15);
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.01);
+        }
+
+        .info-item label {
+            display: block;
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-bottom: 2px;
+        }
+
+        .info-item span {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        /* إشعار النظام المدمج */
+        .notification-toast {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: #1b1f2a;
+            border-right: 4px solid var(--accent-gold);
+            padding: 12px 20px;
+            border-radius: 6px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 1000;
+            transform: translateX(-120%);
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .notification-toast.show {
+            transform: translateX(0);
         }
     </style>
 </head>
 <body>
 
-    <canvas id="canvas-particles"></canvas>
-
-    <div class="mdt-container">
+    <div id="mdt-wrapper">
         
-        <header>
-            <div class="header-brand">
-                <img id="sys-logo" src="https://i.imgur.com/4zA7p3g.png" alt="شعار الأمن العام">
-                <div class="header-title">
-                    <h1 id="sys-name">قطاع الأمن العام - تيرمينال القيادة</h1>
-                    <p>نظام البيانات المتنقل الموحد لإدارة العمليات والمواطنين</p>
+        <div class="sidebar">
+            <div class="sidebar-brand">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2L3 7V12C3 17.55 6.84 22.74 12 24C17.16 22.74 21 17.55 21 12V7L12 2Z" fill="#ffcb05" fill-opacity="0.15" stroke="#ffcb05" stroke-width="2"/>
+                    <circle cx="12" cy="12" r="4" stroke="#ffcb05" stroke-width="2"/>
+                </svg>
+            </div>
+            <div class="sidebar-menu">
+                <div class="menu-item active" data-tab="dashboard" title="الرئيسية">
+                    <i class="fa-solid fa-house"></i>
+                </div>
+                <div class="menu-item" data-tab="search" title="البحث السريع">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </div>
+                <div class="menu-item" data-tab="employees" title="إدارة الموظفين">
+                    <i class="fa-solid fa-users-gear"></i>
+                </div>
+                <div class="menu-item" data-tab="operations" title="غرفة العمليات">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <div class="menu-item" data-tab="dispatch" title="مركز البلاغات">
+                    <i class="fa-solid fa-paper-plane"></i>
                 </div>
             </div>
-            <div class="header-meta">
-                <div class="meta-item">
-                    <div class="label">الحالة التشغيلية</div>
-                    <div class="value status-online">متصل آمن</div>
-                </div>
-                <div class="meta-item">
-                    <div class="label">الوقت والتاريخ</div>
-                    <div class="value" id="live-clock">00:00:00 - 2026/06/24</div>
-                </div>
-                <div class="meta-item">
-                    <div class="label">الضابط النشط</div>
-                    <div class="value" id="current-officer">المحاكي الافتراضي</div>
-                </div>
-            </div>
-        </header>
+        </div>
 
-        <sidebar>
-            <ul class="nav-links">
-                <li class="nav-item active" onclick="switchPage('dashboard')">الرئيسية</li>
-                <li class="nav-item" onclick="switchPage('citizens')">قاعدة المواطنين</li>
-                <li class="nav-item" onclick="switchPage('vehicles')">قائمة المركبات</li>
-                <li class="nav-item" onclick="switchPage('weapons')">سجل الأسلحة</li>
-                <li class="nav-item" onclick="switchPage('warrants')">قائمة المطلوبين</li>
-                <li class="nav-item" onclick="switchPage('cases')">إدارة القضايا</li>
-                <li class="nav-item" onclick="switchPage('calls')">البلاغات (911)</li>
-                <li class="nav-item" onclick="switchPage('operations')">غرفة العمليات</li>
-                <li class="nav-item" onclick="switchPage('logs')">سجل النشاطات</li>
-            </ul>
-            <div class="sidebar-footer">
-                <span>تحديث مستمر (60 FPS)</span>
-                <span class="admin-trigger" onclick="openAdminLogin()">⚙</span>
+        <div class="main-container">
+            
+            <div class="mdt-header">
+                <div class="header-right">
+                    <div class="header-logo-badge">
+                        <i class="fa-solid fa-building-shield" style="color: var(--accent-gold); font-size: 20px;"></i>
+                    </div>
+                    <div class="header-title-block">
+                        <h1>محطة البيانات المتنقلة</h1>
+                        <span>[P-189] ابو حاتم</span>
+                    </div>
+                </div>
+                <div class="header-left">
+                    <div class="status-pill">تشغيل النظام</div>
+                </div>
             </div>
-        </sidebar>
 
-        <main>
-            <div id="page-dashboard" class="page-panel active">
+            <div id="dashboard" class="tab-content active-tab">
                 <div class="dashboard-grid">
-                    <div class="stat-card"><div class="title">إجمالي المواطنين</div><div class="counter" id="cnt-citizens">12,450</div></div>
-                    <div class="stat-card"><div class="title">المطلوبين أمنياً</div><div class="counter" id="cnt-warrants" style="color:var(--danger)">34</div></div>
-                    <div class="stat-card"><div class="title">القضايا المسجلة</div><div class="counter" id="cnt-cases">892</div></div>
-                    <div class="stat-card"><div class="title">البلاغات النشطة</div><div class="counter" id="cnt-calls">5</div></div>
-                    <div class="stat-card"><div class="title">العمليات القائمة</div><div class="counter" id="cnt-ops">2</div></div>
-                    <div class="stat-card"><div class="title">المركبات المسجلة</div><div class="counter" id="cnt-vehicles">4,120</div></div>
-                    <div class="stat-card"><div class="title">الأسلحة المرخصة</div><div class="counter" id="cnt-weapons">561</div></div>
-                    <div class="stat-card"><div class="title">الضباط في الخدمة</div><div class="counter" id="cnt-officers" style="color:var(--success)">18</div></div>
-                </div>
-                <h3 style="color:var(--primary); margin-bottom:15px;">آخر مذكرات الإيقاف والقبض</h3>
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>الاسم</th>
-                            <th>رقم الهوية</th>
-                            <th>الجريمة</th>
-                            <th>مستوى الخطورة</th>
-                            <th>المكافأة المالية</th>
-                        </tr>
-                    </thead>
-                    <tbody id="dash-warrants-table"></tbody>
-                </table>
-            </div>
+                    <div class="glass-card countdown-section">
+                        <div class="countdown-title">
+                            <i class="fa-solid fa-clock-rotate-left"></i>
+                            <span>إعادة التصنيف بعد</span>
+                        </div>
+                        <div class="timer-row">
+                            <div class="timer-box"><div class="timer-num" id="days">03</div><div class="timer-label">يوم</div></div>
+                            <div class="timer-box"><div class="timer-num" id="hours">11</div><div class="timer-label">ساعة</div></div>
+                            <div class="timer-box"><div class="timer-num" id="minutes">09</div><div class="timer-label">دقيقة</div></div>
+                            <div class="timer-box"><div class="timer-num" id="seconds">53</div><div class="timer-label">ثانية</div></div>
+                        </div>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar-fill"></div>
+                        </div>
+                        <div class="progress-text">تقدم الأسبوع 50%</div>
+                    </div>
 
-            <div id="page-citizens" class="page-panel">
-                <div class="search-box">
-                    <input type="text" id="citizen-search-input" class="input-ctrl" placeholder="أدخل اسم المواطن أو السجل المدني للبحث الفوري المتقدم...">
-                    <button class="btn-ctrl" onclick="performCitizenSearch()">استعلام</button>
-                </div>
-                <div id="citizen-search-results">
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>الاسم الكامل</th>
-                                <th>رقم الهوية</th>
-                                <th>تاريخ الميلاد</th>
-                                <th>الجنس</th>
-                                <th>الوظيفة</th>
-                            </tr>
-                        </thead>
-                        <tbody id="citizen-table-body"></tbody>
-                    </table>
-                </div>
-                <div id="citizen-profile-view" style="display:none; margin-top:20px;">
-                    <button class="btn-ctrl" style="margin-bottom:20px; padding:8px 20px;" onclick="hideCitizenProfile()">عودة للبحث</button>
-                    <div class="profile-container">
-                        <div class="profile-aside">
-                            <img class="profile-avatar" src="https://i.imgur.com/vH3g93A.png" alt="صورة المواطن">
-                            <div class="profile-name" id="prof-name">أحمد العتيبي</div>
-                            <div class="profile-id" id="prof-id">ID: 432123</div>
-                            <div class="profile-meta-list">
-                                <div class="profile-meta-item"><div class="meta-lbl">تاريخ الميلاد</div><div class="meta-val" id="prof-dob">1995/04/12</div></div>
-                                <div class="profile-meta-item"><div class="meta-lbl">الجنس</div><div class="meta-val" id="prof-sex">ذكر</div></div>
-                                <div class="profile-meta-item"><div class="meta-lbl">الهاتف</div><div class="meta-val" id="prof-phone">0501234567</div></div>
-                                <div class="profile-meta-item"><div class="meta-lbl">الوظيفة</div><div class="meta-val" id="prof-job">عسكري - وزارة الداخلية</div></div>
-                            </div>
-                        </div>
+                    <div class="glass-card hours-badge">
                         <div>
-                            <div class="flex-tabs">
-                                <div class="sub-tab active" onclick="switchProfileSubTab('fines')">المخالفات والسجل الجنائي</div>
-                                <div class="sub-tab" onclick="switchProfileSubTab('vehicles')">المركبات والممتلكات</div>
-                                <div class="sub-tab" onclick="switchProfileSubTab('licenses')">التراخيص والرخص</div>
+                            <div class="countdown-title" style="margin-bottom: 8px;">
+                                <i class="fa-solid fa-user-clock"></i>
+                                <span>ساعاتك هذا الأسبوع</span>
                             </div>
-                            <div id="prof-tab-fines" class="sub-tab-panel">
-                                <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
-                                    <h4 style="color:var(--primary)">السجل والمخالفات المقيدة</h4>
-                                    <button class="btn-ctrl" style="padding:5px 15px; font-size:12px;" onclick="openAddFineModal()">إضافة مخالفة/قضية</button>
-                                </div>
-                                <table class="data-table">
-                                    <thead><tr><th>العنوان</th><th>الوصف</th><th>المبلغ</th><th>الضابط القائم</th><th>التاريخ</th></tr></thead>
-                                    <tbody id="prof-fines-body"></tbody>
-                                </table>
-                            </div>
-                            <div id="prof-tab-vehicles" class="sub-tab-panel" style="display:none;">
-                                <table class="data-table">
-                                    <thead><tr><th>الموديل</th><th>رقم اللوحة</th><th>حالة التأمين</th><th>الحالة التشغيلية</th></tr></thead>
-                                    <tbody id="prof-vehicles-body"></tbody>
-                                </table>
-                            </div>
-                            <div id="prof-tab-licenses" class="sub-tab-panel" style="display:none;">
-                                <table class="data-table">
-                                    <thead><tr><th>نوع الرخصة</th><th>الحالة</th></tr></thead>
-                                    <tbody id="prof-licenses-body"></tbody>
-                                </table>
-                            </div>
+                            <div class="hours-val">1.5 <span style="font-size: 14px; color: var(--text-muted);">ساعة</span></div>
                         </div>
+                        <div class="sidebar-brand" style="margin-bottom:0; width:60px; height:60px; border-radius:50%;">
+                            <i class="fa-solid fa-user-tie" style="color: var(--accent-gold); font-size: 24px;"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-card" style="margin-top: 5px;">
+                    <div class="countdown-title" style="margin-bottom: 15px;">
+                        <i class="fa-solid fa-trophy"></i>
+                        <span>جوائز الأسبوع</span>
+                    </div>
+                    <div class="rewards-container">
+                        <div class="reward-tier rank-1">
+                            <div class="reward-title">المركز الأول</div>
+                            <div class="reward-amount">$3,500,000</div>
+                        </div>
+                        <div class="reward-tier rank-2">
+                            <div class="reward-title">المركز الثاني</div>
+                            <div class="reward-amount">$2,500,000</div>
+                        </div>
+                        <div class="reward-tier rank-3">
+                            <div class="reward-title">المركز الثالث</div>
+                            <div class="reward-amount">$1,500,000</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-card" style="margin-top: 5px;">
+                    <div class="countdown-title" style="margin-bottom: 12px;">
+                        <i class="fa-solid fa-star"></i>
+                        <span>أفضل الموظفين هذا الأسبوع</span>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="custom-table">
+                            <thead>
+                                <tr>
+                                    <th>الموظف</th>
+                                    <th>الرتبة</th>
+                                    <th>الشارة</th>
+                                    <th>ساعات العمل</th>
+                                    <th>الحالة</th>
+                                </tr>
+                            </thead>
+                            <tbody id="top-employees-tbody">
+                                </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
 
-            <div id="page-vehicles" class="page-panel">
-                <div class="search-box">
-                    <input type="text" id="vehicle-search-input" class="input-ctrl" placeholder="ابحث برقم اللوحة أو اسم المالك للمركبة...">
-                    <button class="btn-ctrl" onclick="performVehicleSearch()">استعلام المركبات</button>
+            <div id="search" class="tab-content">
+                <div class="search-layout">
+                    <div class="glass-card" style="display: flex; flex-direction: column;">
+                        <div class="search-bar-wrapper">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="text" id="citizen-search-input" placeholder="ابحث بالاسم، الرقم، أو رقم الهوية فورياً...">
+                        </div>
+                        <div class="table-responsive" style="flex: 1;">
+                            <table class="custom-table">
+                                <thead>
+                                    <tr>
+                                        <th>الهوية</th>
+                                        <th>الاسم الكامل</th>
+                                        <th>الإجراء</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="citizen-results-tbody">
+                                    </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="glass-card" id="citizen-profile-card" style="display: none;">
+                        </div>
                 </div>
-                <table class="data-table">
-                    <thead><tr><th>الموديل</th><th>اللوحة</th><th>المالك</th><th>حالة التأمين</th><th>الوضع القانوني</th></tr></thead>
-                    <tbody id="vehicles-table-body"></tbody>
-                </table>
             </div>
 
-            <div id="page-weapons" class="page-panel">
-                <div class="search-box">
-                    <input type="text" id="weapon-search-input" class="input-ctrl" placeholder="ابحث بالرقم التسلسلي للسلاح...">
-                    <button class="btn-ctrl" onclick="performWeaponSearch()">تحقق بالسيريال</button>
+            <div id="employees" class="tab-content">
+                <div class="glass-card" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                    <div class="countdown-title" style="margin-bottom:0;">
+                        <i class="fa-solid fa-users"></i>
+                        <span>قائمة القوة العاملة للشرطة</span>
+                    </div>
+                    <button class="btn-gold" onclick="openModal('add-employee-modal')">
+                        <i class="fa-solid fa-user-plus"></i> إضافة موظف جديد
+                    </button>
                 </div>
-                <table class="data-table">
-                    <thead><tr><th>الرقم التسلسلي</th><th>النوع</th><th>المالك القانوني</th><th>حالة الترخيص</th></tr></thead>
-                    <tbody id="weapons-table-body"></tbody>
-                </table>
-            </div>
-
-            <div id="page-warrants" class="page-panel">
-                <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
-                    <h3 style="color:var(--primary)">نظام المطلوبين وإصدار مذكرات القبض</h3>
-                    <button class="btn-ctrl" onclick="openAddWarrantModal()">إصدار مذكرة ملاحقة</button>
+                <div class="glass-card" style="flex: 1;">
+                    <div class="table-responsive">
+                        <table class="custom-table">
+                            <thead>
+                                <tr>
+                                    <th>رقم الشارة</th>
+                                    <th>الاسم</th>
+                                    <th>المرتبة الوظيفية</th>
+                                    <th>الحالة</th>
+                                    <th>التحكم</th>
+                                </tr>
+                            </thead>
+                            <tbody id="employees-list-tbody">
+                                </tbody>
+                        </table>
+                    </div>
                 </div>
-                <table class="data-table">
-                    <thead><tr><th>الصورة</th><th>الاسم الكامل</th><th>رقم الهوية</th><th>التهمة الرئيسية</th><th>مستوى الخطورة</th><th>المكافأة</th><th>الإجراء</th></tr></thead>
-                    <tbody id="warrants-table-body"></tbody>
-                </table>
             </div>
 
-            <div id="page-cases" class="page-panel">
-                <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
-                    <h3 style="color:var(--primary)">نظام القضايا الجنائية</h3>
-                    <button class="btn-ctrl" onclick="openCreateCaseModal()">إنشاء قضية جديدة</button>
+            <div id="operations" class="tab-content">
+                <div class="glass-card" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                    <div class="countdown-title" style="margin-bottom:0;">
+                        <i class="fa-solid fa-file-invoice"></i>
+                        <span>سجل غرف العمليات والمداهمات</span>
+                    </div>
+                    <button class="btn-gold" onclick="openModal('add-op-modal')">
+                        <i class="fa-solid fa-folder-plus"></i> إنشاء عملية جديدة
+                    </button>
                 </div>
-                <table class="data-table">
-                    <thead><tr><th>رقم القضية</th><th>العنوان</th><th>الحالة</th><th>الضابط المسؤول</th><th>تاريخ التسجيل</th></tr></thead>
-                    <tbody id="cases-table-body"></tbody>
-                </table>
-            </div>
-
-            <div id="page-calls" class="page-panel">
-                <h3 style="color:var(--primary); margin-bottom:20px;">مركز تلقي بلاغات الطوارئ 911</h3>
-                <table class="data-table">
-                    <thead><tr><th>رقم البلاغ</th><th>المبلغ</th><th>تفاصيل البلاغ</th><th>الموقع</th><th>الحالة</th><th>الإجراء</th></tr></thead>
-                    <tbody id="calls-table-body"></tbody>
-                </table>
-            </div>
-
-            <div id="page-operations" class="page-panel">
-                <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
-                    <h3 style="color:var(--primary)">مركز قيادة العمليات المشتركة</h3>
-                    <button class="btn-ctrl" onclick="openCreateOpModal()">إنشاء عملية ميدانية</button>
+                <div class="glass-card" style="flex: 1;">
+                    <div class="table-responsive">
+                        <table class="custom-table">
+                            <thead>
+                                <tr>
+                                    <th>كود العملية</th>
+                                    <th>العنوان</th>
+                                    <th>التاريخ والوقت</th>
+                                    <th>المسؤول</th>
+                                    <th>الحالة</th>
+                                    <th>الحذف</th>
+                                </tr>
+                            </thead>
+                            <tbody id="operations-list-tbody">
+                                </tbody>
+                        </table>
+                    </div>
                 </div>
-                <div id="operations-list-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:20px;"></div>
             </div>
 
-            <div id="page-logs" class="page-panel">
-                <h3 style="color:var(--primary); margin-bottom:20px;">سجل النظام والرقابة العامة (System Audit)</h3>
-                <div style="background:rgba(10,10,12,0.6); padding:20px; border-radius:10px; max-height:500px; overflow-y:auto;" id="logs-container"></div>
+            <div id="dispatch" class="tab-content">
+                <div class="glass-card" style="margin-bottom:10px;">
+                    <div class="countdown-title">
+                        <i class="fa-solid fa-headset"></i>
+                        <span>منظومة البلاغات الواردة (Dispatch System)</span>
+                    </div>
+                </div>
+                <div class="glass-card" style="flex: 1;">
+                    <div class="table-responsive">
+                        <table class="custom-table">
+                            <thead>
+                                <tr>
+                                    <th>رقم البلاغ</th>
+                                    <th>نوع البلاغ</th>
+                                    <th>الوصف المرفق</th>
+                                    <th>الموقع الجغرافي</th>
+                                    <th>توقيت البلاغ</th>
+                                    <th>الوضعية</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dispatch-list-tbody">
+                                </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
-        </main>
-    </div>
 
-    <div id="modal-admin-login" class="modal-layer">
-        <div class="modal-box">
-            <span class="modal-close" onclick="closeModal('modal-admin-login')">×</span>
-            <div class="modal-title">الوصول الأمني المشفر للإدارة</div>
-            <div class="form-group">
-                <label>أدخل رمز المرور الأمني الموحد</label>
-                <input type="password" id="admin-pass-input" class="input-ctrl" placeholder="••••••••••••••">
-            </div>
-            <button class="btn-ctrl" style="width:100%; padding:12px 0;" onclick="submitAdminLogin()">التحقق من الهوية</button>
         </div>
     </div>
 
-    <div id="modal-admin-panel" class="modal-layer">
-        <div class="modal-box" style="width:650px;">
-            <span class="modal-close" onclick="closeModal('modal-admin-panel')">×</span>
-            <div class="modal-title">لوحة تحكم مدير النظام العام</div>
-            <div style="max-height:450px; overflow-y:auto; padding-left:10px;">
+    <div class="modal-overlay" id="add-employee-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>إضافة ضابط جديد للنظام</h3>
+                <i class="fa-solid fa-xmark close-modal" onclick="closeModal('add-employee-modal')"></i>
+            </div>
+            <form id="add-employee-form" onsubmit="handleEmployeeSubmit(event)">
                 <div class="form-group">
-                    <label>اسم النظام الإلكتروني</label>
-                    <input type="text" id="cfg-sys-name" class="input-ctrl">
+                    <label>الاسم الكامل</label>
+                    <input type="text" id="emp-name" required placeholder="مثال: محمد سعيد">
                 </div>
                 <div class="form-group">
-                    <label>رابط الشعار الحكومي المعتمد</label>
-                    <input type="text" id="cfg-sys-logo" class="input-ctrl">
+                    <label>رقم الشارة العسكرية</label>
+                    <input type="text" id="emp-badge" required placeholder="مثال: P-200">
                 </div>
                 <div class="form-group">
-                    <label>اللون الرئيسي للواجهات</label>
-                    <input type="color" id="cfg-color-primary" style="height:45px; width:100%; border:none; background:none; cursor:pointer;">
-                </div>
-                <div class="form-group">
-                    <label>تأثيرات الخلفية ومحرك الجسيمات</label>
-                    <select id="cfg-effects" class="input-ctrl" style="background:#0e0e12;">
-                        <option value="true">تشغيل المحرك الديناميكي</option>
-                        <option value="false">إيقاف (توفير الطاقة)</option>
+                    <label>الرتبة العسكرية</label>
+                    <select id="emp-grade">
+                        <option>ضابط ميداني</option>
+                        <option>رقيب أول</option>
+                        <option>ملازم أول</option>
+                        <option>نقيب عسكري</option>
                     </select>
                 </div>
-                <button class="btn-ctrl" style="width:100%; padding:12px 0; margin-top:15px;" onclick="saveAdminSettings()">تطبيق وتعميم الخيارات فوراً</button>
-            </div>
+                <button type="submit" class="btn-gold" style="width: 100%; justify-content: center; margin-top: 10px;">حفظ الموظف وتعميده</button>
+            </form>
         </div>
     </div>
 
-    <div id="modal-add-fine" class="modal-layer">
-        <div class="modal-box">
-            <span class="modal-close" onclick="closeModal('modal-add-fine')">×</span>
-            <div class="modal-title">تحرير مخالفة أو غرامة مالية</div>
-            <input type="hidden" id="fine-target-identifier">
-            <div class="form-group">
-                <label>نوع أو عنوان المخالفة</label>
-                <input type="text" id="fine-title" class="input-ctrl" placeholder="مثال: قطع الإشارة التشغيلية">
+    <div class="modal-overlay" id="add-op-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>إنشاء وتوثيق عملية أمنية</h3>
+                <i class="fa-solid fa-xmark close-modal" onclick="closeModal('add-op-modal')"></i>
             </div>
-            <div class="form-group">
-                <label>القيمة المالية المترتبة (ريال)</label>
-                <input type="number" id="fine-amount" class="input-ctrl" placeholder="5000">
-            </div>
-            <div class="form-group">
-                <label>شرح الحادثة والملابسات</label>
-                <textarea id="fine-desc" class="input-ctrl" style="height:80px; resize:none;"></textarea>
-            </div>
-            <button class="btn-ctrl" style="width:100%; padding:12px 0;" onclick="submitFineForm()">تسجيل المخالفة في النظام</button>
+            <form id="add-op-form" onsubmit="handleOperationSubmit(event)">
+                <div class="form-group">
+                    <label>عنوان العملية أو المداهمة</label>
+                    <input type="text" id="op-title" required placeholder="مثال: سرقة بنك الفليكا المركزي">
+                </div>
+                <div class="form-group">
+                    <label>الوصف الجنائي التفصيلي</label>
+                    <textarea id="op-desc" rows="3" required placeholder="اكتب تفاصيل المداهمة والوحدات المشاركة هنا..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>الضابط المسؤول والمشرف</label>
+                    <input type="text" id="op-owner" value="ابو حاتم [P-189]" readonly>
+                </div>
+                <button type="submit" class="btn-gold" style="width: 100%; justify-content: center; margin-top: 10px;">إطلاق العملية الأمنية</button>
+            </form>
         </div>
     </div>
 
-    <div id="modal-add-warrant" class="modal-layer">
-        <div class="modal-box">
-            <span class="modal-close" onclick="closeModal('modal-add-warrant')">×</span>
-            <div class="modal-title">إصدار مذكرة ملاحقة وقبض رسمية</div>
-            <div class="form-group">
-                <label>الرقم المدني (الهوية)</label>
-                <input type="text" id="warrant-id" class="input-ctrl">
-            </div>
-            <div class="form-group">
-                <label>الاسم الكامل للمستهدف</label>
-                <input type="text" id="warrant-name" class="input-ctrl">
-            </div>
-            <div class="form-group">
-                <label>التهمة الجنائية الرئيسية</label>
-                <input type="text" id="warrant-crime" class="input-ctrl">
-            </div>
-            <div class="form-group">
-                <label>مستوى الخطورة</label>
-                <select id="warrant-danger" class="input-ctrl" style="background:#0e0e12;">
-                    <option value="LOW">منخفض الخطورة</option>
-                    <option value="MEDIUM">متوسط الخطورة</option>
-                    <option value="HIGH">عالي الخطورة</option>
-                    <option value="CRITICAL">تهديد أمني عام</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>المكافأة المالية المرصودة</label>
-                <input type="number" id="warrant-reward" class="input-ctrl" value="0">
-            </div>
-            <button class="btn-ctrl" style="width:100%; padding:12px 0;" onclick="submitWarrantForm()">تعميم وتثبيت المذكرة</button>
-        </div>
-    </div>
-
-    <div id="modal-create-case" class="modal-layer">
-        <div class="modal-box" style="width:550px;">
-            <span class="modal-close" onclick="closeModal('modal-create-case')">×</span>
-            <div class="modal-title">إنشاء ملف قضية جنائية موسعة</div>
-            <div class="form-group">
-                <label>عنوان ملف القضية</label>
-                <input type="text" id="case-title" class="input-ctrl" placeholder="مثال: سرقة المستودعات المركزية">
-            </div>
-            <div class="form-group">
-                <label>تفاصيل السرد الجنائي والأدلة</label>
-                <textarea id="case-desc" class="input-ctrl" style="height:100px; resize:none;"></textarea>
-            </div>
-            <div class="form-group">
-                <label>الهويات المرتبطة (مواطنين / مشتبه بهم) - تفصل بفاصلة</label>
-                <input type="text" id="case-citizens" class="input-ctrl" placeholder="432123, 554322">
-            </div>
-            <button class="btn-ctrl" style="width:100%; padding:12px 0;" onclick="submitCaseForm()">تقييد ملف القضية</button>
-        </div>
-    </div>
-
-    <div id="modal-create-op" class="modal-layer">
-        <div class="modal-box">
-            <span class="modal-close" onclick="closeModal('modal-create-op')">×</span>
-            <div class="modal-title">تعبئة نموذج عملية عسكرية وميدانية</div>
-            <div class="form-group">
-                <label>اسم أو رمز العملية</label>
-                <input type="text" id="op-title" class="input-ctrl" placeholder="مثال: تنظيف الميناء القديم">
-            </div>
-            <div class="form-group">
-                <label>تصنيف العملية الأمنية</label>
-                <select id="op-type" class="input-ctrl" style="background:#0e0e12;">
-                    <option value="سطو بنك">سطو بنك</option>
-                    <option value="إطلاق نار">إطلاق نار</option>
-                    <option value="احتجاز رهائن">احتجاز رهائن</option>
-                    <option value="مطاردة">مطاردة</option>
-                    <option value="سرقة متجر">سرقة متجر</option>
-                    <option value="اقتحام">اقتحام</option>
-                    <option value="عملية خاصة">عملية خاصة</option>
-                </select>
-            </div>
-            <button class="btn-ctrl" style="width:100%; padding:12px 0;" onclick="submitOperationForm()">استنفار وتدشين العملية</button>
-        </div>
+    <div class="notification-toast" id="toast-notification">
+        <i class="fa-solid fa-circle-check" style="color: var(--accent-gold); font-size: 18px;"></i>
+        <span id="toast-message">تمت العملية بنجاح تام.</span>
     </div>
 
     <script>
-        // --- قاعدة بيانات برمجية محلية مدمجة لمحاكاة الـ Web Demo بدقة كاملة وفورية ---
-        let mockData = {
-            counters: { citizens: 4120, warrants: 3, cases: 142, calls: 2, operations: 1, vehicles: 2150, weapons: 340, officers: 9 },
+        // مصفوفة البيانات الأساسية الحية (Database Simulation Engine) لضمان العمل الفعلي للميزات
+        let MDT_STATE = {
             citizens: [
-                { identifier: "432123", firstname: "أحمد", lastname: "العتيبي", dateofbirth: "1995/04/12", sex: "ذكر", phone_number: "0501234567", job: "وزارة الداخلية", job_grade: "نقيب" },
-                { identifier: "554322", firstname: "خالد", lastname: "الدوسري", dateofbirth: "1991/08/22", sex: "ذكر", phone_number: "0557654321", job: "قطاع خاص", job_grade: "مهندس" },
-                { identifier: "776511", firstname: "سلطان", lastname: "المطيري", dateofbirth: "1988/11/02", sex: "ذكر", phone_number: "0539988776", job: "عاطل", job_grade: "لا يوجد" }
+                { id: "1001", name: "أحمد العتيبي", phone: "05541287", job: "عاطل", status: "مطلوب أمنياً", licenses: "رخصة قيادة (سارية)", vehicles: "Rolls-Royce (A-99)", records: ["سرقة متجر صغير", "تجاوز السرعة القانونية"] },
+                { id: "1002", name: "خالد بن سلطان", phone: "05022144", job: "مهندس برمجيات", status: "سليم أمنياً", licenses: "رخصة قيادة، رخصة سلاح", vehicles: "Ferrari (B-44)", records: [] },
+                { id: "1003", name: "سلطان الشمري", phone: "05611992", job: "تاجر عطور", status: "سليم أمنياً", licenses: "رخصة قيادة", vehicles: "Mercedes G-Class", records: ["مخالفة وقوف خاطئ"] }
             ],
-            warrants: [
-                { citizen_id: "776511", name: "سلطان المطيري", crime: "السطو المسلح الشامل على بنك الفليكا المركزي", danger_level: "CRITICAL", reward: 250000 },
-                { citizen_id: "998811", name: "فهد القحطاني", crime: "ترويج مواد محظورة عريضة النطاق والمقاومة المسلحة", danger_level: "HIGH", reward: 90000 }
-            ],
-            vehicles: [
-                { model: "Rolls-Royce Cullinan", plate: "ق ل ق 1 1 1", owner: "أحمد العتيبي", insurance: "فعال ومسدد", status: "سليمة" },
-                { model: "Toyota Land Cruiser", plate: "ر س م 5 0 5", owner: "خالد الدوسري", insurance: "منتهي الصلاحية", status: "مطلوبة حجز" }
-            ],
-            weapons: [
-                { serial: "W9988231", type: "Glock-17", owner: "أحمد العتيبي", status: "مرخص بالكامل" },
-                { serial: "W1100223", type: "AK-47", owner: "سلطان المطيري", status: "غير مرخص - مصادرة" }
-            ],
-            cases: [
-                { id: 101, title: "سرقة محل الذهب الكبرى بالطائف", status: "CLOSED", created_by: "العميد عقاب بن ناصر", created_at: "2026-06-20" },
-                { id: 102, title: "اقتحام وتهديد مستخدمي الطريق الدائري", status: "OPEN", created_by: "النقيب أحمد العتيبي", created_at: "2026-06-23" }
-            ],
-            fines: [
-                { citizen_id: "432123", title: "تجاوز السرعة القانونية رادار ساهر", amount: 300, description: "رصد مركبة تسير بسرعة 160 كم/س في خط 100", officer_name: "المرور الآلي", created_at: "2026-05-11" }
-            ],
-            calls: [
-                { id: 91101, caller: "مواطن مجهول", message: "إطلاق نار عشوائي كثيف أمام مجمع العرب التجاري", location: "شمال المدينة", status: "نشط" },
-                { id: 91102, caller: "مدير البنك", message: "تفعيل جرس إنذار الطوارئ الصامت لوجود حركة مشبوهة", location: "البنك المركزي", status: "تحت الاستجابة" }
+            employees: [
+                { badge: "P-189", name: "ابو حاتم", grade: "مدير المديرية", online: true },
+                { badge: "P-102", name: "أحمد الشريف", grade: "ضابط عمليات", online: true },
+                { badge: "P-044", name: "سعد القحطاني", grade: "ضابط ميداني", online: false }
             ],
             operations: [
-                { id: 1, title: "قبضة الأمن الوقائي", type: "عملية خاصة", commander: "مدير الأمن العام", status: "ACTIVE", units: ["النقيب أحمد العتيبي", "الملازم فواز"] }
+                { id: "OP-4412", title: "تطهير مستودع الميناء المهجور", time: "2026/06/24 | 12:30", owner: "ابو حاتم", status: "نشطة حالياً" },
+                { id: "OP-1109", title: "مداهمة مصنع أسلحة غير مرخص", time: "2026/06/22 | 02:15", owner: "أحمد الشريف", status: "مؤرشفة" }
             ],
-            logs: [
-                { officer: "نظام الأمان", action: "تم تدشين تيرمينال الأمن العام وبدء المحاكاة بنجاح 100%", timestamp: "2026-06-24 12:00" }
+            dispatches: [
+                { id: "DIS-889", type: "سطو مسلح", desc: "إطلاق نار كثيف في متجر الـ Ammu-Nation المركزي", loc: "Downtown Ammu-Nation", time: "14:10", status: "جاري الاستجابة" },
+                { id: "DIS-888", type: "سرقة مركبة", desc: "سرقة سيارة فاخرة من نوع رولز رويس سوداء اللون", loc: "Vinewood Hills", time: "13:54", status: "بانتظار التوجيه" }
             ]
         };
 
-        let isFiveM = false;
-
-        // التحقق من البيئة الحاضنة للنظام
-        window.addEventListener('message', function(event) {
-            let e = event.data;
-            if (e.action === "openMdt") {
-                isFiveM = true;
-                document.body.style.display = "flex";
-                syncMdtData(e.data);
-                document.getElementById('current-officer').innerText = e.officerName + " (" + e.officerRank + ")";
-            } else if (e.action === "closeMdt") {
-                document.body.style.display = "none";
-            } else if (e.action === "refreshMdt") {
-                syncMdtData(e.data);
-            }
+        // نظام التنقل التفاعلي بين علامات التبويب بنعومة فائقة وسرعة تامة
+        document.querySelectorAll('.menu-item').forEach(item => {
+            item.addEventListener('click', function() {
+                document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active-tab'));
+                
+                this.classList.add('active');
+                const targetTab = this.getAttribute('data-tab');
+                document.getElementById(targetTab).classList.add('active-tab');
+                
+                // تشغيل أصوات نقرات الواجهة البرمجية (إذا تم الفتح داخل اللعبة)
+                playClickSound();
+            });
         });
 
-        function syncMdtData(data) {
-            if(!data) return;
-            mockData.counters = data.counters || mockData.counters;
-            mockData.warrants = data.warrants || mockData.warrants;
-            mockData.cases = data.cases || mockData.cases;
-            mockData.operations = data.operations || mockData.operations;
-            mockData.calls = data.calls || mockData.calls;
-            mockData.logs = data.logs || mockData.logs;
-            
-            if (data.settings) {
-                if(data.settings.system_name) document.getElementById('sys-name').innerText = data.settings.system_name;
-                if(data.settings.system_logo) document.getElementById('sys-logo').src = data.settings.system_logo;
-                if(data.settings.system_color_primary) document.documentElement.style.setProperty('--primary', data.settings.system_color_primary);
-            }
-            renderDashboard();
+        // تشغيل مؤقت العد التنازلي التفاعلي الموضح بالصورة بدقة متناهية ثانية بثانية
+        function initCountdown() {
+            let totalSeconds = (3 * 24 * 3600) + (11 * 3600) + (9 * 60) + 53;
+            setInterval(() => {
+                if (totalSeconds > 0) {
+                    totalSeconds--;
+                    let d = Math.floor(totalSeconds / (24 * 3600));
+                    let h = Math.floor((totalSeconds % (24 * 3600)) / 3600);
+                    let m = Math.floor((totalSeconds % 3600) / 60);
+                    let s = totalSeconds % 60;
+
+                    document.getElementById('days').innerText = String(d).padStart(2, '0');
+                    document.getElementById('hours').innerText = String(h).padStart(2, '0');
+                    document.getElementById('minutes').innerText = String(m).padStart(2, '0');
+                    document.getElementById('seconds').innerText = String(s).padStart(2, '0');
+                }
+            }, 1000);
         }
 
-        // إغلاق الواجهة عند الضغط على مفتاح Escape لنسخة فايف ام
-        window.addEventListener('keydown', function(e) {
-            if (e.key === "Escape" && isFiveM) {
-                fetch(`https://${GetParentResourceName()}/close`, { method: 'POST' });
-            }
-        });
-
-        // محرك الوقت الفوري الموحد للوزارة
-        setInterval(() => {
-            let d = new Date();
-            document.getElementById('live-clock').innerText = d.toLocaleTimeString('ar-SA') + " - " + d.toLocaleDateString('ar-SA');
-        }, 1000);
-
-        function switchPage(pageId) {
-            document.querySelectorAll('.page-panel').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-            
-            document.getElementById('page-' + pageId).classList.add('active');
-            event.currentTarget.classList.add('active');
-
-            if(pageId === 'dashboard') renderDashboard();
-            if(pageId === 'warrants') renderWarrants();
-            if(pageId === 'cases') renderCases();
-            if(pageId === 'calls') renderCalls();
-            if(pageId === 'operations') renderOperations();
-            if(pageId === 'logs') renderLogs();
+        // إظهار التنبيهات الفورية الفاخرة
+        function showToast(message) {
+            const toast = document.getElementById('toast-notification');
+            document.getElementById('toast-message').innerText = message;
+            toast.classList.add('show');
+            setTimeout(() => { toast.classList.remove('show'); }, 3500);
         }
 
-        function renderDashboard() {
-            document.getElementById('cnt-citizens').innerText = mockData.counters.citizens;
-            document.getElementById('cnt-warrants').innerText = mockData.counters.warrants;
-            document.getElementById('cnt-cases').innerText = mockData.counters.cases;
-            document.getElementById('cnt-calls').innerText = mockData.counters.calls;
-            document.getElementById('cnt-ops').innerText = mockData.counters.operations;
-            document.getElementById('cnt-vehicles').innerText = mockData.counters.vehicles;
-            document.getElementById('cnt-weapons').innerText = mockData.counters.weapons;
-            document.getElementById('cnt-officers').innerText = mockData.counters.officers;
+        // فتح وإغلاق النوافذ (Modals)
+        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
-            let tbody = document.getElementById('dash-warrants-table');
-            tbody.innerHTML = "";
-            mockData.warrants.forEach(w => {
-                tbody.innerHTML += `<tr><td>${w.name}</td><td>${w.citizen_id}</td><td>${w.crime}</td><td><span class="badge badge-danger">${w.danger_level}</span></td><td>${w.reward.toLocaleString()} ريال</td></tr>`;
+        // معالجة البيانات الفورية للموظفين وعرضها بالجداول
+        function renderEmployees() {
+            const tbody = document.getElementById('employees-list-tbody');
+            const topTbody = document.getElementById('top-employees-tbody');
+            tbody.innerHTML = '';
+            if(topTbody) topTbody.innerHTML = '';
+
+            MDT_STATE.employees.forEach((emp, index) => {
+                const statusDot = emp.online ? `<span class="status-pill">متصل</span>` : `<span class="status-pill" style="background:rgba(231,76,60,0.1); border-color:var(--danger-color); color:var(--danger-color);">أوفلاين</span>`;
+                
+                tbody.innerHTML += `
+                    <tr>
+                        <td style="color:var(--accent-gold); font-weight:700;">${emp.badge}</td>
+                        <td>${emp.name}</td>
+                        <td>${emp.grade}</td>
+                        <td>${statusDot}</td>
+                        <td><button class="btn-danger" onclick="deleteEmployee(${index})">إيقاف الصلاحية</button></td>
+                    </tr>
+                `;
+
+                if(topTbody && index < 3) {
+                    topTbody.innerHTML += `
+                        <tr>
+                            <td>${emp.name}</td>
+                            <td>${emp.grade}</td>
+                            <td style="color:var(--accent-gold); font-weight:700;">${emp.badge}</td>
+                            <td>${(25.5 - (index * 6)).toFixed(1)} ساعة</td>
+                            <td><span style="width:10px; height:10px; background:${emp.online ? 'var(--success-color)' : '#95a5a6'}; display:inline-block; border-radius:50%; box-shadow: 0 0 8px ${emp.online ? 'var(--success-color)' : '#000'}"></span></td>
+                        </tr>
+                    `;
+                }
             });
         }
 
-        function performCitizenSearch() {
-            let q = document.getElementById('citizen-search-input').value;
-            if (isFiveM) {
-                fetch(`https://${GetParentResourceName()}/searchCitizen`, { method: 'POST', body: JSON.stringify({query: q}) })
-                .then(res => res.json()).then(data => populateCitizenTable(data));
-            } else {
-                let res = mockData.citizens.filter(c => c.firstname.includes(q) || c.lastname.includes(q) || c.identifier.includes(q));
-                populateCitizenTable(res);
-            }
+        function handleEmployeeSubmit(e) {
+            e.preventDefault();
+            const name = document.getElementById('emp-name').value;
+            const badge = document.getElementById('emp-badge').value;
+            const grade = document.getElementById('emp-grade').value;
+
+            MDT_STATE.employees.push({ badge: badge, name: name, grade: grade, online: true });
+            closeModal('add-employee-modal');
+            document.getElementById('add-employee-form').reset();
+            renderEmployees();
+            showToast(`تم تعيين الضابط ${name} بنجاح وإصدار الملف الرقمي.`);
         }
 
-        function populateCitizenTable(arr) {
-            let tbody = document.getElementById('citizen-table-body');
-            tbody.innerHTML = "";
-            arr.forEach(c => {
-                tbody.innerHTML += `<tr onclick="viewCitizenProfile('${c.identifier}')"><td>${c.firstname} ${c.lastname}</td><td>${c.identifier}</td><td>${c.dateofbirth}</td><td>${c.sex}</td><td>${c.job}</td></tr>`;
-            });
+        function deleteEmployee(index) {
+            const name = MDT_STATE.employees[index].name;
+            MDT_STATE.employees.splice(index, 1);
+            renderEmployees();
+            showToast(`تم سحب صلاحيات النظام من الضابط ${name}.`);
         }
 
-        function viewCitizenProfile(identifier) {
-            if (isFiveM) {
-                fetch(`https://${GetParentResourceName()}/getCitizenProfile`, { method: 'POST', body: JSON.stringify({identifier: identifier}) })
-                .then(res => res.json()).then(data => displayProfileData(data));
-            } else {
-                let citizen = mockData.citizens.find(c => c.identifier === identifier);
-                let fines = mockData.fines.filter(f => f.citizen_id === identifier);
-                let vehicles = mockData.vehicles.filter(v => v.owner === citizen.firstname + " " + citizen.lastname);
-                displayProfileData({ base: citizen, fines: fines, vehicles: vehicles });
-            }
-        }
-
-        function displayProfileData(data) {
-            document.getElementById('citizen-search-results').style.display = "none";
-            document.getElementById('citizen-profile-view').style.style = "block";
-            document.getElementById('citizen-profile-view').style.display = "block";
-            
-            document.getElementById('prof-name').innerText = data.base.firstname + " " + data.base.lastname;
-            document.getElementById('prof-id').innerText = "ID: " + data.base.identifier;
-            document.getElementById('prof-dob').innerText = data.base.dateofbirth;
-            document.getElementById('prof-sex').innerText = data.base.sex;
-            document.getElementById('prof-phone').innerText = data.base.phone_number || "غير مدرج";
-            document.getElementById('prof-job').innerText = data.base.job + " - " + (data.base.job_grade || "");
-            document.getElementById('fine-target-identifier').value = data.base.identifier;
-
-            let finesBody = document.getElementById('prof-fines-body');
-            finesBody.innerHTML = "";
-            (data.fines || []).forEach(f => {
-                finesBody.innerHTML += `<tr><td>${f.title}</td><td>${f.description}</td><td>${f.amount} ريال</td><td>${f.officer_name}</td><td>${f.created_at || 'مؤخراً'}</td></tr>`;
-            });
-
-            let vehBody = document.getElementById('prof-vehicles-body');
-            vehBody.innerHTML = "";
-            (data.vehicles || []).forEach(v => {
-                vehBody.innerHTML += `<tr><td>${v.model}</td><td>${v.plate}</td><td>${v.insurance}</td><td><span class="badge badge-success">${v.status || 'سليمة'}</span></td></tr>`;
-            });
-
-            let licBody = document.getElementById('prof-licenses-body');
-            licBody.innerHTML = `<tr><td>رخصة قيادة مركبة</td><td><span class="badge badge-success">صالحة</span></td></tr>
-                                 <tr><td>رخصة حمل سلاح ناري</td><td><span class="badge badge-danger">موقوفة</span></td></tr>`;
-        }
-
-        function hideCitizenProfile() {
-            document.getElementById('citizen-profile-view').style.display = "none";
-            document.getElementById('citizen-search-results').style.display = "block";
-        }
-
-        function switchProfileSubTab(tab) {
-            document.querySelectorAll('.sub-tab-panel').forEach(p => p.style.display = "none");
-            document.querySelectorAll('.sub-tab').forEach(t => t.classList.remove('active'));
-            document.getElementById('prof-tab-' + tab).style.display = "block";
-            event.currentTarget.classList.add('active');
-        }
-
-        function performVehicleSearch() {
-            let q = document.getElementById('vehicle-search-input').value;
-            let tbody = document.getElementById('vehicles-table-body');
-            tbody.innerHTML = "";
-            let res = mockData.vehicles.filter(v => v.plate.includes(q) || v.owner.includes(q));
-            res.forEach(v => {
-                tbody.innerHTML += `<tr><td>${v.model}</td><td>${v.plate}</td><td>${v.owner}</td><td>${v.insurance}</td><td><span class="badge badge-success">${v.status}</span></td></tr>`;
-            });
-        }
-
-        function performWeaponSearch() {
-            let q = document.getElementById('weapon-search-input').value;
-            let tbody = document.getElementById('weapons-table-body');
-            tbody.innerHTML = "";
-            let res = mockData.weapons.filter(w => w.serial.includes(q));
-            res.forEach(w => {
-                tbody.innerHTML += `<tr><td>${w.serial}</td><td>${w.type}</td><td>${w.owner}</td><td><span class="badge badge-success">${w.status}</span></td></tr>`;
-            });
-        }
-
-        function renderWarrants() {
-            let tbody = document.getElementById('warrants-table-body');
-            tbody.innerHTML = "";
-            mockData.warrants.forEach(w => {
-                tbody.innerHTML += `<tr>
-                    <td><img src="https://i.imgur.com/vH3g93A.png" style="width:40px; border-radius:50%;"></td>
-                    <td>${w.name}</td>
-                    <td>${w.citizen_id}</td>
-                    <td>${w.crime}</td>
-                    <td><span class="badge badge-danger">${w.danger_level}</span></td>
-                    <td>${w.reward.toLocaleString()} ريال</td>
-                    <td><button class="btn-ctrl" style="background:var(--danger); color:white; padding:4px 10px;" onclick="deleteWarrant('${w.citizen_id}')">إلغاء المذكرة</button></td>
-                </tr>`;
-            });
-        }
-
-        function deleteWarrant(cid) {
-            if (isFiveM) {
-                fetch(`https://${GetParentResourceName()}/deleteWarrant`, { method: 'POST', body: JSON.stringify({citizen_id: cid}) });
-            } else {
-                mockData.warrants = mockData.warrants.filter(w => w.citizen_id !== cid);
-                renderWarrants();
-            }
-        }
-
-        function renderCases() {
-            let tbody = document.getElementById('cases-table-body');
-            tbody.innerHTML = "";
-            mockData.cases.forEach(c => {
-                tbody.innerHTML += `<tr><td>#${c.id}</td><td>${c.title}</td><td><span class="badge ${c.status==='OPEN'?'badge-danger':'badge-success'}">${c.status}</span></td><td>${c.created_by}</td><td>${c.created_at}</td></tr>`;
-            });
-        }
-
-        function renderCalls() {
-            let tbody = document.getElementById('calls-table-body');
-            tbody.innerHTML = "";
-            mockData.calls.forEach(c => {
-                tbody.innerHTML += `<tr><td>#${c.id}</td><td>${c.caller}</td><td>${c.message}</td><td>${c.location}</td><td><span style="color:var(--secondary)">${c.status}</span></td><td><button class="btn-ctrl" style="padding:4px 10px;" onclick="acceptCall(${c.id})">الاستجابة والتحرك</button></td></tr>`;
-            });
-        }
-
-        function acceptCall(id) {
-            alert("تم تحديد موقع البلاغ وتوجيه الدورية الرائدة رقم " + id);
-        }
-
+        // معالجة وإدارة غرف العمليات الجارية
         function renderOperations() {
-            let container = document.getElementById('operations-list-grid');
-            container.innerHTML = "";
-            mockData.operations.forEach(op => {
-                container.innerHTML += `
-                    <div style="background:rgba(25,25,30,0.8); border:1px solid var(--primary); border-radius:12px; padding:20px;">
-                        <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
-                            <h4 style="color:var(--secondary)">${op.title} [${op.type}]</h4>
-                            <span class="badge badge-success">${op.status}</span>
-                        </div>
-                        <p style="font-size:13px; margin-bottom:12px; color:var(--text-muted)">القائد الميداني المعتمد: ${op.commander}</p>
-                        <p style="font-size:13px; margin-bottom:15px;">الوحدات المشتركة: ${op.units.join(' , ')}</p>
-                        <div style="display:flex; gap:10px;">
-                            <button class="btn-ctrl" style="padding:5px 12px; font-size:12px;" onclick="joinOp(${op.id})">انضمام للعملية</button>
-                            <button class="btn-ctrl" style="background:var(--danger); color:white; padding:5px 12px; font-size:12px;" onclick="closeOp(${op.id})">إغلاق العملية</button>
-                        </div>
-                    </div>
+            const tbody = document.getElementById('operations-list-tbody');
+            tbody.innerHTML = '';
+            MDT_STATE.operations.forEach((op, index) => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td style="color:var(--accent-gold); font-weight:700;">${op.id}</td>
+                        <td>${op.title}</td>
+                        <td style="font-size:12px;">${op.time}</td>
+                        <td>${op.owner}</td>
+                        <td><span style="color:${op.status === 'نشطة حالياً' ? 'var(--success-color)': 'var(--text-muted)'}">${op.status}</span></td>
+                        <td><i class="fa-solid fa-trash-can" style="color:var(--danger-color); cursor:pointer;" onclick="deleteOperation(${index})"></i></td>
+                    </tr>
                 `;
             });
         }
 
-        function joinOp(id) {
-            if (isFiveM) {
-                fetch(`https://${GetParentResourceName()}/joinOperation`, { method: 'POST', body: JSON.stringify({opId: id}) });
-            } else {
-                mockData.operations.find(o => o.id === id).units.push("المحاكي الميداني");
-                renderOperations();
-            }
+        function handleOperationSubmit(e) {
+            e.preventDefault();
+            const title = document.getElementById('op-title').value;
+            const randID = "OP-" + Math.floor(1000 + Math.random() * 9000);
+            const now = new Date();
+            const timeStr = `${now.getFullYear()}/${String(now.getMonth()+1).padStart(2,'0')}/${String(now.getDate()).padStart(2,'0')} | ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+
+            MDT_STATE.operations.unshift({ id: randID, title: title, time: timeStr, owner: "ابو حاتم", status: "نشطة حالياً" });
+            closeModal('add-op-modal');
+            document.getElementById('add-op-form').reset();
+            renderOperations();
+            showToast("تم بث العملية لجميع الوحدات الميدانية الجارية.");
         }
 
-        function closeOp(id) {
-            if (isFiveM) {
-                fetch(`https://${GetParentResourceName()}/closeOperation`, { method: 'POST', body: JSON.stringify({opId: id}) });
-            } else {
-                mockData.operations = mockData.operations.filter(o => o.id !== id);
-                renderOperations();
-            }
+        function deleteOperation(index) {
+            MDT_STATE.operations.splice(index, 1);
+            renderOperations();
+            showToast("تم أرشفة وحذف ملف العملية بنجاح.");
         }
 
-        function renderLogs() {
-            let container = document.getElementById('logs-container');
-            container.innerHTML = "";
-            mockData.logs.forEach(l => {
-                container.innerHTML += `<div style="border-bottom:1px solid rgba(255,255,255,0.05); padding:10px 0; font-size:13px;">
-                    <span style="color:var(--primary)">[${l.timestamp || 'آلان'}]</span> <strong>${l.officer}:</strong> <span style="color:var(--text-main)">${l.action}</span>
-                </div>`;
+        // معالجة وإدارة البلاغات (Dispatch)
+        function renderDispatches() {
+            const tbody = document.getElementById('dispatch-list-tbody');
+            tbody.innerHTML = '';
+            MDT_STATE.dispatches.forEach((dis) => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td style="color:var(--accent-gold); font-weight:700;">${dis.id}</td>
+                        <td><span style="background:rgba(231,76,60,0.15); color:var(--danger-color); padding:2px 8px; border-radius:4px; font-weight:700; font-size:12px;">${dis.type}</span></td>
+                        <td style="max-width:250px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${dis.desc}</td>
+                        <td><i class="fa-solid fa-location-dot" style="color:var(--accent-gold); margin-left:5px;"></i>${dis.loc}</td>
+                        <td style="font-family:monospace;">${dis.time}</td>
+                        <td><button class="btn-gold" style="padding:4px 10px; font-size:11px;" onclick="showToast('تم إرسال إحداثيات البلاغ لنظام الـ GPS بنجاح')">${dis.status}</button></td>
+                    </tr>
+                `;
             });
         }
 
-        // تحكم ومسارات النوافذ المنبثقة (Modals)
-        function openAdminLogin() { document.getElementById('modal-admin-login').style.display = 'flex'; }
-        function openAddFineModal() { document.getElementById('modal-add-fine').style.display = 'flex'; }
-        function openAddWarrantModal() { document.getElementById('modal-add-warrant').style.display = 'flex'; }
-        function openCreateCaseModal() { document.getElementById('modal-create-case').style.display = 'flex'; }
-        function openCreateOpModal() { document.getElementById('modal-create-op').style.display = 'flex'; }
-        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+        // محرك البحث الفوري والمتقدم للمواطنين (Real-time Live Search UI)
+        document.getElementById('citizen-search-input').addEventListener('input', function(e) {
+            const term = e.target.value.trim().toLowerCase();
+            const tbody = document.getElementById('citizen-results-tbody');
+            tbody.innerHTML = '';
 
-        function submitAdminLogin() {
-            let pass = document.getElementById('admin-pass-input').value;
-            if (pass === "1980faaz2010") {
-                closeModal('modal-admin-login');
-                document.getElementById('modal-admin-panel').style.display = 'flex';
-                document.getElementById('cfg-sys-name').value = document.getElementById('sys-name').innerText;
-                document.getElementById('cfg-sys-logo').value = document.getElementById('sys-logo').src;
-            } else {
-                alert("رمز الوصول المدخل خاطئ، تم تشفير تيرمينال المراقبة وإرسال إشعار للقيادة الرقمية.");
+            if (term === '') {
+                return;
             }
-        }
 
-        function saveAdminSettings() {
-            let name = document.getElementById('cfg-sys-name').value;
-            let logo = document.getElementById('cfg-sys-logo').value;
-            let color = document.getElementById('cfg-color-primary').value;
+            const filtered = MDT_STATE.citizens.filter(c => c.name.toLowerCase().includes(term) || c.id.includes(term) || c.phone.includes(term));
+            
+            filtered.forEach(c => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${c.id}</td>
+                        <td style="font-weight:600;">${c.name}</td>
+                        <td><button class="btn-gold" style="padding:4px 10px; font-size:12px;" onclick="viewCitizenProfile('${c.id}')">عرض الملف</button></td>
+                    </tr>
+                `;
+            });
+        });
 
-            document.getElementById('sys-name').innerText = name;
-            document.getElementById('sys-logo').src = logo;
-            document.documentElement.style.setProperty('--primary', color);
+        // حقن وبناء صفحة الملف الجنائي والمواطن المختار بالكامل مع إمكانية إضافة تهم وغرامات فورية
+        function viewCitizenProfile(id) {
+            const citizen = MDT_STATE.citizens.find(c => c.id === id);
+            const card = document.getElementById('citizen-profile-card');
+            card.style.display = 'block';
 
-            if (isFiveM) {
-                fetch(`https://${GetParentResourceName()}/saveAdminSettings`, {
-                    method: 'POST',
-                    body: JSON.stringify({ system_name: name, system_logo: logo, system_color_primary: color })
+            let recordsHtml = '';
+            if (citizen.records.length === 0) {
+                recordsHtml = `<div style="color:var(--text-muted); font-size:13px; padding:5px 0;">لا يوجد سوابق جنائية مقيدة لهذا الملف.</div>`;
+            } else {
+                citizen.records.forEach((rec, idx) => {
+                    recordsHtml += `
+                        <div style="background:rgba(231,76,60,0.06); border:1px solid rgba(231,76,60,0.15); padding:8px 12px; border-radius:6px; margin-bottom:6px; display:flex; justify-content:space-between; align-items:center;">
+                            <span style="font-size:13px; color:#f1f5f9;"><i class="fa-solid fa-gavel" style="color:var(--danger-color); margin-left:8px;"></i>${rec}</span>
+                            <i class="fa-solid fa-circle-minus" style="color:var(--text-muted); cursor:pointer;" onclick="removeCharge('${citizen.id}', ${idx})"></i>
+                        </div>
+                    `;
                 });
             }
-            closeModal('modal-admin-panel');
+
+            card.innerHTML = `
+                <div class="profile-header">
+                    <div class="profile-avatar"><i class="fa-solid fa-user-shield"></i></div>
+                    <div>
+                        <h2 style="font-size:18px; font-weight:700;">${citizen.name}</h2>
+                        <span style="color:${citizen.status === 'مطلوب أمنياً' ? 'var(--danger-color)' : 'var(--success-color)'}; font-size:13px; font-weight:700;">
+                            ${citizen.status}
+                        </span>
+                    </div>
+                </div>
+                <div class="info-grid" style="margin-bottom: 20px;">
+                    <div class="info-item"><label>الهوية الرقمية</label><span>${citizen.id}</span></div>
+                    <div class="info-item"><label>رقم الهاتف</label><span>${citizen.phone}</span></div>
+                    <div class="info-item"><label>الوظيفة الحالية</label><span>${citizen.job}</span></div>
+                    <div class="info-item"><label>الرخص المسجلة</label><span>${citizen.licenses}</span></div>
+                    <div class="info-item" style="grid-column: span 2;"><label>المركبات المملوكة</label><span>${citizen.vehicles}</span></div>
+                </div>
+                <div class="countdown-title" style="margin-bottom: 10px;">
+                    <i class="fa-solid fa-gavel"></i> <span>السجل الجنائي المقيد</span>
+                </div>
+                <div style="max-height:160px; overflow-y:auto; margin-bottom:15px; padding-left:5px;">
+                    ${recordsHtml}
+                </div>
+                <div style="border-top:1px solid rgba(255,255,255,0.04); padding-top:15px;">
+                    <div class="form-group" style="margin-bottom:10px;">
+                        <label>إضافة تهمة أو غرامة جديدة بشكل رسمي فوري</label>
+                        <input type="text" id="new-charge-input" placeholder="اكتب نص التهمة واضغط تعميد الإجراء...">
+                    </div>
+                    <div style="display:flex; gap:10px;">
+                        <button class="btn-gold" style="flex:1; justify-content:center;" onclick="addCharge('${citizen.id}')">تعميد وحفظ السجل الجنائي</button>
+                        <button class="btn-danger" style="border-radius:8px;" onclick="toggleWantedStatus('${citizen.id}')">تغيير الحالة الأمنية</button>
+                    </div>
+                </div>
+            `;
         }
 
-        function submitFineForm() {
-            let cid = document.getElementById('fine-target-identifier').value;
-            let title = document.getElementById('fine-title').value;
-            let amount = document.getElementById('fine-amount').value;
-            let desc = document.getElementById('fine-desc').value;
+        function addCharge(id) {
+            const input = document.getElementById('new-charge-input');
+            const val = input.value.trim();
+            if(val === '') return;
 
-            let fineObj = { citizen_id: cid, title: title, amount: amount, description: desc, officer_name: "القيادة الميدانية", created_at: "مؤخراً" };
+            const citizen = MDT_STATE.citizens.find(c => c.id === id);
+            citizen.records.push(val);
+            viewCitizenProfile(id);
+            showToast("تم تحديث الملف الجنائي للمواطن وإرسال البيانات للسيرفر.");
             
-            if (isFiveM) {
-                fetch(`https://${GetParentResourceName()}/saveFine`, { method: 'POST', body: JSON.stringify(fineObj) });
-            } else {
-                mockData.fines.push(fineObj);
-                viewCitizenProfile(cid);
-            }
-            closeModal('modal-add-fine');
-        }
-
-        function submitWarrantForm() {
-            let warrantObj = {
-                citizen_id: document.getElementById('warrant-id').value,
-                name: document.getElementById('warrant-name').value,
-                crime: document.getElementById('warrant-crime').value,
-                danger_level: document.getElementById('warrant-danger').value,
-                reward: parseInt(document.getElementById('warrant-reward').value)
-            };
-
-            if (isFiveM) {
-                fetch(`https://${GetParentResourceName()}/saveWarrant`, { method: 'POST', body: JSON.stringify(warrantObj) });
-            } else {
-                mockData.warrants.push(warrantObj);
-                renderWarrants();
-            }
-            closeModal('modal-add-warrant');
-        }
-
-        function submitCaseForm() {
-            let caseObj = {
-                id: mockData.cases.length + 101,
-                title: document.getElementById('case-title').value,
-                description: document.getElementById('case-desc').value,
-                citizens: document.getElementById('case-citizens').value.split(','),
-                officers: ["القائد العام"],
-                evidence: [],
-                status: "OPEN",
-                created_by: "العمليات المشتركة",
-                created_at: "2026-06-24"
-            };
-
-            if (isFiveM) {
-                fetch(`https://${GetParentResourceName()}/createCase`, { method: 'POST', body: JSON.stringify(caseObj) });
-            } else {
-                mockData.cases.push(caseObj);
-                renderCases();
-            }
-            closeModal('modal-create-case');
-        }
-
-        function submitOperationForm() {
-            let opObj = {
-                id: mockData.operations.length + 1,
-                title: document.getElementById('op-title').value,
-                type: document.getElementById('op-type').value,
-                commander: "القيادة العليا الرقمية",
-                status: "ACTIVE",
-                units: ["الكتيبة السادسة"]
-            };
-
-            if (isFiveM) {
-                fetch(`https://${GetParentResourceName()}/createOperation`, { method: 'POST', body: JSON.stringify(opObj) });
-            } else {
-                mockData.operations.push(opObj);
-                renderOperations();
-            }
-            closeModal('modal-create-op');
-        }
-
-        // --- محرك الجسيمات الشبكي المتطور للخلفية (60 FPS Background Engine) ---
-        const canvas = document.getElementById('canvas-particles');
-        const ctx = canvas.getContext('2d');
-        let particlesArray = [];
-
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-        window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
-
-        class Particle {
-            constructor() {
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height;
-                this.size = Math.random() * 2 + 1;
-                this.speedX = Math.random() * 0.4 - 0.2;
-                this.speedY = Math.random() * 0.4 - 0.2;
-            }
-            update() {
-                this.x += this.speedX;
-                this.y += this.speedY;
-                if (this.x > canvas.width || this.x < 0) this.speedX = -this.speedX;
-                if (this.y > canvas.height || this.y < 0) this.speedY = -this.speedY;
-            }
-            draw() {
-                ctx.fillStyle = 'rgba(212, 175, 55, 0.25)';
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fill();
+            // محاكاة إرسال البيانات الفعلي للعبة عبر NUI عند التفعيل داخل الخادم الرسمي
+            if (typeof GetParentResourceName === 'function') {
+                fetch(`https://${GetParentResourceName()}/saveRecord`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: citizen.id, charges: citizen.records })
+                });
             }
         }
 
-        function initParticles() {
-            particlesArray = [];
-            for (let i = 0; i < 75; i++) {
-                particlesArray.push(new Particle());
-            }
+        function removeCharge(id, index) {
+            const citizen = MDT_STATE.citizens.find(c => c.id === id);
+            citizen.records.splice(index, 1);
+            viewCitizenProfile(id);
+            showToast("تم شطب التهمة المحددة من السجل المركزي.");
         }
 
-        function animateParticles() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            particlesArray.forEach(p => {
-                p.update();
-                p.draw();
-            });
-            // رسم خطوط الترابط بين الجسيمات القريبة لبناء شبكة عصبية رقمية
-            for (let a = 0; a < particlesArray.length; a++) {
-                for (let b = a; b < particlesArray.length; b++) {
-                    let dx = particlesArray[a].x - particlesArray[b].x;
-                    let dy = particlesArray[a].y - particlesArray[b].y;
-                    let dist = Math.sqrt(dx * dx + dy * dy);
-                    if (dist < 110) {
-                        ctx.strokeStyle = `rgba(212, 175, 55, ${0.12 - dist/110})`;
-                        ctx.lineWidth = 0.6;
-                        ctx.beginPath();
-                        ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
-                        ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
-                        ctx.stroke();
-                    }
+        function toggleWantedStatus(id) {
+            const citizen = MDT_STATE.citizens.find(c => c.id === id);
+            citizen.status = (citizen.status === "مطلوب أمنياً") ? "سليم أمنياً" : "مطلوب أمنياً";
+            viewCitizenProfile(id);
+            showToast("تم تعديل الحالة الأمنية الفورية للمواطن بنجاح.");
+        }
+
+        function playClickSound() {
+            // دالة صوتية جاهزة لتأثير النقر متوافقة مع الـ Web والـ FiveM NUI
+        }
+
+        // مستمع أحداث استقبال الإشارات والرسائل البرمجية لفتح وإغلاق الواجهة داخل الخادم بشكل فوري
+        window.addEventListener('message', function(event) {
+            if (event.data.action === "toggleMdt") {
+                const wrapper = document.getElementById('mdt-wrapper');
+                if (event.data.status) {
+                    wrapper.style.display = 'flex';
+                } else {
+                    wrapper.style.display = 'none';
                 }
             }
-            requestAnimationFrame(animateParticles);
-        }
+        });
 
-        // تهيئة التجهيز الأولي عند التشغيل المباشر
-        initParticles();
-        animateParticles();
-        renderDashboard();
+        // إغلاق الواجهة فوراً عند الضغط على زر Escape المتعارف عليه
+        window.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                if (typeof GetParentResourceName === 'function') {
+                    fetch(`https://${GetParentResourceName()}/closeMdt`, { method: 'POST' });
+                } else {
+                    showToast("محاكاة: تم ضغط ESC لإغلاق الواجهة الأمنية.");
+                }
+            }
+        });
+
+        // تفعيل دوال التشغيل والتهيئة فور تحميل عناصر الواجهة بالكامل
+        window.onload = () => {
+            initCountdown();
+            renderEmployees();
+            renderOperations();
+            renderDispatches();
+        };
     </script>
 </body>
 </html>
