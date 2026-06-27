@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oscar Police Portal | بوابة شرطة أوسكار</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        cairo: ['Cairo', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+        }
+        /* تأثيرات حركية ناعمة للانتقال بين الواجهات */
+        .view-transition {
+            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+        }
+        .fade-in {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .fade-out {
+            opacity: 0;
+            transform: translateY(10px);
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-slate-950 text-slate-100 antialiased selection:bg-blue-600 selection:text-white flex flex-col justify-between">
+
+    <div>
+        <header class="border-b border-slate-900 bg-slate-900/40 backdrop-blur sticky top-0 z-50 px-4 lg:px-8 py-4">
+            <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
+                
+                <div class="flex items-center gap-4 bg-slate-950/60 p-3 rounded-xl border border-slate-800/80 w-full sm:w-auto">
+                    <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-blue-600 to-indigo-700 flex items-center justify-center shadow-lg text-xl font-bold">
+                        🦅
+                    </div>
+                    <div>
+                        <h2 class="text-lg font-bold text-slate-100 tracking-wide">ابو حاتم</h2>
+                        <p class="text-xs text-slate-400 mt-0.5">
+                            رقم الهوية: <span class="text-blue-400 font-mono font-bold">P-189</span> • الرتبة: <span class="text-amber-500 font-semibold">رئيس رقباء</span>
+                        </p>
+                    </div>
+                </div>
+
+                <button onclick="logout()" class="w-full sm:w-auto px-5 py-2.5 bg-rose-950/30 border border-rose-900/40 hover:bg-rose-900/50 text-rose-400 text-sm font-semibold rounded-xl transition-all duration-200">
+                    تسجيل الخروج
+                </button>
+            </div>
+        </header>
+
+        <main class="max-w-7xl mx-auto px-4 lg:px-8 py-10">
+            
+            <div id="dashboard-view" class="view-transition">
+                <section class="mb-12 text-center sm:text-right">
+                    <h1 class="text-2xl sm:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-l from-slate-100 to-slate-400 tracking-tight">
+                        بوابة التدريب التفاعلي والتأهيل العسكري
+                    </h1>
+                    <p class="text-sm sm:text-base text-slate-400 mt-3 max-w-3xl leading-relaxed">
+                        اختر أحد المناهج الأكاديمية المعتمدة لشرطة أوسكار للتعلم والحصول على شهادتك الدبلوماسية المعتمدة.
+                    </p>
+                </section>
+
+                <section class="mb-12">
+                    <div class="flex items-center gap-3 mb-6">
+                        <span class="text-xl">🎖️</span>
+                        <h3 class="text-xl font-bold text-slate-200">دورات التأهيل الأساسية المطلوبة لرتبتك:</h3>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                        <div class="p-5 rounded-2xl border border-emerald-500/20 bg-gradient-to-br from-slate-900 to-emerald-950/5">
+                            <div class="flex justify-between items-start mb-4">
+                                <h4 class="text-lg font-bold text-slate-100">الجناح الجوي</h4>
+                                <span class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">✅ مكتملة</span>
+                            </div>
+                            <p class="text-xs text-slate-400 leading-relaxed">لقد أتممت متطلبات هذا المنهج بنجاح وتم رصد درجتك في السجل الأكاديمي الموحد.</p>
+                        </div>
+
+                        <div class="p-5 rounded-2xl border border-emerald-500/20 bg-gradient-to-br from-slate-900 to-emerald-950/5">
+                            <div class="flex justify-between items-start mb-4">
+                                <h4 class="text-lg font-bold text-slate-100">العمليات</h4>
+                                <span class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">✅ مكتملة</span>
+                            </div>
+                            <p class="text-xs text-slate-400 leading-relaxed">لقد أتممت متطلبات هذا المنهج بنجاح وتم رصد درجتك في السجل الأكاديمي الموحد.</p>
+                        </div>
+
+                        <div class="p-5 rounded-2xl border border-emerald-500/20 bg-gradient-to-br from-slate-900 to-emerald-950/5">
+                            <div class="flex justify-between items-start mb-4">
+                                <h4 class="text-lg font-bold text-slate-100">المرور</h4>
+                                <span class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">✅ مكتملة</span>
+                            </div>
+                            <p class="text-xs text-slate-400 leading-relaxed">لقد أتممت متطلبات هذا المنهج بنجاح وتم رصد درجتك في السجل الأكاديمي الموحد.</p>
+                        </div>
+
+                        <div class="p-5 rounded-2xl border border-emerald-500/20 bg-gradient-to-br from-slate-900 to-emerald-950/5 flex flex-col justify-between">
+                            <div>
+                                <div class="flex justify-between items-start mb-4">
+                                    <h4 class="text-lg font-bold text-slate-100">تأهيل الأفراد</h4>
+                                    <span class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">✅ مكتملة</span>
+                                </div>
+                                <p class="text-xs text-slate-400 mb-6 leading-relaxed">تتضمن ضوابط سحب الأسلحة واستخدام القوة وحوكمة الميدان الأمنية لشرطة أوسكار.</p>
+                            </div>
+                            <button onclick="switchView('book-view')" class="w-full py-2.5 px-4 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 font-bold text-sm rounded-xl transition-all duration-200 shadow-md">
+                                مراجعة الدليل التفاعلي 📖
+                            </button>
+                        </div>
+
+                        <div class="p-5 rounded-2xl border border-amber-500/30 bg-gradient-to-br from-slate-900 to-amber-950/10 flex flex-col justify-between shadow-lg shadow-amber-950/20">
+                            <div>
+                                <div class="flex justify-between items-start mb-4">
+                                    <h4 class="text-lg font-bold text-slate-100">تأهيل الضباط</h4>
+                                    <span class="px-3 py-1 rounded-full text-xs font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20 animate-pulse">إلزامي</span>
+                                </div>
+                                <p class="text-xs text-slate-400 mb-6 leading-relaxed">يتعين عليك إكمال هذا المنهج التدريبي الآن لاستيفاء شروط ترقية رتبتك الحالية القيادية.</p>
+                            </div>
+                            <button class="w-full py-2.5 px-4 bg-gradient-to-l from-amber-500 to-yellow-600 text-slate-950 font-bold text-sm rounded-xl hover:brightness-110 transition-all duration-200 shadow-md">
+                                بدء الدراسة الآن
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <section>
+                    <div class="flex items-center gap-3 mb-6">
+                        <span class="text-xl">📚</span>
+                        <h3 class="text-xl font-bold text-slate-200">مناهج ودورات عسكرية إضافية:</h3>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                        <div class="p-5 rounded-2xl border border-slate-800/60 bg-slate-900/20 opacity-60">
+                            <div class="flex justify-between items-center mb-3">
+                                <h4 class="font-bold text-slate-300">البحث والتحري</h4>
+                                <span class="px-2 py-0.5 rounded text-[10px] bg-slate-800 text-slate-400 border border-slate-700">قريباً</span>
+                            </div>
+                            <p class="text-xs text-slate-500">سيتم فتح هذا المنهج فور اعتماد المواد التدريبية من قيادة شؤون الأكاديمية.</p>
+                        </div>
+                        <div class="p-5 rounded-2xl border border-slate-800/60 bg-slate-900/20 opacity-60">
+                            <div class="flex justify-between items-center mb-3">
+                                <h4 class="font-bold text-slate-300">الشرطة العسكرية</h4>
+                                <span class="px-2 py-0.5 rounded text-[10px] bg-slate-800 text-slate-400 border border-slate-700">قريباً</span>
+                            </div>
+                            <p class="text-xs text-slate-500">سيتم فتح هذا المنهج فور اعتماد المواد التدريبية من قيادة شؤون الأكاديمية.</p>
+                        </div>
+                        <div class="p-5 rounded-2xl border border-slate-800/60 bg-slate-900/20 opacity-60">
+                            <div class="flex justify-between items-center mb-3">
+                                <h4 class="font-bold text-slate-300">شؤون الأكاديمية</h4>
+                                <span class="px-2 py-0.5 rounded text-[10px] bg-slate-800 text-slate-400 border border-slate-700">قريباً</span>
+                            </div>
+                            <p class="text-xs text-slate-500">سيتم فتح هذا المنهج فور اعتماد المواد التدريبية من قيادة شؤون الأكاديمية.</p>
+                        </div>
+                        <div class="p-5 rounded-2xl border border-slate-800/60 bg-slate-900/20 opacity-60">
+                            <div class="flex justify-between items-center mb-3">
+                                <h4 class="font-bold text-slate-300">القوات الخاصة</h4>
+                                <span class="px-2 py-0.5 rounded text-[10px] bg-slate-800 text-slate-400 border border-slate-700">قريباً</span>
+                            </div>
+                            <p class="text-xs text-slate-500">سيتم فتح هذا المنهج فور اعتماد المواد التدريبية من قيادة شؤون الأكاديمية.</p>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <div id="book-view" class="view-transition hidden">
+                
+                <div class="flex justify-between items-center bg-slate-900/50 p-4 rounded-xl border border-slate-800 mb-8">
+                    <button onclick="switchView('dashboard')" class="px-5 py-2 bg-slate-950 hover:bg-slate-900 border border-slate-800 rounded-xl text-sm font-bold text-slate-300 transition-colors duration-200">
+                        ➔ الخروج من كتاب تاهيل الافراد
+                    </button>
+                    <span class="text-xs bg-blue-500/10 text-blue-400 border border-blue-500/20 px-3 py-1 rounded-md font-bold">
+                        بوابة التقييم النشطة
+                    </span>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+                    
+                    <div class="lg:col-span-2 space-y-6">
+                        
+                        <div class="bg-gradient-to-l from-slate-900 to-slate-950 border border-slate-800 p-6 rounded-2xl">
+                            <span class="text-xs font-bold text-blue-400 uppercase tracking-widest block mb-1">منهج الأكاديمية المعتمد</span>
+                            <h2 class="text-2xl font-black text-slate-100">دورة تأهيل الأفراد</h2>
+                            <p class="text-sm text-amber-500 font-semibold mt-1">تأهيل الأفراد • الدليل الشامل</p>
+                            <p class="text-xs sm:text-sm text-slate-400 mt-3 leading-relaxed">
+                                يُغطي هذا الكتاب التفاعلي جميع إجراءات التعامل مع المجرمين: سحب الأسلحة، استخدام القوة، التعامل بعد الإنعاش، داخل الزنزانة، القبض على المجرمين، ومواقع السرقة — وفقاً لدليل عمل الشرطة الشامل.
+                            </p>
+                            
+                            <div class="mt-4 pt-4 border-t border-slate-800/80">
+                                <span class="text-xs text-slate-400 block font-bold mb-1.5">📋 محتويات الدورة</span>
+                                <p class="text-xs text-slate-400 bg-slate-950/50 p-2.5 rounded-lg border border-slate-900/80 leading-loose">
+                                    سحب الأسلحة (مرخص/ممنوع) • استخدام السلاح • التعامل بعد الإنعاش • داخل الزنزانة • القبض • مواقع السرقة
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-900 border-2 border-slate-800/80 rounded-2xl p-6 shadow-xl relative min-h-[400px] flex flex-col justify-between">
+                            
+                            <div id="page-1-content">
+                                <div class="flex justify-between items-center border-b border-slate-800 pb-3 mb-4">
+                                    <span class="text-xs font-bold px-2 py-1 bg-slate-950 rounded border border-slate-800 text-slate-400">الصفحة 1</span>
+                                    <span class="text-xs font-black text-blue-400 tracking-wide">الفصل الأول</span>
+                                </div>
+                                <h3 class="text-lg font-black text-slate-100 mb-1">سحب الأسلحة – قواعد عامة</h3>
+                                <h4 class="text-sm font-bold text-amber-500 mb-4">قواعد سحب الأسلحة</h4>
+                                <ul class="space-y-3" id="page-1-bullets">
+                                    </ul>
+                            </div>
+
+                            <div id="page-2-content" class="hidden">
+                                <div class="flex justify-between items-center border-b border-slate-800 pb-3 mb-4">
+                                    <span class="text-xs font-bold px-2 py-1 bg-slate-950 rounded border border-slate-800 text-slate-400">الصفحة 2</span>
+                                    <span class="text-xs font-black text-blue-400 tracking-wide">الفصل الثاني</span>
+                                </div>
+                                <h3 class="text-lg font-black text-slate-100 mb-1">استخدام القوة والتدابير الميدانية</h3>
+                                <h4 class="text-sm font-bold text-amber-500 mb-4">صلاحيات تدرج القوة الأمنية</h4>
+                                <ul class="space-y-3" id="page-2-bullets">
+                                    </ul>
+                            </div>
+
+                            <div class="flex justify-between items-center pt-6 mt-6 border-t border-slate-800">
+                                <button id="prev-page-btn" onclick="changePage(1)" disabled class="px-4 py-1.5 bg-slate-950 hover:bg-slate-800 border border-slate-800 rounded-lg text-xs font-bold disabled:opacity-30 disabled:pointer-events-none transition-colors">
+                                    السابق
+                                </button>
+                                <span id="page-indicator" class="text-xs text-slate-500 font-mono font-bold">صفحة 1 من 2</span>
+                                <button id="next-page-btn" onclick="changePage(2)" class="px-4 py-1.5 bg-slate-950 hover:bg-slate-800 border border-slate-800 rounded-lg text-xs font-bold disabled:opacity-30 disabled:pointer-events-none transition-colors">
+                                    التالي
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="space-y-6">
+                        
+                        <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl shadow-md">
+                            <span class="text-[10px] font-bold text-slate-500 block mb-1 uppercase tracking-wider">إدارة وحوكمة الاختبار (الأكاديمية)</span>
+                            <h3 class="text-md font-bold text-slate-200 mb-4 flex items-center gap-2">
+                                <span>📝</span> الاختبار النهائي
+                            </h3>
+                            
+                            <div class="bg-amber-950/10 border border-amber-500/20 p-4 rounded-xl text-center space-y-3">
+                                <p class="text-xs text-amber-400 font-medium leading-relaxed">
+                                    الاختبار مغلق حالياً من قِبل إدارة الأكاديمية العسكرية العليا.
+                                </p>
+                                <span class="inline-block px-3 py-1 bg-amber-500 text-slate-950 text-[10px] font-black rounded-md uppercase tracking-wide animate-pulse">
+                                    الاختبار مغلق
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl shadow-md">
+                            <h3 class="text-sm font-bold text-slate-300 mb-4 flex items-center gap-2">
+                                <span>🎖️</span> أوسمة تأهيل الأفراد المكتسبة
+                            </h3>
+
+                            <div class="space-y-3" id="badges-container">
+                                </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </main>
+    </div>
+
+    <footer class="border-t border-slate-900 bg-slate-950 py
