@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الهلال الأحمر | مقاطعة تورنتو - لوحة القيادة</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/animations.css">
+</head>
+<body class="dark-neon-theme">
+
+    <div class="paramedic-character-container">
+        <div class="paramedic-avatar"></div>
+        <div class="glow-platform"></div>
+    </div>
+
+    <header class="glass-header">
+        <div class="header-right">
+            <div class="logo-box">
+                <i class="fa-solid fa-truck-medical neon-icon"></i>
+                <div class="logo-text">
+                    <h1>الهلال الأحمر</h1>
+                    <span>مقاطعة تورنتو | نظام الإدارة</span>
+                </div>
+            </div>
+            <div class="status-badge pulse-glow">
+                <span class="dot online"></span> متصل
+            </div>
+        </div>
+        <div class="header-left">
+            <div class="time-update"><i class="fa-solid fa-clock"></i> آخر تحديث: <span id="lastUpdate">الآن</span></div>
+            <button class="icon-btn"><i class="fa-solid fa-bell"></i><span class="notification-dot"></span></button>
+            <button class="icon-btn" onclick="openModal('settingsModal')"><i class="fa-solid fa-gear"></i></button>
+            <div class="user-profile">
+                <img src="https://ui-avatars.com/api/?name=Admin&background=ff003c&color=fff" alt="User">
+                <button class="logout-btn"><i class="fa-solid fa-right-from-bracket"></i></button>
+            </div>
+        </div>
+    </header>
+
+    <div class="app-container">
+        <aside class="glass-sidebar">
+            <nav class="side-nav">
+                <button class="nav-item active" data-target="dashboard"><i class="fa-solid fa-chart-pie"></i> الإحصائيات</button>
+                <button class="nav-item" data-target="members"><i class="fa-solid fa-users"></i> الأعضاء</button>
+                <button class="nav-item" data-target="ranks"><i class="fa-solid fa-star"></i> الرتب</button>
+                <button class="nav-item" data-target="salaries"><i class="fa-solid fa-sack-dollar"></i> الرواتب</button>
+                <button class="nav-item" data-target="warnings"><i class="fa-solid fa-triangle-exclamation"></i> الإنذارات</button>
+                <button class="nav-item" data-target="medals"><i class="fa-solid fa-medal"></i> الأوسمة</button>
+                <button class="nav-item" data-target="promotions"><i class="fa-solid fa-arrow-trend-up"></i> الترقيات</button>
+                <button class="nav-item" data-target="discord"><i class="fa-brands fa-discord"></i> ديسكورد</button>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            
+            <section id="dashboard" class="view-section active fade-in">
+                <div class="stats-grid">
+                    <div class="stat-card glass-panel" data-tooltip="إجمالي المسعفين في النظام">
+                        <div class="stat-icon"><i class="fa-solid fa-users-medical"></i></div>
+                        <div class="stat-data">
+                            <h3>المسعفين</h3>
+                            <h2 class="counter" data-target="154">0</h2>
+                        </div>
+                    </div>
+                    <div class="stat-card glass-panel">
+                        <div class="stat-icon online-icon"><i class="fa-solid fa-signal"></i></div>
+                        <div class="stat-data">
+                            <h3>المتصلين</h3>
+                            <h2 class="counter" data-target="42">0</h2>
+                        </div>
+                    </div>
+                    </div>
+
+                <div class="table-container glass-panel mt-4">
+                    <div class="table-header">
+                        <h2><i class="fa-solid fa-list"></i> السجل الشامل</h2>
+                        <div class="table-actions">
+                            <div class="search-box">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                                <input type="text" id="liveSearch" placeholder="بحث مباشر...">
+                            </div>
+                            <button class="btn-neon" onclick="exportExcel()"><i class="fa-solid fa-file-excel"></i> تصدير</button>
+                            <button class="btn-neon" onclick="document.getElementById('importExcel').click()"><i class="fa-solid fa-upload"></i> استيراد</button>
+                            <input type="file" id="importExcel" hidden accept=".xlsx, .xls">
+                            <button class="btn-primary" onclick="openModal('addMemberModal')"><i class="fa-solid fa-plus"></i> إضافة عضو</button>
+                        </div>
+                    </div>
+                    
+                    <div class="custom-scrollbar-wrapper">
+                        <table class="modern-table">
+                            <thead>
+                                <tr>
+                                    <th><input type="checkbox" id="selectAll"></th>
+                                    <th>الاسم</th>
+                                    <th>الرتبة</th>
+                                    <th>Discord ID</th>
+                                    <th>الحالة</th>
+                                    <th>الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="membersTableBody">
+                                <tr class="skeleton-row"><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                                <tr class="skeleton-row"><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="pagination">
+                        <button class="btn-glass">السابق</button>
+                        <span>صفحة 1 من 5</span>
+                        <button class="btn-glass">التالي</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <div id="addMemberModal" class="modal-overlay">
+        <div class="modal-content glass-panel scale-in">
+            <div class="modal-header">
+                <h2>إضافة مسعف جديد</h2>
+                <button class="close-btn" onclick="closeModal('addMemberModal')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-grid">
+                    <div class="input-group">
+                        <label>الاسم داخل اللعبة</label>
+                        <input type="text" placeholder="مثال: John Doe">
+                    </div>
+                    <div class="input-group">
+                        <label>Discord ID</label>
+                        <input type="text" placeholder="أرقام فقط">
+                    </div>
+                    <div class="input-group">
+                        <label>Steam Hex</label>
+                        <input type="text" placeholder="steam:1100001...">
+                    </div>
+                    <div class="input-group">
+                        <label>الرتبة</label>
+                        <select>
+                            <option>E-001 | متدرب</option>
+                            <option>E-002 | مسعف</option>
+                            <option>Golden Leadership</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-glass" onclick="closeModal('addMemberModal')">إلغاء</button>
+                <button class="btn-primary" onclick="saveMember()"><i class="fa-solid fa-floppy-disk"></i> حفظ البيانات</button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="system-footer glass-panel">
+        <p>صنع بواسطة: <strong>أكرم نـجف</strong></p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/main.js"></script>
+    <script src="js/table.js"></script>
+</body>
+</html>

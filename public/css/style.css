@@ -1,0 +1,75 @@
+:root {
+    --primary-red: #ff003c;
+    --primary-glow: rgba(255, 0, 60, 0.4);
+    --bg-dark: #0a0a0d;
+    --glass-bg: rgba(20, 20, 25, 0.65);
+    --glass-border: rgba(255, 255, 255, 0.05);
+    --text-main: #ffffff;
+    --text-muted: #888899;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; }
+body { background: var(--bg-dark); color: var(--text-main); overflow-x: hidden; }
+
+/* تأثير Glassmorphism */
+.glass-panel, .glass-header, .glass-sidebar {
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+/* Header */
+.glass-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 15px 30px; border-bottom: 1px solid var(--primary-glow);
+    position: sticky; top: 0; z-index: 100;
+}
+.header-right { display: flex; align-items: center; gap: 20px; }
+.logo-box { display: flex; align-items: center; gap: 15px; }
+.neon-icon { font-size: 2rem; color: var(--primary-red); text-shadow: 0 0 15px var(--primary-red); }
+.logo-text h1 { font-size: 1.2rem; font-weight: 900; margin: 0; text-transform: uppercase; letter-spacing: 1px; }
+.logo-text span { font-size: 0.8rem; color: var(--text-muted); }
+
+/* Buttons */
+.btn-primary {
+    background: var(--primary-red); color: #fff; border: none;
+    padding: 10px 20px; border-radius: 8px; cursor: pointer;
+    font-weight: 700; transition: all 0.3s ease;
+    box-shadow: 0 0 15px var(--primary-glow);
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 25px var(--primary-glow); }
+
+.btn-neon {
+    background: transparent; border: 1px solid var(--primary-red);
+    color: var(--primary-red); padding: 10px 20px; border-radius: 8px;
+    cursor: pointer; font-weight: 700; transition: all 0.3s;
+}
+.btn-neon:hover { background: var(--primary-red); color: #fff; box-shadow: 0 0 15px var(--primary-red); }
+
+/* الشخصية المتحركة (3D Paramedic Sticker) */
+.paramedic-character-container {
+    position: fixed; left: 30px; bottom: 80px; width: 220px; height: 320px;
+    z-index: 50; pointer-events: none;
+}
+.paramedic-avatar {
+    width: 100%; height: 100%;
+    /* استبدل هذا الرابط بصورة الـ Sticker الخاصة بك */
+    background: url('https://i.imgur.com/vHqJ8h0.png') no-repeat center bottom / contain;
+    filter: drop-shadow(0 15px 25px rgba(255,0,60,0.5));
+    animation: float 4s ease-in-out infinite, breathe 3s ease-in-out infinite;
+}
+.glow-platform {
+    position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%);
+    width: 150px; height: 15px; background: radial-gradient(ellipse, rgba(255,0,60,0.8), transparent);
+    border-radius: 50%; filter: blur(8px); animation: pulseGlow 2s infinite;
+}
+
+/* Footer */
+.system-footer {
+    position: fixed; bottom: 0; width: 100%; text-align: center;
+    padding: 10px; font-size: 0.9rem; border-top: 1px solid var(--glass-border);
+    z-index: 100;
+}
+.system-footer strong { color: var(--primary-red); text-shadow: 0 0 5px var(--primary-glow); }
