@@ -95,7 +95,7 @@
             100% { transform: translate(20%, 80%) scale(0.9); opacity: 0.5; }
         }
 
-        /* --- شاشة التحميل الفاخرة المحدثة --- */
+        /* --- شاشة التحميل الفاخرة --- */
         #loading-screen {
             position: fixed;
             top: 0;
@@ -109,29 +109,6 @@
             justify-content: center;
             align-items: center;
             transition: opacity 0.8s ease, transform 0.8s ease;
-        }
-
-        .loader-welcome-text {
-            font-size: 1.8rem;
-            font-weight: 800;
-            color: #ffffff;
-            margin-bottom: 30px;
-            text-shadow: 0 0 25px rgba(0, 242, 254, 0.7), 0 0 50px rgba(127, 0, 255, 0.4);
-            text-align: center;
-            padding: 0 20px;
-            animation: pulseWelcomeText 2s infinite alternate ease-in-out;
-        }
-
-        .loader-logo-img {
-            width: 160px;
-            height: 160px;
-            object-fit: contain;
-            margin-bottom: 30px;
-            border-radius: 50%;
-            border: 2px solid rgba(0, 242, 254, 0.4);
-            box-shadow: 0 0 35px rgba(0, 242, 254, 0.5), inset 0 0 20px rgba(0, 242, 254, 0.2);
-            animation: logoAdvancedAnim 4s infinite ease-in-out;
-            display: none; /* يتم إظهارها تلقائياً بالـ JS فقط عند توفر الرابط */
         }
 
         .loader-ring {
@@ -163,42 +140,6 @@
         @keyframes pulseText {
             0% { opacity: 0.5; }
             100% { opacity: 1; }
-        }
-
-        @keyframes pulseWelcomeText {
-            0% { transform: scale(0.98); opacity: 0.8; }
-            100% { transform: scale(1.02); opacity: 1; }
-        }
-
-        @keyframes logoAdvancedAnim {
-            0% { transform: scale(0.92); filter: drop-shadow(0 0 15px rgba(0, 242, 254, 0.4)); }
-            50% { transform: scale(1.05); filter: drop-shadow(0 0 35px rgba(225, 0, 255, 0.7)); }
-            100% { transform: scale(0.92); filter: drop-shadow(0 0 15px rgba(0, 242, 254, 0.4)); }
-        }
-
-        /* --- لوجو أعلى كل قسم (داخل النوافذ المنبثقة) --- */
-        .section-modal-logo {
-            width: 100px;
-            height: 100px;
-            object-fit: contain;
-            border-radius: 20px;
-            border: 2px solid rgba(0, 242, 254, 0.3);
-            box-shadow: 0 0 25px rgba(0, 242, 254, 0.2);
-            margin-bottom: 15px;
-            transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-            display: none; /* يظهر بالـ JS في حال تفعيل الرابط */
-            animation: floatSectionLogo 4s infinite ease-in-out;
-        }
-
-        .section-modal-logo:hover {
-            transform: scale(1.12) rotate(4deg);
-            border-color: rgba(225, 0, 255, 0.6);
-            box-shadow: 0 0 35px rgba(225, 0, 255, 0.6);
-        }
-
-        @keyframes floatSectionLogo {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-6px); }
         }
 
         /* --- الهيدر الضخم --- */
@@ -307,7 +248,7 @@
 
         .cards-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(300px, 15fr));
             gap: 2.5rem;
         }
 
@@ -462,13 +403,6 @@
         }
 
         .modal-title-area {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 5px;
-        }
-
-        .modal-title-main {
             display: flex;
             align-items: center;
             gap: 15px;
@@ -673,19 +607,20 @@
 </head>
 <body>
 
+    <!-- شاشة التحميل الفاخرة -->
     <div id="loading-screen">
-        <div class="loader-welcome-text">مرحباً بك في الموقع الرسمي لمقاطعة ميلانو</div>
-        <img id="preloader-logo-element" class="loader-logo-img" alt="Milano Logo">
         <div class="loader-ring"></div>
         <div class="loader-text">مقاطعة ميلانو تنبض بالحياة...</div>
     </div>
 
+    <!-- الجزيئات والأضواء العائمة في الخلفية -->
     <div class="bg-particles" id="particles-container"></div>
     <div class="floating-lights">
         <div class="light-glow" style="top: 15%; left: 10%;"></div>
         <div class="light-glow" style="top: 60%; left: 60%;"></div>
     </div>
 
+    <!-- الهيدر الضخم العملاق -->
     <header>
         <div class="brand-container">
             <h1 class="server-title">مقاطعة ميلانو</h1>
@@ -695,11 +630,13 @@
         </div>
     </header>
 
+    <!-- حاوية القائمة الرئيسية والأقسام الثمانية الكبرى -->
     <main class="container" id="rules-section">
         <h2 class="section-header-text">لوحة الأقسام التشريعية للسيرفر</h2>
         
         <div class="cards-grid">
             
+            <!-- القسم 1 -->
             <div class="card" onclick="openModal('discord-modal')">
                 <div class="card-glow-effect"></div>
                 <div class="card-icon">💬</div>
@@ -707,6 +644,7 @@
                 <p class="card-description">البيئة الرسمية للتواصل، بناء المجتمع، الدعم الفني، والتعامل الأخرافي العام خارج اللعبة.</p>
             </div>
 
+            <!-- القسم 2 -->
             <div class="card" onclick="openModal('crime-modal')">
                 <div class="card-glow-effect"></div>
                 <div class="card-icon">🥷</div>
@@ -714,6 +652,7 @@
                 <p class="card-description">الضوابط الصارمة والموازين المنظمة للسرقات، السيناريوهات الإجرامية، الرهائن والمواجهات.</p>
             </div>
 
+            <!-- القسم 3 -->
             <div class="card" onclick="openModal('security-modal')">
                 <div class="card-glow-effect"></div>
                 <div class="card-icon">🛡️</div>
@@ -721,6 +660,7 @@
                 <p class="card-description">اللوائح التنظيمية الخاصة برجال الأمن والشرطة لحفظ النظام وضمان تمثيل قانوني نزيه وعادل.</p>
             </div>
 
+            <!-- القسم 4 -->
             <div class="card" onclick="openModal('border-modal')">
                 <div class="card-glow-effect"></div>
                 <div class="card-icon">🚧</div>
@@ -728,6 +668,7 @@
                 <p class="card-description">صلاحيات حراس الحدود والتزاماتهم المهنية والأمنية عند المداخل والمنافذ الإستراتيجية.</p>
             </div>
 
+            <!-- القسم 5 -->
             <div class="card" onclick="openModal('port-modal')">
                 <div class="card-glow-effect"></div>
                 <div class="card-icon">⚓</div>
@@ -735,6 +676,7 @@
                 <p class="card-description">تعليمات الدخول والانتظار العادلة، تنظيم حركة شاحنات ومركبات العمل لمنع الفوضى العكسية.</p>
             </div>
 
+            <!-- القسم 6 -->
             <div class="card" onclick="openModal('mechanic-modal')">
                 <div class="card-glow-effect"></div>
                 <div class="card-icon">🔧</div>
@@ -742,6 +684,7 @@
                 <p class="card-description">دليل فنيي كراج التعديل، أوقات العمل الرسمية ومحاذير الانخراط في الأعمال غير القانونية.</p>
             </div>
 
+            <!-- القسم 7 -->
             <div class="card" onclick="openModal('red-crescent-modal')">
                 <div class="card-glow-effect"></div>
                 <div class="card-icon">🚑</div>
@@ -749,6 +692,7 @@
                 <p class="card-description">الميثاق الإنساني المعتمد للمسعفين، آليات الاستجابة للحوادث وقواعد السلامة أثناء إطلاق النار.</p>
             </div>
 
+            <!-- القسم 8 -->
             <div class="card" onclick="openModal('general-modal')">
                 <div class="card-glow-effect"></div>
                 <div class="card-icon">⚠️</div>
@@ -759,15 +703,15 @@
         </div>
     </main>
 
+    <!-- ==================== نوافذ القوانين الكبرى MODALS ==================== -->
+
+    <!-- مودال 1: قوانين الديسكورد -->
     <div class="modal-overlay" id="discord-modal" onclick="closeModalOnOverlay(event, 'discord-modal')">
         <div class="modal-container">
             <div class="modal-header">
                 <div class="modal-title-area">
-                    <img id="modal-logo-discord" class="section-modal-logo" alt="Discord Section Logo">
-                    <div class="modal-title-main">
-                        <span class="modal-icon">💬</span>
-                        <h2 class="modal-title">قوانين الديسكورد</h2>
-                    </div>
+                    <span class="modal-icon">💬</span>
+                    <h2 class="modal-title">قوانين الديسكورد</h2>
                 </div>
                 <button class="close-modal-btn" onclick="closeModal('discord-modal')">✕</button>
             </div>
@@ -796,15 +740,13 @@
         </div>
     </div>
 
+    <!-- مودال 2: قوانين الإجرام -->
     <div class="modal-overlay" id="crime-modal" onclick="closeModalOnOverlay(event, 'crime-modal')">
         <div class="modal-container">
             <div class="modal-header">
                 <div class="modal-title-area">
-                    <img id="modal-logo-crime" class="section-modal-logo" alt="Crime Section Logo">
-                    <div class="modal-title-main">
-                        <span class="modal-icon">🥷</span>
-                        <h2 class="modal-title">قوانين الإجرام</h2>
-                    </div>
+                    <span class="modal-icon">🥷</span>
+                    <h2 class="modal-title">قوانين الإجرام</h2>
                 </div>
                 <button class="close-modal-btn" onclick="closeModal('crime-modal')">✕</button>
             </div>
@@ -814,7 +756,7 @@
                 <div class="rule-box"><div class="rule-number">3</div><div class="rule-text-content">ممنوع طلب التجول خارج مكان السرقة وطلب ذلك يعتبر تخريب تمثيل.</div></div>
                 <div class="rule-box"><div class="rule-number">4</div><div class="rule-text-content">إذا كان الشخص في حالة نزيف وتم علاجه بالموقع يقدر يتذكر الاحداث كاملة وممكن تزويد رجال الأمن بوصف الجاني -المجرم- وتسجيل قضية.</div></div>
                 <div class="rule-box"><div class="rule-number">5</div><div class="rule-text-content">يمنع تهديد او خطف المواطن بدون بدأ حوار معه</div></div>
-                <div class="rule-box"><div class="rule-number">6</div><div class="rule-text-content">يجب على المشاركين في السيناريوهات التمثيل الجيد من قبل الأمن أو المجرمين</div></div>
+                <div class="rule-box"><div class="rule-number">6</div><div class="rule-text-content">يجيب على المشاركين في السيناريوهات التمثيل الجيد من قبل الأمن أو المجرمين</div></div>
                 <div class="rule-box"><div class="rule-number">7</div><div class="rule-text-content">اي سيناريو يتم فيه ارسال المفاوض للتفاوض يمنع قتل او اختطاف المفاوض</div></div>
                 <div class="rule-box"><div class="rule-number">8</div><div class="rule-text-content">يمنع تهديد رجل الأمن بغرض اخذه للسرقه</div></div>
                 <div class="rule-box"><div class="rule-number">9</div><div class="rule-text-content">يمنع حمل الرهينة في وضعية التهديد داخل المركبة ويعتبر مخالف للتمثيل</div></div>
@@ -835,15 +777,13 @@
         </div>
     </div>
 
+    <!-- مودال 3: قوانين الأمن العام -->
     <div class="modal-overlay" id="security-modal" onclick="closeModalOnOverlay(event, 'security-modal')">
         <div class="modal-container">
             <div class="modal-header">
                 <div class="modal-title-area">
-                    <img id="modal-logo-security" class="section-modal-logo" alt="Security Section Logo">
-                    <div class="modal-title-main">
-                        <span class="modal-icon">🛡️</span>
-                        <h2 class="modal-title">قوانين الأمن العام</h2>
-                    </div>
+                    <span class="modal-icon">🛡️</span>
+                    <h2 class="modal-title">قوانين الأمن العام</h2>
                 </div>
                 <button class="close-modal-btn" onclick="closeModal('security-modal')">✕</button>
             </div>
@@ -870,15 +810,13 @@
         </div>
     </div>
 
+    <!-- مودال 4: قوانين حرس الحدود -->
     <div class="modal-overlay" id="border-modal" onclick="closeModalOnOverlay(event, 'border-modal')">
         <div class="modal-container">
             <div class="modal-header">
                 <div class="modal-title-area">
-                    <img id="modal-logo-border" class="section-modal-logo" alt="Border Section Logo">
-                    <div class="modal-title-main">
-                        <span class="modal-icon">🚧</span>
-                        <h2 class="modal-title">قوانين حرس الحدود</h2>
-                    </div>
+                    <span class="modal-icon">🚧</span>
+                    <h2 class="modal-title">قوانين حرس الحدود</h2>
                 </div>
                 <button class="close-modal-btn" onclick="closeModal('border-modal')">✕</button>
             </div>
@@ -906,15 +844,13 @@
         </div>
     </div>
 
+    <!-- مودال 5: قوانين الميناء البحري -->
     <div class="modal-overlay" id="port-modal" onclick="closeModalOnOverlay(event, 'port-modal')">
         <div class="modal-container">
             <div class="modal-header">
                 <div class="modal-title-area">
-                    <img id="modal-logo-port" class="section-modal-logo" alt="Port Section Logo">
-                    <div class="modal-title-main">
-                        <span class="modal-icon">⚓</span>
-                        <h2 class="modal-title">قوانين الميناء البحري مقاطعة ميلانو</h2>
-                    </div>
+                    <span class="modal-icon">⚓</span>
+                    <h2 class="modal-title">قوانين الميناء البحري مقاطعة ميلانو</h2>
                 </div>
                 <button class="close-modal-btn" onclick="closeModal('port-modal')">✕</button>
             </div>
@@ -936,15 +872,13 @@
         </div>
     </div>
 
+    <!-- مودال 6: قوانين الميكانيك -->
     <div class="modal-overlay" id="mechanic-modal" onclick="closeModalOnOverlay(event, 'mechanic-modal')">
         <div class="modal-container">
             <div class="modal-header">
                 <div class="modal-title-area">
-                    <img id="modal-logo-mechanic" class="section-modal-logo" alt="Mechanic Section Logo">
-                    <div class="modal-title-main">
-                        <span class="modal-icon">🔧</span>
-                        <h2 class="modal-title">قوانين كراج الميكانيكي</h2>
-                    </div>
+                    <span class="modal-icon">🔧</span>
+                    <h2 class="modal-title">قوانين كراج الميكانيكي</h2>
                 </div>
                 <button class="close-modal-btn" onclick="closeModal('mechanic-modal')">✕</button>
             </div>
@@ -967,15 +901,13 @@
         </div>
     </div>
 
+    <!-- مودال 7: قوانين الهلال الأحمر -->
     <div class="modal-overlay" id="red-crescent-modal" onclick="closeModalOnOverlay(event, 'red-crescent-modal')">
         <div class="modal-container">
             <div class="modal-header">
                 <div class="modal-title-area">
-                    <img id="modal-logo-medical" class="section-modal-logo" alt="Medical Section Logo">
-                    <div class="modal-title-main">
-                        <span class="modal-icon">🚑</span>
-                        <h2 class="modal-title">قوانين الهلال الاحمر بمقاطعة مــيلانو</h2>
-                    </div>
+                    <span class="modal-icon">🚑</span>
+                    <h2 class="modal-title">قوانين الهلال الاحمر بمقاطعة مــيلانو</h2>
                 </div>
                 <button class="close-modal-btn" onclick="closeModal('red-crescent-modal')">✕</button>
             </div>
@@ -984,7 +916,7 @@
                 <div class="rule-box"><div class="rule-number">2</div><div class="rule-text-content">الالتزام بقوانين المرور امر واجب على الجميع باستثناء حالات البلاغات</div></div>
                 <div class="rule-box"><div class="rule-number">3</div><div class="rule-text-content">اعطاء اي شخص معدات الإسعافات الأولية</div></div>
                 <div class="rule-box"><div class="rule-number">4</div><div class="rule-text-content">يجب الالتزام بالزي الرسمي للهلال الاحمر و عدم التعديل عليه</div></div>
-                <div class="rule-box"><div class="rule-number">5</div><div class="rule-text-content">انتظار امر العمليات in توجيهك للبلاغ المتواجد بالمنطقه المتوزع لها</div></div>
+                <div class="rule-box"><div class="rule-number">5</div><div class="rule-text-content">انتظار امر العمليات في توجيهك للبلاغ المتواجد بالمنطقه المتوزع لها</div></div>
                 <div class="rule-box"><div class="rule-number">6</div><div class="rule-text-content">بعد إنعاش الميت يجب التمثيل الإطمئنان على صحة المريض بالتحمد له على السلامة و العرض علية لنقلة للمستشفى</div></div>
                 <div class="rule-box"><div class="rule-number">7</div><div class="rule-text-content">عند وجود حادث مروري يجب عليك طلب المرور</div></div>
                 <div class="rule-box"><div class="rule-number">8</div><div class="rule-text-content">عند وجود اطلاق نار على الجثة يجب عليك طلب الشرطة للتحقيق</div></div>
@@ -1005,15 +937,13 @@
         </div>
     </div>
 
+    <!-- مودال 8: الملاحظات العامة -->
     <div class="modal-overlay" id="general-modal" onclick="closeModalOnOverlay(event, 'general-modal')">
         <div class="modal-container">
             <div class="modal-header">
                 <div class="modal-title-area">
-                    <img id="modal-logo-notes" class="section-modal-logo" alt="Notes Section Logo">
-                    <div class="modal-title-main">
-                        <span class="modal-icon">⚠️</span>
-                        <h2 class="modal-title">قسم عام للملاحظات والتنبيهات</h2>
-                    </div>
+                    <span class="modal-icon">⚠️</span>
+                    <h2 class="modal-title">قسم عام للملاحظات والتنبيهات</h2>
                 </div>
                 <button class="close-modal-btn" onclick="closeModal('general-modal')">✕</button>
             </div>
@@ -1034,48 +964,17 @@
         </div>
     </div>
 
+    <!-- الفوتر الاحترافي الفاخر -->
     <footer>
         <div class="footer-brand">© مقاطعة ميلانو</div>
         <div class="footer-rules-label">Official Rules</div>
         <div class="footer-credits">Made with <span class="heart-icon">❤️</span> for elite roleplay</div>
     </footer>
 
+    <!-- ==================== البرمجة التفاعلية JAVASCRIPT ==================== -->
     <script>
-        /* ===========================
-           LOGO SETTINGS
-        =========================== */
-        const PRELOADER_LOGO = "https://via.placeholder.com/160"; // ضع رابط صورة لوجو التحميل الافتراضي هنا
-        const SECTION_LOGOS = {
-            discord: "https://via.placeholder.com/100",   // رابط لوجو قوانين الديسكورد
-            crime: "https://via.placeholder.com/100",     // رابط لوجو قوانين الإجرام
-            security: "https://via.placeholder.com/100",  // رابط لوجو قوانين الأمن العام
-            border: "https://via.placeholder.com/100",    // رابط لوجو قوانين حرس الحدود
-            port: "https://via.placeholder.com/100",      // رابط لوجو قوانين الميناء البحري
-            mechanic: "https://via.placeholder.com/100",  // رابط لوجو قوانين الميكانيك
-            medical: "https://via.placeholder.com/100",   // رابط لوجو قوانين الهلال الأحمر
-            notes: "https://via.placeholder.com/100"      // رابط لوجو قسم الملاحظات والتنبيهات
-        };
-
-        // 1. توليد الجزيئات المتحركة ديناميكياً في الخلفية وإعداد الشعارات
+        // 1. توليد الجزيئات المتحركة ديناميكياً في الخلفية
         window.addEventListener('DOMContentLoaded', () => {
-            // إعداد وتطبيق لوجو شاشة التحميل (Preloader Logo)
-            const preloaderLogoImg = document.getElementById('preloader-logo-element');
-            if (PRELOADER_LOGO && PRELOADER_LOGO.trim() !== "") {
-                preloaderLogoImg.src = PRELOADER_LOGO;
-                preloaderLogoImg.style.display = 'block';
-            }
-
-            // إعداد وتطبيق لوجوهات الأقسام الثمانية ديناميكياً داخل الـ Modals
-            const logoKeys = ['discord', 'crime', 'security', 'border', 'port', 'mechanic', 'medical', 'notes'];
-            logoKeys.forEach(key => {
-                const imgEl = document.getElementById(`modal-logo-${key}`);
-                if (imgEl && SECTION_LOGOS[key] && SECTION_LOGOS[key].trim() !== "") {
-                    imgEl.src = SECTION_LOGOS[key];
-                    imgEl.style.display = 'block';
-                }
-            });
-
-            // بناء جزيئات الخلفية العشوائية
             const container = document.getElementById('particles-container');
             const particleCount = 40;
             
@@ -1083,27 +982,28 @@
                 const particle = document.createElement('div');
                 particle.classList.add('particle');
                 
+                // أحجام ومواقع عشوائية
                 const size = Math.random() * 6 + 4;
                 particle.style.width = `${size}px`;
                 particle.style.height = `${size}px`;
                 particle.style.left = `${Math.random() * 100}%`;
                 particle.style.top = `${Math.random() * 100}%`;
                 
+                // فترات وتأخيرات عشوائية للأنيميشن
                 particle.style.animationDuration = `${Math.random() * 20 + 15}s`;
                 particle.style.animationDelay = `${Math.random() * -20}s`;
                 
                 container.appendChild(particle);
             }
 
-            // إخفاء شاشة التحميل بعد انتهاء 4 ثوانٍ كاملة (4000ms) كما هو مطلوب بدقة
+            // إخفاء شاشة التحميل بعد اكتمال البناء الفني
             setTimeout(() => {
                 const loader = document.getElementById('loading-screen');
                 loader.style.opacity = '0';
-                loader.style.transform = 'scale(1.05)';
                 setTimeout(() => {
                     loader.style.display = 'none';
                 }, 800);
-            }, 4000);
+            }, 1000);
         });
 
         // 2. سكرول ناعم إلى قسم القوانين
@@ -1123,8 +1023,8 @@
             });
         };
         window.addEventListener('scroll', revealCards);
-        // استدعاء أولي للتأكد من ظهور البطاقات المرئية فوراً
-        setTimeout(revealCards, 4500);
+        // استدعاء أولي للتأكد من ظهور البطاقات العلوية مباشرة
+        setTimeout(revealCards, 1200);
 
         // 4. تتبع حركة الماوس داخل البطاقات لعمل توهج نيون تفاعلي متحرك
         cards.forEach(card => {
@@ -1142,16 +1042,17 @@
         function openModal(id) {
             const modal = document.getElementById(id);
             modal.classList.add('active');
-            document.body.style.overflow = 'hidden';
+            document.body.style.overflow = 'hidden'; // منع سكرول الصفحة الرئيسية
         }
 
         function closeModal(id) {
             const modal = document.getElementById(id);
             modal.classList.remove('active');
-            document.body.style.overflow = '';
+            document.body.style.overflow = ''; // إعادة سكرول الصفحة
         }
 
         function closeModalOnOverlay(event, id) {
+            // إغلاق المودال فقط إذا تم الضغط على الخلفية الشفافة وليس المحتوى الداخلي
             if(event.target.classList.contains('modal-overlay')) {
                 closeModal(id);
             }
