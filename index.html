@@ -3,6 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://fonts.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https: http:; connect-src 'self'; frame-ancestors 'none';">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta name="referrer" content="no-referrer-when-downgrade">
+
     <title>قوانين سيرفر مقاطعة ميلانو | دليل القوانين الرسمي</title>
     <style>
         /* --- الأساسيات والخطوط --- */
@@ -763,7 +768,7 @@
                 <div class="rule-box"><div class="rule-number">13</div><div class="rule-text-content">يمنع مطالبة الأمن بطلب تعجيزي لخطفك رهينة</div></div>
                 <div class="rule-box"><div class="rule-number">14</div><div class="rule-text-content">بعد قتلك لشخص يجب عليك تمثيل الهروب فوراً وعدم انتظار قدوم الأمن</div></div>
                 <div class="rule-box"><div class="rule-number">15</div><div class="rule-text-content">يمنع استخدام الخوذه اثناء الاجرام الخوذه مخصصه للعساكر فقط</div></div>
-                <div class="rule-box"><div class="rule-number">16</div><div class="rule-text-content">يمنع اطلاق النار اثناء وجود الهلال الاحمر في الموقع مهمه كانت الاسباب</div></div>
+                <div class="rule-box"><div class="rule-number">16</div><div class="rule-text-content">يمنع اطلاق النار اثناء وجود الهلال الاحمر in الموقع مهمه كانت الاسباب</div></div>
                 <div class="rule-box"><div class="rule-number">17</div><div class="rule-text-content">يمنع منعآ باتا خطف العساكر لـ عمل سيناريو سرقه - فقط يحق لك تهديد العسكري في حال تم القبض على احد زملائك و تريد فكه</div></div>
                 
                 <div class="note-box">
@@ -977,11 +982,11 @@
         /* =========================
            LOGO SETTINGS
         ========================= */
-        const MAIN_LOGO = "https://l.top4top.io/p_3834mfh8g0.png"; // ضع هنا رابط صورة اللوجو الرئيسي (URL مباشر)
+        const MAIN_LOGO = ""; // ضع هنا رابط صورة اللوجو الرئيسي (URL مباشر)
         const SECTION_LOGOS = {
-            discord: "https://l.top4top.io/p_3834mfh8g0.png",      // رابط لوجو قوانين الديسكورد
-            crime: "https://l.top4top.io/p_3834mfh8g0.png",        // رابط لوجو قوانين الإجرام
-            security: "https://l.top4top.io/p_3834mfh8g0.png",     // رابط لوجو قوانين الأمن العام
+            discord: "",      // رابط لوجو قوانين الديسكورد
+            crime: "",        // رابط لوجو قوانين الإجرام
+            security: "",     // رابط لوجو قوانين الأمن العام
             border: "",       // رابط لوجو قوانين حرس الحدود
             port: "",         // رابط لوجو قوانين الميناء البحري
             mechanic: "",     // رابط لوجو قوانين الميكانيك
@@ -989,30 +994,42 @@
             notes: ""         // رابط لوجو قسم الملاحظات العامة
         };
 
-        // وظيفة تفعيل وعرض نظام الصور واللوغوهات ديناميكياً عند تحميل الموقع
+        /* ========================================================
+           SECURITY FUNCTION: Input Validation & URL Sanitization
+           تمنع حقن نصوص تنفيذية خبيثة عبر روابط الصور المدخلة (Anti-XSS & URI Injection)
+           ======================================================== */
+        function isValidSecureUrl(urlString) {
+            if (!urlString || urlString.trim() === "") return false;
+            const trimmed = urlString.trim();
+            // الفحص لضمان أن الرابط يبدأ ببروتوكول آمن حقيقي وليس كود جافا سكريبت حقن محلي
+            return trimmed.startsWith("https://") || trimmed.startsWith("http://") || trimmed.startsWith("/");
+        }
+
+        // وظيفة تفعيل وعرض نظام الصور واللوغوهات ديناميكياً عند تحميل الموقع مع تدابير الفحص الأمني
         function initializeLogos() {
-            // 1. تطبيق اللوجو الرئيسي أعلى الهيدر
+            // 1. تطبيق اللوجو الرئيسي أعلى الهيدر بعد التحقق الأمني
             const mainLogoImg = document.getElementById('main-server-logo-img');
-            if (MAIN_LOGO && MAIN_LOGO.trim() !== "") {
-                mainLogoImg.src = MAIN_LOGO;
+            if (isValidSecureUrl(MAIN_LOGO)) {
+                mainLogoImg.src = MAIN_LOGO.trim();
                 mainLogoImg.style.display = 'block';
             }
 
-            // 2. تطبيق لوغوهات الأقسام للبطاقات وللصفحات الداخلية (Modals) في نفس الوقت
+            // 2. تطبيق لوغوهات الأقسام للبطاقات وللصفحات الداخلية (Modals) بعد الفحص الأمني
             const sections = ['discord', 'crime', 'security', 'border', 'port', 'mechanic', 'medical', 'notes'];
             sections.forEach(sec => {
                 const logoUrl = SECTION_LOGOS[sec];
-                if (logoUrl && logoUrl.trim() !== "") {
+                if (isValidSecureUrl(logoUrl)) {
+                    const cleanUrl = logoUrl.trim();
                     // تطبيق على بطاقة القسم الرئيسية
                     const cardLogo = document.getElementById(`card-logo-${sec}`);
                     if (cardLogo) {
-                        cardLogo.src = logoUrl;
+                        cardLogo.src = cleanUrl;
                         cardLogo.style.display = 'inline-block';
                     }
                     // تطبيق على الجزء العلوي لنافذة القوانين المفتوحة
                     const modalLogo = document.getElementById(`modal-logo-${sec}`);
                     if (modalLogo) {
-                        modalLogo.src = logoUrl;
+                        modalLogo.src = cleanUrl;
                         modalLogo.style.display = 'block';
                     }
                 }
@@ -1077,14 +1094,18 @@
         // فتح وإغلاق النوافذ المنبثقة (Modals) بسلاسة كاملة
         function openModal(id) {
             const modal = document.getElementById(id);
-            modal.classList.add('active');
-            document.body.style.overflow = 'hidden';
+            if (modal) {
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
         }
 
         function closeModal(id) {
             const modal = document.getElementById(id);
-            modal.classList.remove('active');
-            document.body.style.overflow = '';
+            if (modal) {
+                modal.classList.remove('active');
+                document.body.style.overflow = '';
+            }
         }
 
         function closeModalOnOverlay(event, id) {
