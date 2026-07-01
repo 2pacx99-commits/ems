@@ -95,51 +95,35 @@
             100% { transform: translate(20%, 80%) scale(0.9); opacity: 0.5; }
         }
 
-        /* --- شاشة التحميل الفاخرة --- */
-        #loading-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #03001e;
-            z-index: 9999;
+        /* --- تأثيرات النيون والأنيميشن للوغو الرئيسي العالي --- */
+        .header-logo-container {
+            margin-bottom: 25px;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
-            transition: opacity 0.8s ease, transform 0.8s ease;
         }
 
-        .loader-ring {
-            width: 80px;
-            height: 80px;
-            border: 4px solid transparent;
-            border-top: 4px solid #00f2fe;
-            border-right: 4px solid #7f00ff;
+        .main-server-logo {
+            width: 150px;
+            height: 150px;
+            object-fit: contain;
             border-radius: 50%;
-            animation: spinRing 1.2s infinite linear;
-            box-shadow: 0 0 20px rgba(0, 242, 254, 0.3);
-            margin-bottom: 20px;
+            border: 2px solid rgba(0, 242, 254, 0.4);
+            box-shadow: 0 0 30px rgba(0, 242, 254, 0.3), inset 0 0 15px rgba(0, 242, 254, 0.2);
+            transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+            animation: mainLogoFloat 4s infinite ease-in-out;
+            display: none; /* تظهر ديناميكياً فقط عند وضع الرابط */
         }
 
-        .loader-text {
-            font-size: 1.3rem;
-            font-weight: 700;
-            letter-spacing: 2px;
-            background: linear-gradient(to right, #00f2fe, #4facfe, #7f00ff, #e100ff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: pulseText 1.5s infinite alternate;
+        .main-server-logo:hover {
+            transform: scale(1.08) rotate(3deg);
+            border-color: #00f2fe;
+            box-shadow: 0 0 45px rgba(0, 242, 254, 0.6), 0 0 90px rgba(127, 0, 255, 0.4);
         }
 
-        @keyframes spinRing {
-            100% { transform: rotate(360deg); }
-        }
-
-        @keyframes pulseText {
-            0% { opacity: 0.5; }
-            100% { opacity: 1; }
+        @keyframes mainLogoFloat {
+            0%, 100% { transform: translateY(0); filter: drop-shadow(0 0 10px rgba(0, 242, 254, 0.2)); }
+            50% { transform: translateY(-8px); filter: drop-shadow(0 0 25px rgba(0, 242, 254, 0.5)); }
         }
 
         /* --- الهيدر الضخم --- */
@@ -248,7 +232,7 @@
 
         .cards-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 15fr));
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 2.5rem;
         }
 
@@ -297,16 +281,23 @@
             opacity: 1;
         }
 
-        .card-icon {
-            font-size: 3.5rem;
+        /* ستايل لوجو الأقسام داخل بطاقات العرض */
+        .card-logo-img {
+            width: 70px;
+            height: 70px;
+            object-fit: contain;
             margin-bottom: 1.5rem;
-            display: inline-block;
-            transition: transform 0.5s ease;
-            filter: drop-shadow(0 0 10px rgba(0, 242, 254, 0.5));
+            border-radius: 14px;
+            border: 1.5px solid rgba(0, 242, 254, 0.3);
+            box-shadow: 0 0 15px rgba(0, 242, 254, 0.2);
+            transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+            display: none; /* تظهر ديناميكياً في حال وجود الروابط */
         }
 
-        .card:hover .card-icon {
+        .card:hover .card-logo-img {
             transform: scale(1.15) rotate(5deg);
+            border-color: #00f2fe;
+            box-shadow: 0 0 25px rgba(0, 242, 254, 0.5);
         }
 
         .card-title {
@@ -404,13 +395,33 @@
 
         .modal-title-area {
             display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 8px;
+        }
+
+        .modal-title-main {
+            display: flex;
             align-items: center;
             gap: 15px;
         }
 
-        .modal-icon {
-            font-size: 2.5rem;
-            filter: drop-shadow(0 0 10px rgba(0, 242, 254, 0.5));
+        /* ستايل لوجو الأقسام بداخل النوافذ المنبثقة */
+        .modal-logo-img {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+            border-radius: 16px;
+            border: 2px solid rgba(0, 242, 254, 0.3);
+            box-shadow: 0 0 20px rgba(0, 242, 254, 0.2);
+            transition: all 0.4s ease;
+            display: none; /* تظهر ديناميكياً في حال وجود الروابط */
+        }
+
+        .modal-logo-img:hover {
+            transform: scale(1.1) rotate(3deg);
+            border-color: #00f2fe;
+            box-shadow: 0 0 30px rgba(0, 242, 254, 0.5);
         }
 
         .modal-title {
@@ -607,22 +618,17 @@
 </head>
 <body>
 
-    <!-- شاشة التحميل الفاخرة -->
-    <div id="loading-screen">
-        <div class="loader-ring"></div>
-        <div class="loader-text">مقاطعة ميلانو تنبض بالحياة...</div>
-    </div>
-
-    <!-- الجزيئات والأضواء العائمة في الخلفية -->
     <div class="bg-particles" id="particles-container"></div>
     <div class="floating-lights">
         <div class="light-glow" style="top: 15%; left: 10%;"></div>
         <div class="light-glow" style="top: 60%; left: 60%;"></div>
     </div>
 
-    <!-- الهيدر الضخم العملاق -->
     <header>
         <div class="brand-container">
+            <div class="header-logo-container">
+                <img id="main-server-logo-img" class="main-server-logo" alt="Milano Server Logo">
+            </div>
             <h1 class="server-title">مقاطعة ميلانو</h1>
             <div class="server-subtitle">دليل القوانين الرسمي</div>
             <br>
@@ -630,72 +636,63 @@
         </div>
     </header>
 
-    <!-- حاوية القائمة الرئيسية والأقسام الثمانية الكبرى -->
     <main class="container" id="rules-section">
         <h2 class="section-header-text">لوحة الأقسام التشريعية للسيرفر</h2>
         
         <div class="cards-grid">
             
-            <!-- القسم 1 -->
             <div class="card" onclick="openModal('discord-modal')">
                 <div class="card-glow-effect"></div>
-                <div class="card-icon">💬</div>
+                <img id="card-logo-discord" class="card-logo-img" alt="Discord Card Logo">
                 <h3 class="card-title">قوانين الديسكورد</h3>
-                <p class="card-description">البيئة الرسمية للتواصل، بناء المجتمع، الدعم الفني، والتعامل الأخرافي العام خارج اللعبة.</p>
+                <p class="card-description">البيئة الرسمية للتواصل، بناء المجتمع، الدعم الفني، والتعامل الأخلاقي العام خارج اللعبة.</p>
             </div>
 
-            <!-- القسم 2 -->
             <div class="card" onclick="openModal('crime-modal')">
                 <div class="card-glow-effect"></div>
-                <div class="card-icon">🥷</div>
+                <img id="card-logo-crime" class="card-logo-img" alt="Crime Card Logo">
                 <h3 class="card-title">قوانين الإجرام</h3>
                 <p class="card-description">الضوابط الصارمة والموازين المنظمة للسرقات، السيناريوهات الإجرامية، الرهائن والمواجهات.</p>
             </div>
 
-            <!-- القسم 3 -->
             <div class="card" onclick="openModal('security-modal')">
                 <div class="card-glow-effect"></div>
-                <div class="card-icon">🛡️</div>
+                <img id="card-logo-security" class="card-logo-img" alt="Security Card Logo">
                 <h3 class="card-title">قوانين الأمن العام</h3>
                 <p class="card-description">اللوائح التنظيمية الخاصة برجال الأمن والشرطة لحفظ النظام وضمان تمثيل قانوني نزيه وعادل.</p>
             </div>
 
-            <!-- القسم 4 -->
             <div class="card" onclick="openModal('border-modal')">
                 <div class="card-glow-effect"></div>
-                <div class="card-icon">🚧</div>
+                <img id="card-logo-border" class="card-logo-img" alt="Border Card Logo">
                 <h3 class="card-title">قوانين حرس الحدود</h3>
                 <p class="card-description">صلاحيات حراس الحدود والتزاماتهم المهنية والأمنية عند المداخل والمنافذ الإستراتيجية.</p>
             </div>
 
-            <!-- القسم 5 -->
             <div class="card" onclick="openModal('port-modal')">
                 <div class="card-glow-effect"></div>
-                <div class="card-icon">⚓</div>
+                <img id="card-logo-port" class="card-logo-img" alt="Port Card Logo">
                 <h3 class="card-title">قوانين الميناء البحري</h3>
                 <p class="card-description">تعليمات الدخول والانتظار العادلة، تنظيم حركة شاحنات ومركبات العمل لمنع الفوضى العكسية.</p>
             </div>
 
-            <!-- القسم 6 -->
             <div class="card" onclick="openModal('mechanic-modal')">
                 <div class="card-glow-effect"></div>
-                <div class="card-icon">🔧</div>
+                <img id="card-logo-mechanic" class="card-logo-img" alt="Mechanic Card Logo">
                 <h3 class="card-title">قوانين الميكانيك</h3>
                 <p class="card-description">دليل فنيي كراج التعديل، أوقات العمل الرسمية ومحاذير الانخراط في الأعمال غير القانونية.</p>
             </div>
 
-            <!-- القسم 7 -->
             <div class="card" onclick="openModal('red-crescent-modal')">
                 <div class="card-glow-effect"></div>
-                <div class="card-icon">🚑</div>
+                <img id="card-logo-medical" class="card-logo-img" alt="Medical Card Logo">
                 <h3 class="card-title">قوانين الهلال الأحمر</h3>
                 <p class="card-description">الميثاق الإنساني المعتمد للمسعفين، آليات الاستجابة للحوادث وقواعد السلامة أثناء إطلاق النار.</p>
             </div>
 
-            <!-- القسم 8 -->
             <div class="card" onclick="openModal('general-modal')">
                 <div class="card-glow-effect"></div>
-                <div class="card-icon">⚠️</div>
+                <img id="card-logo-notes" class="card-logo-img" alt="Notes Card Logo">
                 <h3 class="card-title">الملاحظات والتنبيهات العامة</h3>
                 <p class="card-description">التوجيهات العامة الشاملة لكافة الأفراد لضمان بيئة لعب خالية من المخالفات الجسيمة.</p>
             </div>
@@ -703,360 +700,18 @@
         </div>
     </main>
 
-    <!-- ==================== نوافذ القوانين الكبرى MODALS ==================== -->
-
-    <!-- مودال 1: قوانين الديسكورد -->
     <div class="modal-overlay" id="discord-modal" onclick="closeModalOnOverlay(event, 'discord-modal')">
         <div class="modal-container">
             <div class="modal-header">
                 <div class="modal-title-area">
-                    <span class="modal-icon">💬</span>
-                    <h2 class="modal-title">قوانين الديسكورد</h2>
+                    <img id="modal-logo-discord" class="modal-logo-img" alt="Discord Modal Logo">
+                    <div class="modal-title-main">
+                        <h2 class="modal-title">قوانين الديسكورد</h2>
+                    </div>
                 </div>
                 <button class="close-modal-btn" onclick="closeModal('discord-modal')">✕</button>
             </div>
             <div class="modal-body">
                 <div class="rule-box"><div class="rule-number">1</div><div class="rule-text-content">يمنع نشر الروابط او اختصارات او رموز لترويج للسيرفرات الثانية.</div></div>
                 <div class="rule-box"><div class="rule-number">2</div><div class="rule-text-content">يمنع وضع أسماء خادشة للحياء والذوق العام.</div></div>
-                <div class="rule-box"><div class="rule-number">3</div><div class="rule-text-content">يمنع ارسال الصَور المخلة بالأداب.</div></div>
-                <div class="rule-box"><div class="rule-number">4</div><div class="rule-text-content">يمنع الأساءة الى أعضاءمقاطعة مـيـلانـو .</div></div>
-                <div class="rule-box"><div class="rule-number">5</div><div class="rule-text-content">يمنع منعا باتآ بمناقشة المواضيع الدينيه والسياسيه والعرقية في الدسكورد.</div></div>
-                <div class="rule-box"><div class="rule-number">6</div><div class="rule-text-content">يمنع السخرية والإستهزاء من الآخرين وعقوبتها حرمانك من الكتابه بجميع الرومات وقد تصل للباند.</div></div>
-                <div class="rule-box"><div class="rule-number">7</div><div class="rule-text-content">التواصل مع إدارة الرقابة والتفتيش يكون عن طريق التذكرة فقط.</div></div>
-                <div class="rule-box"><div class="rule-number">8</div><div class="rule-text-content">يمنع استخدام كروت الصوت أو برامج تعديل الأصوات عبر الرومات الصوتية</div></div>
-                <div class="rule-box"><div class="rule-number">9</div><div class="rule-text-content">الإحترام مبدأ يجب على الجميع التعامل به</div></div>
-                <div class="rule-box"><div class="rule-number">10</div><div class="rule-text-content">يمنع إستخدام اسماء غير لائقة</div></div>
-                <div class="rule-box"><div class="rule-number">11</div><div class="rule-text-content">عدم الخوض بالامور الدينية او السياسية او التطرق لها بأي شكل من الاشكال</div></div>
-                <div class="rule-box"><div class="rule-number">12</div><div class="rule-text-content">يمنع انتحال الشخصيات الإدارية ومن يخالف القانون يعرض نفسة للباند النهائي من السيرفر</div></div>
-                <div class="rule-box"><div class="rule-number">13</div><div class="rule-text-content">يمنع نشر اي شيء مخل بالأداب وخادش للحياء وسيتم حظرك نهائياً في حال نشرت ذلك</div></div>
-                <div class="rule-box"><div class="rule-number">14</div><div class="rule-text-content">الافضل وجود مايك واضح وغير مزعج هو شيء مهم هنا وفي حال كان المايك مزعج سيتم استبعادك من روم الصوتي حتى تصلح المشكلة</div></div>
-                <div class="rule-box"><div class="rule-number">15</div><div class="rule-text-content">السبام قد يسبب حظرك من الكتابة او الكلام</div></div>
-                
-                <div class="note-box">
-                    <span class="note-icon">📌</span>
-                    <p class="note-text">ملاحظة : هذه القوانين مبدئية وقابلة للتحديث في اي وقت والجهل بالقوانين لا يعفيك من العقوبة. ||@everyone ||</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- مودال 2: قوانين الإجرام -->
-    <div class="modal-overlay" id="crime-modal" onclick="closeModalOnOverlay(event, 'crime-modal')">
-        <div class="modal-container">
-            <div class="modal-header">
-                <div class="modal-title-area">
-                    <span class="modal-icon">🥷</span>
-                    <h2 class="modal-title">قوانين الإجرام</h2>
-                </div>
-                <button class="close-modal-btn" onclick="closeModal('crime-modal')">✕</button>
-            </div>
-            <div class="modal-body">
-                <div class="rule-box"><div class="rule-number">1</div><div class="rule-text-content">ممنوع طلب إزالة الدوريات ورجال الأمن من الموقع وهذا الطلب يعتبر تخريب التمثيل.</div></div>
-                <div class="rule-box"><div class="rule-number">2</div><div class="rule-text-content">يجب على جميع المشتركين بالسرقة سواء مجرمين او رجال الأمن الالتزام بالتمثيل بشكل يتناسب مع السرقة واحداثها والجدية في التعامل بين ممثلين السناريو وعدم التراخي بين المجرم ورجال الأمن.</div></div>
-                <div class="rule-box"><div class="rule-number">3</div><div class="rule-text-content">ممنوع طلب التجول خارج مكان السرقة وطلب ذلك يعتبر تخريب تمثيل.</div></div>
-                <div class="rule-box"><div class="rule-number">4</div><div class="rule-text-content">إذا كان الشخص في حالة نزيف وتم علاجه بالموقع يقدر يتذكر الاحداث كاملة وممكن تزويد رجال الأمن بوصف الجاني -المجرم- وتسجيل قضية.</div></div>
-                <div class="rule-box"><div class="rule-number">5</div><div class="rule-text-content">يمنع تهديد او خطف المواطن بدون بدأ حوار معه</div></div>
-                <div class="rule-box"><div class="rule-number">6</div><div class="rule-text-content">يجيب على المشاركين في السيناريوهات التمثيل الجيد من قبل الأمن أو المجرمين</div></div>
-                <div class="rule-box"><div class="rule-number">7</div><div class="rule-text-content">اي سيناريو يتم فيه ارسال المفاوض للتفاوض يمنع قتل او اختطاف المفاوض</div></div>
-                <div class="rule-box"><div class="rule-number">8</div><div class="rule-text-content">يمنع تهديد رجل الأمن بغرض اخذه للسرقه</div></div>
-                <div class="rule-box"><div class="rule-number">9</div><div class="rule-text-content">يمنع حمل الرهينة في وضعية التهديد داخل المركبة ويعتبر مخالف للتمثيل</div></div>
-                <div class="rule-box"><div class="rule-number">10</div><div class="rule-text-content">يمنع دخول أي مكان فيه سرقة إِلا بعد الانتهاء من قبل الأمن ومغادرتهم المكان</div></div>
-                <div class="rule-box"><div class="rule-number">11</div><div class="rule-text-content">في حال عدم الرغبة بالتفاوض يجب تحذير المفاوض بأي طريقة واعطائه مهلة معقولة للانسحاب من مكان السرقة</div></div>
-                <div class="rule-box"><div class="rule-number">12</div><div class="rule-text-content">يمنع القتل بدون التهديد ويجب اعطاء الشخص عدة تحذيرات في حال عدم الاستسلام يحق لك اسقاطه فورا</div></div>
-                <div class="rule-box"><div class="rule-number">13</div><div class="rule-text-content">يمنع مطالبة الأمن بطلب تعجيزي لخطفك رهينة</div></div>
-                <div class="rule-box"><div class="rule-number">14</div><div class="rule-text-content">بعد قتلك لشخص يجب عليك تمثيل الهروب فوراً وعدم انتظار قدوم الأمن</div></div>
-                <div class="rule-box"><div class="rule-number">15</div><div class="rule-text-content">يمنع استخدام الخوذه اثناء الاجرام الخوذه مخصصه للعساكر فقط</div></div>
-                <div class="rule-box"><div class="rule-number">16</div><div class="rule-text-content">يمنع اطلاق النار اثناء وجود الهلال الاحمر في الموقع مهمه كانت الاسباب</div></div>
-                <div class="rule-box"><div class="rule-number">17</div><div class="rule-text-content">يمنع منعآ باتا خطف العساكر لـ عمل سيناريو سرقه - فقط يحق لك تهديد العسكري في حال تم القبض على احد زملائك و تريد فكه</div></div>
-                
-                <div class="note-box">
-                    <span class="note-icon">⚡</span>
-                    <p class="note-text">ملاحظات مهمة : يسمح استخدام الدباب في السرقات. يسمح الهروب من موقع السرقه بعد انتهاء وقت السرقة في حال لم ياتيك العسكر. هذه القوانين قابلة للتحديث والزيادة في اي وقت والجهل بالقوانين لا يعفيك من العقوبة.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- مودال 3: قوانين الأمن العام -->
-    <div class="modal-overlay" id="security-modal" onclick="closeModalOnOverlay(event, 'security-modal')">
-        <div class="modal-container">
-            <div class="modal-header">
-                <div class="modal-title-area">
-                    <span class="modal-icon">🛡️</span>
-                    <h2 class="modal-title">قوانين الأمن العام</h2>
-                </div>
-                <button class="close-modal-btn" onclick="closeModal('security-modal')">✕</button>
-            </div>
-            <div class="modal-body">
-                <div class="rule-box"><div class="rule-number">1</div><div class="rule-text-content">يجب على جميع منسوبي ادارة الشرطة احترام جميع المواطنين</div></div>
-                <div class="rule-box"><div class="rule-number">2</div><div class="rule-text-content">يمنع رفع السلاح الناري على المواطن بدون سبب مقنع</div></div>
-                <div class="rule-box"><div class="rule-number">3</div><div class="rule-text-content">يمنع اخذ اي مواطن في موقع اشتباه الى قسم الشرطة بدون دليل قاطع</div></div>
-                <div class="rule-box"><div class="rule-number">4</div><div class="rule-text-content">يمنع سجن المواطن الا بعد اثبات قاطع وسماع جميع اقواله</div></div>
-                <div class="rule-box"><div class="rule-number">5</div><div class="rule-text-content">يمنع تفتيش اي مواطن الا بعد ثبوت التهمه عليه ويجب على المواطن مراعات رجل الامن في حال اعطاه امر بنزع السترة او القناع تجنباً للتفتيش</div></div>
-                <div class="rule-box"><div class="rule-number">6</div><div class="rule-text-content">يسمح لرجل الامن تفتيش المواطن في مركز الشرطة او في نقطة تفتيش او كشك فقط</div></div>
-                <div class="rule-box"><div class="rule-number">7</div><div class="rule-text-content">يمنع لرجل الامن تفتيش مركبة الشخص إلا في حال تم وصول بلاغ على المركبه</div></div>
-                <div class="rule-box"><div class="rule-number">8</div><div class="rule-text-content">لا يحق لرجل الامن اخذ المواطن الى القسم لأي مخالفة مرورية الا في حال عدم التعاون</div></div>
-                <div class="rule-box"><div class="rule-number">9</div><div class="rule-text-content">يمنع التحدث مع المواطنين بتكبر او التدخل في شؤون المواطن الا اذا كان المواطن يقوم بالشغب</div></div>
-                <div class="rule-box"><div class="rule-number">10</div><div class="rule-text-content">يمنع منعاً باتاً اعطاء المواطن اي غرض يخص ادارة الشرطة</div></div>
-                <div class="rule-box"><div class="rule-number">11</div><div class="rule-text-content">يجب على رجال الامن احضار مركبه مخصصه للآفرود في حال وجود مركبه افرود لـلمجرمين</div></div>
-                <div class="rule-box"><div class="rule-number">12</div><div class="rule-text-content">يمنع الصعود خلف المجرمين في حال صعودهم للافرود بمركبات غير مخصصه لذلك</div></div>
-                <div class="rule-box"><div class="rule-number">13</div><div class="rule-text-content">يسمح اسقاط المجرم في حال انه ماسك مواطن في وضعيه تهديد الرهينه, من قبل التدخل السريع و يتم ذلك من قبلهم فقط</div></div>
-                
-                <div class="note-box">
-                    <span class="note-icon">📌</span>
-                    <p class="note-text">ملاحظة : هذه القوانين مبدئية وقابلة للتحديث في اي وقت والجهل بالقوانين لا يعفيك من العقوبة.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- مودال 4: قوانين حرس الحدود -->
-    <div class="modal-overlay" id="border-modal" onclick="closeModalOnOverlay(event, 'border-modal')">
-        <div class="modal-container">
-            <div class="modal-header">
-                <div class="modal-title-area">
-                    <span class="modal-icon">🚧</span>
-                    <h2 class="modal-title">قوانين حرس الحدود</h2>
-                </div>
-                <button class="close-modal-btn" onclick="closeModal('border-modal')">✕</button>
-            </div>
-            <div class="modal-body">
-                <div class="rule-box"><div class="rule-number">1</div><div class="rule-text-content">يجب احترام جميع القطاعات</div></div>
-                <div class="rule-box"><div class="rule-number">2</div><div class="rule-text-content">يجب احترام جميع ضباط و افراد مـدينة ميلانو</div></div>
-                <div class="rule-box"><div class="rule-number">3</div><div class="rule-text-content">يجب احترام المواطنين و عدم تهديدهم و استخدام السلطة ضدهم</div></div>
-                <div class="rule-box"><div class="rule-number">4</div><div class="rule-text-content">يمنع تفتيش المواطنين دون سبب واضح و مقنع</div></div>
-                <div class="rule-box"><div class="rule-number">5</div><div class="rule-text-content">عدم الأسائة الى القطاعات الاخرى مثل الهلال الاحمر او المكنيكي الخ...</div></div>
-                <div class="rule-box"><div class="rule-number">6</div><div class="rule-text-content">يمنع منعا باتا اسقاط اي مواطن اعزل</div></div>
-                <div class="rule-box"><div class="rule-number">7</div><div class="rule-text-content">يمنع اعطاء اي عهدة عسكريه لاي مواطن</div></div>
-                <div class="rule-box"><div class="rule-number">8</div><div class="rule-text-content">يمنع الصدم الاحترافي داخل الميناء</div></div>
-                <div class="rule-box"><div class="rule-number">9</div><div class="rule-text-content">يمنع الاشتراك ب مطاردة مع أدارة الشرطة دون اخذ الاذن منهم</div></div>
-                <div class="rule-box"><div class="rule-number">10</div><div class="rule-text-content">يمنع التستر على مخالفات المواطنين</div></div>
-                <div class="rule-box"><div class="rule-number">11</div><div class="rule-text-content">يمنع التستر على المجرمين داخل او خارج الميناء</div></div>
-                <div class="rule-box"><div class="rule-number">12</div><div class="rule-text-content">يجب عليك اخذ البلاغات من المواطنين بشكل جدي و عدم التهاون بها</div></div>
-                <div class="rule-box"><div class="rule-number">13</div><div class="rule-text-content">يجب عليك ارشاد المواطنين بشكل مناسب داخل او خارج الميناء</div></div>
-                <div class="rule-box"><div class="rule-number">14</div><div class="rule-text-content">يمنع الخروج من التمثيل لاي سبب كان</div></div>
-                <div class="rule-box"><div class="rule-number">15</div><div class="rule-text-content">عدم مقاطعة البلاغات الا اذا كان بلاغ للأهمية</div></div>
-                <div class="rule-box"><div class="rule-number">16</div><div class="rule-text-content">في حال قبضك على مجرم يجب عليك سماع جميع اقوالة و اخذها بعين الاعتبار</div></div>
-                <div class="rule-box"><div class="rule-number">17</div><div class="rule-text-content">اقصى مدة يمكنك سجن المواطن بها 15 شهر - و يحق لك السجن ب 20 شهر فقط في حال اخذك الاذن من رتبة ملازم و فما فوق</div></div>
-                <div class="rule-box"><div class="rule-number">18</div><div class="rule-text-content">يمنع الصدم بوقت المطاردة بشكل نهائي</div></div>
-                <div class="rule-box"><div class="rule-number">20</div><div class="rule-text-content">يمنع رمي اكثر من 4 سموكات في المداهمه الواحده في حال المخالفه يتم محاسبته</div></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- مودال 5: قوانين الميناء البحري -->
-    <div class="modal-overlay" id="port-modal" onclick="closeModalOnOverlay(event, 'port-modal')">
-        <div class="modal-container">
-            <div class="modal-header">
-                <div class="modal-title-area">
-                    <span class="modal-icon">⚓</span>
-                    <h2 class="modal-title">قوانين الميناء البحري مقاطعة ميلانو</h2>
-                </div>
-                <button class="close-modal-btn" onclick="closeModal('port-modal')">✕</button>
-            </div>
-            <div class="modal-body">
-                <div class="rule-box"><div class="rule-number">1</div><div class="rule-text-content">يجب على جميع المواطنين عند الوقوف والإنتظار قبل بوابة ميناء مقاطعة روشــن الرئيسي يجب أن تلتزم بمسافه آمنه بينه وبين المركبة الاخرى .</div></div>
-                <div class="rule-box"><div class="rule-number">2</div><div class="rule-text-content">في حال دخول أي مواطن غير قانوني يجب عليك أن تبلغ رجال حرس الحدود وسيتم التعامل معه وفقا للنظام وفي حال عدم التعاون وعمل فوضى يحق لرجل حرس الحدود ان يتعامل معه بعدم انصياع الأوامر بالسجن وذلك لتفعيل الارتباك والفوضى بمدخل الميناء .</div></div>
-                <div class="rule-box"><div class="rule-number">3</div><div class="rule-text-content">في حال وجود الإصطدام العمد او من غير قصد يحق لرجل الامن مخالفتك واستبعادك للانتظار ورجوعك حسب مايراه رجل حرس الحدود وذلك لوجود التخريب او تصديم سواء كنت بقصد او بدون قصد ، يجب ان تلتزم بمسافه آمنه ( خمس امتار كحد اقصى ) بين كل مركبة . سيتم التشديد وتغليظ العقوبة .</div></div>
-                <div class="rule-box"><div class="rule-number">4</div><div class="rule-text-content">في حال دخولك للعكس السير من بوابة الخروج للميناء ، يحق لرجل حرس الحدود الاطلاق على الكفرات ويحق للجهات العليا ان تتعامل معك كمخالف قانوني وقد يتم ايقافك حسب مايراه ادارة .</div></div>
-                <div class="rule-box"><div class="rule-number">5</div><div class="rule-text-content">لايحق لك دخول راكب معك بالمركبة ويجب لكل مواطن ان يكون معه مركبه خاصه به او مستأجر من الشركه التي تعمل به .</div></div>
-                <div class="rule-box"><div class="rule-number">6</div><div class="rule-text-content">يجب ان تلتزم بأوامر وتعليمات رجل حرس الحدود وعدم الدخول في الجدال او النقاش وفي حال مخالفة ذلك قد يعرضك للسجن وذلك لوجود مخالفه ازعاج السلطات وعدم انصياع الأوامر لرجل حرس الحدود.</div></div>
-                <div class="rule-box"><div class="rule-number">7</div><div class="rule-text-content">يجب عليك الالتزام بقوانين التهريب و قوانين حرس الحدود لتجنب المحاسبة الشديدة</div></div>
-                <div class="rule-box"><div class="rule-number">8</div><div class="rule-text-content">سيتم تشديد العقوبة للمخالفين والمتخاذلين وسيتم تغليظ العقوبة للمتهاون .</div></div>
-                
-                <div class="note-box">
-                    <span class="note-icon">📌</span>
-                    <p class="note-text">ملاحظة : هذه القوانين مبدئية وقابلة للتحديث في اي وقت والجهل بالقوانين لا يعفيك من العقوبة.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- مودال 6: قوانين الميكانيك -->
-    <div class="modal-overlay" id="mechanic-modal" onclick="closeModalOnOverlay(event, 'mechanic-modal')">
-        <div class="modal-container">
-            <div class="modal-header">
-                <div class="modal-title-area">
-                    <span class="modal-icon">🔧</span>
-                    <h2 class="modal-title">قوانين كراج الميكانيكي</h2>
-                </div>
-                <button class="close-modal-btn" onclick="closeModal('mechanic-modal')">✕</button>
-            </div>
-            <div class="modal-body">
-                <div style="background: rgba(0, 242, 254, 0.05); border-right: 4px solid #00f2fe; padding: 15px; border-radius: 8px; margin-bottom: 25px; font-weight: 600; color: #a5b4fc;">
-                    تعريف الميكانيكي : هو شخص مخول في تعديل وتزويد المركبات وتقديم خدمه المساعده للوظائف المعتمده والمواطنين من اصلاح مركبات او تعبئة بانزين في حال واجه المواطن احدى المشاكل عبر التواصل معهم عبر الهاتف
-                </div>
-                <div class="rule-box"><div class="rule-number">1</div><div class="rule-text-content">الاحترام الُمتبادل بينك وبين الزملاء والمواطنين على حد سواء</div></div>
-                <div class="rule-box"><div class="rule-number">2</div><div class="rule-text-content">يمنع العمل االجرامي بوظيفة الميكانيك ويمنع حيازتك على أسلحة أو ممنوعات . &lt; يستثنى من ذلك المطرقة والمفك الُمتاحة من الكراج , وتستخدم في تكملة التمثيل ويحظر استخدامها للقتل &gt;</div></div>
-                <div class="rule-box"><div class="rule-number">3</div><div class="rule-text-content">يجب على الميكانيكي الإلتزام بالقواعد المروريه وعدم قطع الإشارات</div></div>
-                <div class="rule-box"><div class="rule-number">4</div><div class="rule-text-content">اوقات عمل الكراج للتزويد والتعديل الفتره الصباحيه من الساعه 9:00 ص الى الساعه 10:00 م</div></div>
-                <div class="rule-box"><div class="rule-number">5</div><div class="rule-text-content">يمنع تهديد او خطف فنيين كراج الميكانيكي</div></div>
-                <div class="rule-box"><div class="rule-number">6</div><div class="rule-text-content">يمنع تواجد اكثر من نصف عدد الميكانيك داخل كراج التزويد</div></div>
-                
-                <div class="note-box">
-                    <span class="note-icon">📌</span>
-                    <p class="note-text">ملاحظة : هذه القوانين مبدئية وقابلة للتحديث في اي وقت والجهل بالقوانين لا يعفيك من العقوبة.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- مودال 7: قوانين الهلال الأحمر -->
-    <div class="modal-overlay" id="red-crescent-modal" onclick="closeModalOnOverlay(event, 'red-crescent-modal')">
-        <div class="modal-container">
-            <div class="modal-header">
-                <div class="modal-title-area">
-                    <span class="modal-icon">🚑</span>
-                    <h2 class="modal-title">قوانين الهلال الاحمر بمقاطعة مــيلانو</h2>
-                </div>
-                <button class="close-modal-btn" onclick="closeModal('red-crescent-modal')">✕</button>
-            </div>
-            <div class="modal-body">
-                <div class="rule-box"><div class="rule-number">1</div><div class="rule-text-content">يجب على كل مسعف التمتع بصفات المسامحة و العمل الجماعي</div></div>
-                <div class="rule-box"><div class="rule-number">2</div><div class="rule-text-content">الالتزام بقوانين المرور امر واجب على الجميع باستثناء حالات البلاغات</div></div>
-                <div class="rule-box"><div class="rule-number">3</div><div class="rule-text-content">اعطاء اي شخص معدات الإسعافات الأولية</div></div>
-                <div class="rule-box"><div class="rule-number">4</div><div class="rule-text-content">يجب الالتزام بالزي الرسمي للهلال الاحمر و عدم التعديل عليه</div></div>
-                <div class="rule-box"><div class="rule-number">5</div><div class="rule-text-content">انتظار امر العمليات في توجيهك للبلاغ المتواجد بالمنطقه المتوزع لها</div></div>
-                <div class="rule-box"><div class="rule-number">6</div><div class="rule-text-content">بعد إنعاش الميت يجب التمثيل الإطمئنان على صحة المريض بالتحمد له على السلامة و العرض علية لنقلة للمستشفى</div></div>
-                <div class="rule-box"><div class="rule-number">7</div><div class="rule-text-content">عند وجود حادث مروري يجب عليك طلب المرور</div></div>
-                <div class="rule-box"><div class="rule-number">8</div><div class="rule-text-content">عند وجود اطلاق نار على الجثة يجب عليك طلب الشرطة للتحقيق</div></div>
-                <div class="rule-box"><div class="rule-number">9</div><div class="rule-text-content">عدم دخول مناطق الأستنفارات الا بأذن من الشرطة</div></div>
-                <div class="rule-box"><div class="rule-number">10</div><div class="rule-text-content">عدم مقاطعة البلاغات في الراديو</div></div>
-                <div class="rule-box"><div class="rule-number">11</div><div class="rule-text-content">يجب الالتزام بالمركبة المحدده لك ولا يمكنك تغيير</div></div>
-                <div class="rule-box"><div class="rule-number">12</div><div class="rule-text-content">عليك الهرب من المناطق الذي فيها اطلاق نار و عدم العودة الا بطلب من الشرطة</div></div>
-                <div class="rule-box"><div class="rule-number">13</div><div class="rule-text-content">عدم تشغيل أنوار الطوارئ في سيارات الاسعاف إلا لو كان هناك حالة طارئة</div></div>
-                <div class="rule-box"><div class="rule-number">14</div><div class="rule-text-content">ممنوع منعا باتا حمل أي سلاح</div></div>
-                <div class="rule-box"><div class="rule-number">15</div><div class="rule-text-content">ممنوع التعدي على اي شخص او السرقة او فعل اي شي اجرامي</div></div>
-                <div class="rule-box"><div class="rule-number">16</div><div class="rule-text-content">المسعف هو اهم وظيفة موجوة في الحياة الواقعية لذا مطلوب منه الالتزام بتقمص الشخصية اكثر من أي وظيفه اخرى</div></div>
-                
-                <div class="note-box">
-                    <span class="note-icon">📌</span>
-                    <p class="note-text">ملاحظة : هذه القوانين مبدئية وقابلة للتحديث في اي وقت والجهل بالقوانين لا يعفيك من العقوبة.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- مودال 8: الملاحظات العامة -->
-    <div class="modal-overlay" id="general-modal" onclick="closeModalOnOverlay(event, 'general-modal')">
-        <div class="modal-container">
-            <div class="modal-header">
-                <div class="modal-title-area">
-                    <span class="modal-icon">⚠️</span>
-                    <h2 class="modal-title">قسم عام للملاحظات والتنبيهات</h2>
-                </div>
-                <button class="close-modal-btn" onclick="closeModal('general-modal')">✕</button>
-            </div>
-            <div class="modal-body">
-                <div class="rule-box" style="border-color: rgba(239, 68, 68, 0.3); background: rgba(239, 68, 68, 0.02);">
-                    <div class="rule-number" style="background: #ef4444; box-shadow: 0 0 10px #ef4444;">!</div>
-                    <div class="rule-text-content" style="color: #fca5a5;">الجهل بالقوانين والأنظمة المعمول بها داخل السيرفر لا يُعفي صاحبها مطلقاً من العقوبة والمحاسبة الفورية.</div>
-                </div>
-                <div class="rule-box" style="border-color: rgba(234, 179, 8, 0.3); background: rgba(234, 179, 8, 0.02);">
-                    <div class="rule-number" style="background: #eab308; box-shadow: 0 0 10px #eab308;">!!</div>
-                    <div class="rule-text-content" style="color: #fef08a;">جميع اللوائح التشريعية المذكورة في هذه المنصة قابلة للزيادة، والتعديل، والتحديث المباشر من قبل الإدارة العليا في أي وقت تقتضيه مصلحة واقعية التمثيل.</div>
-                </div>
-                <div class="rule-box" style="border-color: rgba(59, 130, 246, 0.3); background: rgba(59, 130, 246, 0.02);">
-                    <div class="rule-number" style="background: #3b82f6; box-shadow: 0 0 10px #3b82f6;">!!!</div>
-                    <div class="rule-text-content" style="color: #bfdbfe;">يرجى مراجعة هذه الوثيقة بشكل دوري لضمان الالتزام ببيئة لعب نظيفة وممتازة (Premium) للجميع.</div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- الفوتر الاحترافي الفاخر -->
-    <footer>
-        <div class="footer-brand">© مقاطعة ميلانو</div>
-        <div class="footer-rules-label">Official Rules</div>
-        <div class="footer-credits">Made with <span class="heart-icon">❤️</span> for elite roleplay</div>
-    </footer>
-
-    <!-- ==================== البرمجة التفاعلية JAVASCRIPT ==================== -->
-    <script>
-        // 1. توليد الجزيئات المتحركة ديناميكياً في الخلفية
-        window.addEventListener('DOMContentLoaded', () => {
-            const container = document.getElementById('particles-container');
-            const particleCount = 40;
-            
-            for(let i=0; i < particleCount; i++) {
-                const particle = document.createElement('div');
-                particle.classList.add('particle');
-                
-                // أحجام ومواقع عشوائية
-                const size = Math.random() * 6 + 4;
-                particle.style.width = `${size}px`;
-                particle.style.height = `${size}px`;
-                particle.style.left = `${Math.random() * 100}%`;
-                particle.style.top = `${Math.random() * 100}%`;
-                
-                // فترات وتأخيرات عشوائية للأنيميشن
-                particle.style.animationDuration = `${Math.random() * 20 + 15}s`;
-                particle.style.animationDelay = `${Math.random() * -20}s`;
-                
-                container.appendChild(particle);
-            }
-
-            // إخفاء شاشة التحميل بعد اكتمال البناء الفني
-            setTimeout(() => {
-                const loader = document.getElementById('loading-screen');
-                loader.style.opacity = '0';
-                setTimeout(() => {
-                    loader.style.display = 'none';
-                }, 800);
-            }, 1000);
-        });
-
-        // 2. سكرول ناعم إلى قسم القوانين
-        function scrollToRules() {
-            document.getElementById('rules-section').scrollIntoView({ behavior: 'smooth' });
-        }
-
-        // 3. أنيميشن ظهور بطاقات الأقسام عند السكرول (Scroll Reveal)
-        const cards = document.querySelectorAll('.card');
-        const revealCards = () => {
-            const triggerBottom = window.innerHeight * 0.85;
-            cards.forEach(card => {
-                const cardTop = card.getBoundingClientRect().top;
-                if(cardTop < triggerBottom) {
-                    card.classList.add('revealed');
-                }
-            });
-        };
-        window.addEventListener('scroll', revealCards);
-        // استدعاء أولي للتأكد من ظهور البطاقات العلوية مباشرة
-        setTimeout(revealCards, 1200);
-
-        // 4. تتبع حركة الماوس داخل البطاقات لعمل توهج نيون تفاعلي متحرك
-        cards.forEach(card => {
-            const glow = card.querySelector('.card-glow-effect');
-            card.addEventListener('mousemove', (e) => {
-                const rect = card.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                glow.style.left = `${x}px`;
-                glow.style.top = `${y}px`;
-            });
-        });
-
-        // 5. فتح وإغلاق النوافذ المنبثقة (Modals) بسلاسة كاملة
-        function openModal(id) {
-            const modal = document.getElementById(id);
-            modal.classList.add('active');
-            document.body.style.overflow = 'hidden'; // منع سكرول الصفحة الرئيسية
-        }
-
-        function closeModal(id) {
-            const modal = document.getElementById(id);
-            modal.classList.remove('active');
-            document.body.style.overflow = ''; // إعادة سكرول الصفحة
-        }
-
-        function closeModalOnOverlay(event, id) {
-            // إغلاق المودال فقط إذا تم الضغط على الخلفية الشفافة وليس المحتوى الداخلي
-            if(event.target.classList.contains('modal-overlay')) {
-                closeModal(id);
-            }
-        }
-    </script>
-</body>
-</html>
+                <div class="rule-box"><div class="rule-number">3
